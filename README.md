@@ -1,6 +1,6 @@
 # Memo App
 
-Mobile App built for [Proyecto Final, Grupo QUACK](https://www.industriousoffice.com/) in React Native 0.60
+Mobile App built for [Proyecto Final, Grupo QUACK](https://www.intec.edu.do) in React Native 0.60
 
 ## Table of Contents
 

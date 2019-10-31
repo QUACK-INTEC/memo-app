@@ -63,10 +63,10 @@ $ yarn install
 
 ## Usage
 
-1. Run **react-native run-ios** inside your React Native project folder:
+1. Run **expo start** inside your React Native project folder:
 
 ```sh
-$ react-native run-ios
+$ expo start
 ```
 
 2. Follow the instructions found on the console screen and your app should connect to the server!

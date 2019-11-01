@@ -6,8 +6,8 @@ const PURPLE_LIGHT = '#8B5E8F';
 const ORANGE = '#eb9a00';
 const WHITE = '#FFFFFF';
 const BLACK = '#000000';
-const GRAY = '#707070';
-const GRAY_LIGHT = '#676767';
+const GRAY = '#727272';
+const GRAY_LIGHT = '#d0d0d0';
 const TRANSPARENT = 'transparent';
 const RED = '#EA6D6D';
 
@@ -24,7 +24,7 @@ const BODY_BACKGROUND = WHITE;
 const BORDER_COLOR = GRAY;
 const BORDER_COLOR_DARK = BLACK;
 const ERROR = RED;
-const DISABLED = GRAY;
+const DISABLED = GRAY_LIGHT;
 
 export default {
   GREEN_LIGHT,
@@ -37,6 +37,7 @@ export default {
   ORANGE,
   BLACK,
   GRAY,
+  GRAY_LIGHT,
   TEXT_TITLE,
   ACTION_COLOR,
   SECUNDARY_ACTION_COLOR,

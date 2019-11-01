@@ -13,7 +13,8 @@
     "orientation": "portrait",
     "splash": {
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "image": "./App/Core/Assets/Images/MemoSplashscreen.png"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

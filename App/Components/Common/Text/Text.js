@@ -207,8 +207,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BaseText;
-
 BaseText.defaultProps = {
   text: null,
   style: null,
@@ -218,3 +216,5 @@ BaseText.propTypes = {
   text: PropTypes.string,
   style: ViewPropTypes.style,
 };
+
+export default BaseText;

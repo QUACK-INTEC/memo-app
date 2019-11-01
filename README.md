@@ -14,6 +14,9 @@ Mobile App built for [Proyecto Final, Grupo QUACK](https://www.intec.edu.do) in 
 
 - All packages **must** be installed using Yarn.
 - All branches need to pass eslint test
+- All theme style need to be provided by the Core/Theme file
+
+- !Important! All branches need to have the format: `yourinitials/(feature-bugfix-hotfix)/name-branch`. Ex: jrtv/feature/setup-redux
 
 ## Technologies
 

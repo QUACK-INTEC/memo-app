@@ -5,7 +5,7 @@ import Text from '../../Components/Common/Text';
 
 const Home = () => (
   <View style={styles.container}>
-    <Text text="home" />
+    <Text.Bold text="home" />
   </View>
 );
 

@@ -1,6 +1,8 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
+import { Text } from 'react-native';
+
 import { Provider } from 'react-redux';
 import * as Font from 'expo-font';
 
@@ -16,7 +18,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    Font.loadAsync({
+    await Font.loadAsync({
       'poppins-black': require('./Core/Assets/Fonts/Poppins-Black.ttf'),
       'poppins-black-italic': require('./Core/Assets/Fonts/Poppins-BlackItalic.ttf'),
       'poppins-bold': require('./Core/Assets/Fonts/Poppins-Bold.ttf'),
@@ -41,6 +43,12 @@ class App extends Component {
   }
 
   render() {
+    const { fontLoaded } = this.state;
+
+    if (!fontLoaded) {
+      return <Text>Loading...</Text>;
+    }
+
     return (
       <Provider store={store}>
         <AppNavigator />

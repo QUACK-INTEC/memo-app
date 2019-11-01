@@ -13,6 +13,7 @@ Mobile App built for [Proyecto Final, Grupo QUACK](https://www.intec.edu.do) in 
 ## Requirements
 
 - All packages **must** be installed using Yarn.
+- All branches need to pass eslint test
 
 ## Technologies
 

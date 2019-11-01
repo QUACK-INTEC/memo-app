@@ -54,10 +54,7 @@ class BaseButton extends React.Component {
   render() {
     const { containerStyle, textStyle, label } = this.props;
     return (
-      <TouchableOpacity
-        onPress={this.handleOnPress}
-        // style={{}}
-      >
+      <TouchableOpacity onPress={this.handleOnPress}>
         <View style={[styles.base, this.getContainerStyle(), containerStyle]}>
           <Text.SemiBold text={label} style={[styles.baseText, this.getTextStyle(), textStyle]} />
         </View>

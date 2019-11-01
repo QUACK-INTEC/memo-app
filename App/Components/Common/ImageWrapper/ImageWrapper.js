@@ -1,11 +1,12 @@
 /* eslint-disable react/no-unused-state */
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
 import React from 'react';
-import { Image, ViewPropTypes } from 'react-native';
+import { Image, ViewPropTypes, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-// TODO: Implementar isLoading & Source Dinamico
+import { toBaseDesignPx } from '../../../Core/Theme';
+
+// TODO: Implementar isLoading
+
 class ImageWrapper extends React.Component {
   constructor(props) {
     super(props);
@@ -15,24 +16,26 @@ class ImageWrapper extends React.Component {
   }
 
   render() {
-    const { src, style, uri } = this.props;
-    return (
-      <Image
-        source={src ? require('../../../Core/Assets/Images/LogoMemo.jpg') : { uri }}
-        style={style}
-      />
-    );
+    const { style, uri, memoSrc } = this.props;
+    return <Image {...this.props} source={memoSrc || { uri }} style={[styles.image, style]} />;
   }
 }
 
+const styles = StyleSheet.create({
+  image: {
+    width: toBaseDesignPx(256),
+    height: toBaseDesignPx(256),
+  },
+});
+
 ImageWrapper.defaultProps = {
-  src: null,
+  memoSrc: null,
   style: null,
   uri: 'https://t3.ftcdn.net/jpg/01/17/72/36/240_F_117723612_z7zQmUrrpG4IRGQLvgX5nwtwC18ke3qU.jpg',
 };
 
 ImageWrapper.propTypes = {
-  src: PropTypes.string,
+  memoSrc: PropTypes.number,
   style: ViewPropTypes.style,
   uri: PropTypes.string,
 };

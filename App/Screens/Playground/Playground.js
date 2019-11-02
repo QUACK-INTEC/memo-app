@@ -7,8 +7,6 @@ import { bindActionCreators } from 'redux';
 // Theme
 import { colors, spacers, fonts } from '../../Core/Theme';
 
-import Text from '../../Components/Common/Text';
-
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
@@ -31,13 +29,6 @@ class Playground extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.boldXSText} text="Test Poppins Bold Text" />
-        <Text style={styles.boldSText} text="Test Poppins Bold Text" />
-        <Text style={styles.boldMText} text="Test Poppins Bold Text" />
-        <Text style={styles.boldLText} text="Test Poppins Bold Text" />
-        <Text style={styles.boldXLText} text="Test Poppins Bold Text" />
-        <Text style={styles.boldXXLText} text="Test Poppins Bold Text" />
-        <Text style={styles.boldXXXLText} text="Test Poppins Bold Text" />
         <Button title="Press me" onPress={this.onPressButton} />
       </View>
     );

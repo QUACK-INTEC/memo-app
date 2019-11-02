@@ -118,7 +118,7 @@ BaseButton.propTypes = {
   disabled: PropTypes.bool,
   label: PropTypes.string,
   containerStyle: ViewPropTypes.style,
-  textStyle: ViewPropTypes.style,
+  textStyle: PropTypes.shape({}),
   onPress: PropTypes.func,
 };
 

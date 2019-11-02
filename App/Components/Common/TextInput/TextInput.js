@@ -23,16 +23,16 @@ class TextInputWrapper extends React.Component {
   };
 
   renderLabel = () => {
-    const { title, titleStyle } = this.props;
+    const { label, labelStyle } = this.props;
 
-    if (title) {
-      return <Text.SemiBold text={title} style={[this.getTitleStyle(), titleStyle]} />;
+    if (label) {
+      return <Text.SemiBold text={label} style={[this.getLabelStyle(), labelStyle]} />;
     }
 
     return null;
   };
 
-  getTitleStyle = () => {
+  getLabelStyle = () => {
     const { disabled } = this.props;
 
     if (disabled) {
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
 TextInputWrapper.defaultProps = {
   onChange: () => null,
   placeholder: null,
-  title: null,
-  titleStyle: null,
+  label: null,
+  labelStyle: null,
   inputStyle: null,
   multiline: false,
   disabled: null,
@@ -114,8 +114,8 @@ TextInputWrapper.defaultProps = {
 TextInputWrapper.propTypes = {
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
-  title: PropTypes.string,
-  titleStyle: PropTypes.shape({}),
+  label: PropTypes.string,
+  labelStyle: PropTypes.shape({}),
   inputStyle: ViewPropTypes.style,
   multiline: PropTypes.bool,
   disabled: PropTypes.bool,

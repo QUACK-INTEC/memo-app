@@ -22,7 +22,7 @@ const getStatusBarHeight = () => {
   return getDeviceStatusBar();
 };
 
-const DESIGN_BASE_WIDTH = 811;
+const DESIGN_BASE_WIDTH = 375;
 
 const DEVICE = {
   HEIGHT: getScreenHeight(),

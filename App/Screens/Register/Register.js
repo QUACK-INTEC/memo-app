@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import RegisterComponent from '../../Components/Register';
 
-// TODO: Implement ImagePicker component
+// TODO: Logic create account
 class Register extends Component {
   handleSubmit = objValues => {
-    // TODO: Logic create account
+    // console.log({ objValues });
     return objValues;
   };
 

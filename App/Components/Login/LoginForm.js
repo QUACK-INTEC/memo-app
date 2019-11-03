@@ -26,7 +26,7 @@ const validation = objValues => {
   return errors;
 };
 
-class Register extends Component {
+class LoginForm extends Component {
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -121,13 +121,13 @@ const styles = StyleSheet.create({
   },
 });
 
-Register.defaultProps = {
+LoginForm.defaultProps = {
   onSubmit: () => null,
   onRegister: () => null,
   initialsValue: null,
 };
 
-Register.propTypes = {
+LoginForm.propTypes = {
   onSubmit: PropTypes.func,
   onRegister: PropTypes.func,
   initialsValue: PropTypes.shape({
@@ -136,4 +136,4 @@ Register.propTypes = {
   }),
 };
 
-export default Register;
+export default LoginForm;

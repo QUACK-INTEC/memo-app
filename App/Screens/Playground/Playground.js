@@ -7,6 +7,9 @@ import { bindActionCreators } from 'redux';
 // Theme
 import { colors, spacers, fonts } from '../../Core/Theme';
 
+// Common
+import ImagePicker from '../../Components/Common/ImagePicker';
+
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
@@ -30,6 +33,7 @@ class Playground extends Component {
     return (
       <View style={styles.container}>
         <Button title="Press me" onPress={this.onPressButton} />
+        <ImagePicker />
       </View>
     );
   }
@@ -104,6 +108,7 @@ const styles = StyleSheet.create({
 //     amenitiesLookup: getAmenitiesLookup(state, props),
 //     spaceFilters: getSpaceFilters(state, props),
 //     selectedDate: getSelectedDate(state, props),
+//
 //   };
 // };
 

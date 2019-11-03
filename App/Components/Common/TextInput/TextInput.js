@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput, ViewPropTypes, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import Lodash from 'lodash';
 
 // Theme
 import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
@@ -22,11 +23,22 @@ class TextInputWrapper extends React.Component {
     onChange(value);
   };
 
+  handleOnBlur = () => {
+    const { onBlur } = this.props;
+    if (onBlur) {
+      return onBlur();
+    }
+    return null;
+  };
+
   renderLabel = () => {
-    const { label, labelStyle } = this.props;
+    const { label, labelStyle, hasError } = this.props;
+    const errorLabelStyle = hasError ? styles.errorLabelStyle : null;
 
     if (label) {
-      return <Text.SemiBold text={label} style={[this.getLabelStyle(), labelStyle]} />;
+      return (
+        <Text.SemiBold text={label} style={[this.getLabelStyle(), errorLabelStyle, labelStyle]} />
+      );
     }
 
     return null;
@@ -52,22 +64,34 @@ class TextInputWrapper extends React.Component {
     return styles.textInput;
   };
 
+  getInputReference = input => {
+    const { inputRef } = this.props;
+    if (Lodash.isFunction(inputRef)) {
+      return inputRef(input);
+    }
+
+    return inputRef;
+  };
+
   render() {
-    const { placeholder, inputStyle, multiline, disabled } = this.props;
-    const { value } = this.state;
+    const { placeholder, style, multiline, disabled, value, hasError, ...rest } = this.props;
+    const { value: valueFromState } = this.state;
+    const errorStyle = hasError ? styles.errorStyle : null;
 
     return (
-      <View style={styles.mainView}>
+      <View style={[styles.mainView, errorStyle]}>
         {this.renderLabel()}
         <TextInput
           multiline={multiline}
           placeholder={placeholder}
           placeholderTextColor={colors.GRAY_LIGHT}
           onChangeText={this.handleTextChange}
-          value={value}
-          style={[this.getTextInputStyle(), inputStyle]}
+          onBlur={this.handleOnBlur}
           editable={!disabled}
-          {...this.props}
+          {...rest}
+          value={Lodash.toString(value || valueFromState)}
+          ref={this.getInputReference}
+          style={[this.getTextInputStyle(), style]}
         />
       </View>
     );
@@ -78,6 +102,10 @@ const styles = StyleSheet.create({
   mainView: {
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.GRAY_LIGHT,
+  },
+  errorStyle: {
+    borderBottomWidth: toBaseDesignPx(2),
+    borderColor: colors.ERROR,
   },
   textInput: {
     ...fonts.SEMI_BOLD,
@@ -91,6 +119,9 @@ const styles = StyleSheet.create({
     ...spacers.MT_9,
     ...spacers.MB_14,
   },
+  errorLabelStyle: {
+    color: colors.ERROR,
+  },
   textTitle: {
     color: colors.GRAY,
     ...fonts.SIZE_L,
@@ -102,23 +133,31 @@ const styles = StyleSheet.create({
 });
 
 TextInputWrapper.defaultProps = {
-  onChange: () => null,
+  onChange: () => {},
+  onBlur: () => null,
+  inputRef: () => null,
   placeholder: null,
   label: null,
   labelStyle: null,
-  inputStyle: null,
   multiline: false,
   disabled: null,
+  hasError: false,
+  style: null,
+  value: '',
 };
 
 TextInputWrapper.propTypes = {
   onChange: PropTypes.func,
+  inputRef: PropTypes.func,
+  onBlur: PropTypes.func,
   placeholder: PropTypes.string,
   label: PropTypes.string,
+  value: PropTypes.string,
   labelStyle: PropTypes.shape({}),
-  inputStyle: ViewPropTypes.style,
+  style: ViewPropTypes.style,
   multiline: PropTypes.bool,
   disabled: PropTypes.bool,
+  hasError: PropTypes.bool,
 };
 
 export default TextInputWrapper;

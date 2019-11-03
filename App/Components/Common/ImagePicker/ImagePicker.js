@@ -38,6 +38,7 @@ class ImagePicker extends React.Component {
         return Promise.reject();
       }
     }
+
     return Promise.resolve();
   };
 

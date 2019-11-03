@@ -10,6 +10,9 @@ import { colors, spacers, fonts } from '../../Core/Theme';
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
+// Theme
+import ImagePicker from '../../Components/Common/ImagePicker';
+
 class Playground extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +33,7 @@ class Playground extends Component {
     return (
       <View style={styles.container}>
         <Button title="Press me" onPress={this.onPressButton} />
+        <ImagePicker onChangeImage={uri => console.log(uri)} />
       </View>
     );
   }

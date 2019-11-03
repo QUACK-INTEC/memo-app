@@ -74,12 +74,21 @@ class TextInputWrapper extends React.Component {
   };
 
   render() {
-    const { placeholder, style, multiline, disabled, value, hasError, ...rest } = this.props;
+    const {
+      placeholder,
+      style,
+      multiline,
+      disabled,
+      value,
+      containerStyle,
+      hasError,
+      ...rest
+    } = this.props;
     const { value: valueFromState } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
 
     return (
-      <View style={[styles.mainView, errorStyle]}>
+      <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
         <TextInput
           multiline={multiline}
@@ -143,6 +152,7 @@ TextInputWrapper.defaultProps = {
   disabled: null,
   hasError: false,
   style: null,
+  containerStyle: null,
   value: '',
 };
 
@@ -155,6 +165,7 @@ TextInputWrapper.propTypes = {
   value: PropTypes.string,
   labelStyle: PropTypes.shape({}),
   style: ViewPropTypes.style,
+  containerStyle: ViewPropTypes.style,
   multiline: PropTypes.bool,
   disabled: PropTypes.bool,
   hasError: PropTypes.bool,

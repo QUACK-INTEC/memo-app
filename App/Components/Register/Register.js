@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 
-import { spacers } from '../../Core/Theme';
+import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
+import ImagePicker from '../Common/ImagePicker';
 
 const validation = objValues => {
   const errors = {};
-  const { email, name, lastname, password, passwordVerify } = objValues;
+  const { email, name, lastname, password } = objValues;
 
   if (!name) {
     errors.name = 'Required';
@@ -25,16 +26,6 @@ const validation = objValues => {
     errors.password = 'Poor password';
   }
 
-  if (!passwordVerify) {
-    errors.passwordVerify = 'Required';
-  }
-
-  if (password && passwordVerify) {
-    if (passwordVerify !== password) {
-      errors.passwordVerify = "Don't match with your password";
-    }
-  }
-
   if (!email) {
     errors.email = 'Required';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
@@ -43,6 +34,7 @@ const validation = objValues => {
 
   return errors;
 };
+
 class Register extends Component {
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
@@ -61,30 +53,69 @@ class Register extends Component {
       email: null,
       lastname: null,
       password: null,
-      passwordVerify: null,
       name: null,
+      profileImage: null,
       ...initialsValue,
     };
   };
 
   renderForm = objForm => {
     return (
-      <View style={styles.container}>
-        <FormikInput label="Nombre" name="name" />
-        <FormikInput label="Apellido" name="lastname" />
-        <FormikInput label="Email" name="email" />
-        <FormikInput label="Contraseña" name="password" />
-        <FormikInput label="Confirme su contraseña" name="passwordVerify" />
-        <View style={styles.buttonsContainer}>
-          <Button
-            label="Continuar"
-            containerStyle={styles.createAccountButton}
-            onPress={objForm.handleSubmit}
-            disabled={!objForm.isValid}
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView behavior="padding">
+          <ImagePicker
+            style={styles.imagePicker}
+            onChangeImage={strImageUri => {
+              objForm.setFieldValue('profileImage', strImageUri);
+            }}
           />
-          <Button label="Ya tengo una cuenta creada!" secondary onPress={this.handleBackToLogin} />
-        </View>
-      </View>
+          <View>
+            <FormikInput
+              label="Nombre"
+              name="name"
+              containerStyle={styles.input}
+              autoFocus
+              enablesReturnKeyAutomatically
+              returnKeyType="done"
+            />
+            <FormikInput
+              label="Apellido"
+              name="lastname"
+              containerStyle={styles.input}
+              returnKeyType="done"
+            />
+            <FormikInput
+              label="Email"
+              name="email"
+              containerStyle={styles.input}
+              keyboardType="email-address"
+              returnKeyType="done"
+              autoCapitalize="none"
+            />
+            <FormikInput
+              label="Contraseña"
+              name="password"
+              containerStyle={styles.input}
+              returnKeyType="done"
+              secureTextEntry
+            />
+          </View>
+
+          <View style={styles.buttonsContainer}>
+            <Button
+              label="Continuar"
+              containerStyle={styles.createAccountButton}
+              onPress={objForm.handleSubmit}
+              disabled={!objForm.isValid}
+            />
+            <Button
+              label="Ya tengo una cuenta creada!"
+              secondary
+              onPress={this.handleBackToLogin}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   };
 
@@ -102,10 +133,21 @@ class Register extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...spacers.MA_7,
+    ...spacers.MA_10,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  input: {
+    ...spacers.MT_7,
   },
   buttonsContainer: {
-    ...spacers.MT_15,
+    ...spacers.MT_6,
+  },
+  imagePicker: {
+    alignSelf: 'center',
+    height: toBaseDesignPx(120),
+    width: toBaseDesignPx(120),
+    borderRadius: toBaseDesignPx(60),
   },
   createAccountButton: {
     ...spacers.MB_7,

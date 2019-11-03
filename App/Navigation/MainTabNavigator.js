@@ -8,7 +8,7 @@ import Register from '../Screens/Register';
 
 const config = Platform.select({
   web: { headerMode: 'none' },
-  default: { headerMode: 'none', tabBarVisible: false },
+  default: {},
 });
 
 const HomeStack = createStackNavigator(
@@ -53,4 +53,4 @@ const tabNavigator = createBottomTabNavigator({
 
 tabNavigator.path = '';
 
-export default RegisterStack;
+export default tabNavigator;

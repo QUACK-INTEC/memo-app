@@ -19,6 +19,7 @@ class Avatar extends React.Component {
         <ImageWrapper {...this.props} style={[styles.avatarStyle, style]} memoSrc={src} uri={uri} />
       );
     }
+
     return (
       <View {...this.props} style={[styles.avatarStyle, style]}>
         <Text.Medium text={initialsText} style={styles.textStyle} />

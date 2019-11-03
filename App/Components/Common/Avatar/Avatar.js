@@ -28,15 +28,15 @@ class Avatar extends React.Component {
   };
 
   render() {
-    return <View>{this.renderAvatar()}</View>;
+    return this.renderAvatar();
   }
 }
 
 const styles = StyleSheet.create({
   avatarStyle: {
-    height: toBaseDesignPx(188),
-    width: toBaseDesignPx(188),
-    borderRadius: toBaseDesignPx(94),
+    height: toBaseDesignPx(94),
+    width: toBaseDesignPx(94),
+    borderRadius: toBaseDesignPx(47),
     backgroundColor: colors.GRAY_LIGHT,
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,151 +1,40 @@
 import React from 'react';
-import { Text, StyleSheet, ViewPropTypes } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
 import { fonts } from '../../../Core/Theme';
 
-const TextBlack = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.black, style]}>
-      {text}
-    </Text>
-  );
-};
+class BaseText extends React.Component {
+  renderText = () => {
+    const { style, text, predefinedStyle } = this.props;
+    return (
+      <Text {...this.props} style={[predefinedStyle, style]}>
+        {text}
+      </Text>
+    );
+  };
 
-const TextItalicBlack = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.italicBlack, style]}>
-      {text}
-    </Text>
-  );
-};
+  render() {
+    return this.renderText();
+  }
+}
 
-const TextBold = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.bold, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextExtraBold = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.extraBold, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextItalicBold = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.italicBold, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextLight = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.light, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextExtraLight = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.extraLight, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextItalicLight = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.italicLight, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextMedium = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.medium, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextMediumItalic = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.mediumItalic, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextSemiBold = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.semiBold, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextSemiBoldItalic = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.semiBoldItalic, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextThin = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.thin, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const TextThinItalic = objProps => {
-  const { style, text } = objProps;
-  return (
-    <Text {...objProps} style={[styles.thinItalic, style]}>
-      {text}
-    </Text>
-  );
-};
-
-const BaseText = {
-  Black: TextBlack,
-  ItalicBlack: TextItalicBlack,
-  Bold: TextBold,
-  ExtraBold: TextExtraBold,
-  ItalicBold: TextItalicBold,
-  Light: TextLight,
-  ExtraLight: TextExtraLight,
-  ItalicLight: TextItalicLight,
-  Medium: TextMedium,
-  MediumItalic: TextMediumItalic,
-  SemiBold: TextSemiBold,
-  SemiBoldItalic: TextSemiBoldItalic,
-  Thin: TextThin,
-  thinItalic: TextThinItalic,
+const SimpleBaseText = {
+  Black: objProps => <BaseText {...objProps} predefinedStyle={styles.black} />,
+  ItalicBlack: objProps => <BaseText {...objProps} predefinedStyle={styles.italicBold} />,
+  Bold: objProps => <BaseText {...objProps} predefinedStyle={styles.bold} />,
+  ExtraBold: objProps => <BaseText {...objProps} predefinedStyle={styles.extraBold} />,
+  ItalicBold: objProps => <BaseText {...objProps} predefinedStyle={styles.italicBold} />,
+  Light: objProps => <BaseText {...objProps} predefinedStyle={styles.light} />,
+  ExtraLight: objProps => <BaseText {...objProps} predefinedStyle={styles.extraLight} />,
+  ItalicLight: objProps => <BaseText {...objProps} predefinedStyle={styles.italicLight} />,
+  Medium: objProps => <BaseText {...objProps} predefinedStyle={styles.medium} />,
+  MediumItalic: objProps => <BaseText {...objProps} predefinedStyle={styles.mediumItalic} />,
+  SemiBold: objProps => <BaseText {...objProps} predefinedStyle={styles.semiBold} />,
+  SemiBoldItalic: objProps => <BaseText {...objProps} predefinedStyle={styles.semiBoldItalic} />,
+  Thin: objProps => <BaseText {...objProps} predefinedStyle={styles.thin} />,
+  thinItalic: objProps => <BaseText {...objProps} predefinedStyle={styles.thinItalic} />,
 };
 
 const styles = StyleSheet.create({
@@ -162,7 +51,7 @@ const styles = StyleSheet.create({
     ...fonts.SIZE_S,
   },
   extraBold: {
-    ...fonts.extraBold,
+    ...fonts.EXTRA_BOLD,
     ...fonts.SIZE_S,
   },
   italicBold: {
@@ -209,12 +98,10 @@ const styles = StyleSheet.create({
 
 BaseText.defaultProps = {
   text: null,
-  style: null,
 };
 
 BaseText.propTypes = {
   text: PropTypes.string,
-  style: ViewPropTypes.style,
 };
 
-export default BaseText;
+export default SimpleBaseText;

@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     ...fonts.SEMI_BOLD,
-    color: colors.GRAY,
+    color: colors.BLACK,
     ...spacers.MT_9,
     ...spacers.MB_14,
   },

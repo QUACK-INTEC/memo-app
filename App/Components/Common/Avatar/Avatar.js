@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 // Theme
-import { fonts, colors, toBaseDesignPx } from '../../../Core/Theme';
+import { colors, toBaseDesignPx } from '../../../Core/Theme';
 
 // Common
 import ImageWrapper from '../ImageWrapper';
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textStyle: {
-    ...fonts.SIZE_XXXL,
     color: colors.GRAY,
     fontSize: RFValue(48),
   },

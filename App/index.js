@@ -1,13 +1,14 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { Provider } from 'react-redux';
 import * as Font from 'expo-font';
 
 import AppNavigator from './Navigation/AppNavigator';
 import store from './Redux';
+import LoadingState from './Components/LoadingState';
 
 class App extends Component {
   constructor() {
@@ -46,7 +47,11 @@ class App extends Component {
     const { fontLoaded } = this.state;
 
     if (!fontLoaded) {
-      return <Text>Loading...</Text>;
+      return (
+        <View style={styles.loaderContainer}>
+          <LoadingState.Medium />
+        </View>
+      );
     }
 
     return (
@@ -56,5 +61,13 @@ class App extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default App;

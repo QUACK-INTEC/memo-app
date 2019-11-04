@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { colors, spacers, fonts } from '../../Core/Theme';
 
 // Common
-import ImagePicker from '../../Components/Common/ImagePicker';
+import CalendarDatePicker from '../../Components/Common/CalendarDatePicker';
 
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
@@ -32,8 +32,7 @@ class Playground extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button title="Press me" onPress={this.onPressButton} />
-        <ImagePicker />
+        <CalendarDatePicker />
       </View>
     );
   }
@@ -41,7 +40,7 @@ class Playground extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.GREEN_LIGHT,
+    // backgroundColor: colors.GREEN_LIGHT,
     flex: 1,
     ...spacers.MA_9,
   },

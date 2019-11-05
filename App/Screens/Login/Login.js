@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 import LoginForm from '../../Components/Login';
-
-const MEMO_ICON = require('../../Core/Assets/Images/memoIcon.png');
+import ImageWrapper, { MEMO_ASSETS } from '../../Components/Common/ImageWrapper';
 
 class Login extends Component {
   constructor(props) {
@@ -13,7 +12,7 @@ class Login extends Component {
   }
 
   handleSubmit = () => {
-    // ValidateApi();
+    // TO-DO: ValidateApi();
     const {
       navigation: { navigate },
     } = this.props;
@@ -31,7 +30,7 @@ class Login extends Component {
     const { initialsValue } = this.props;
     return (
       <View style={styles.container}>
-        <Image source={MEMO_ICON} resizeMode="contain" style={styles.logoContainer} />
+        <ImageWrapper memoSrc={MEMO_ASSETS.ICON} style={styles.logoContainer} />
         <LoginForm
           onSubmit={this.handleSubmit}
           onRegister={this.handleRegister}
@@ -60,10 +59,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logoContainer: {
-    marginTop: 10,
-    width: 250,
-    borderRadius: 500,
-    height: 250,
     alignSelf: 'center',
   },
 });

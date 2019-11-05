@@ -26,7 +26,7 @@ const validation = objValues => {
   return errors;
 };
 
-class Register extends Component {
+class LoginForm extends Component {
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -42,10 +42,7 @@ class Register extends Component {
 
     return {
       email: null,
-      lastname: null,
       password: null,
-      name: null,
-      profileImage: null,
       ...initialsValue,
     };
   };
@@ -59,7 +56,6 @@ class Register extends Component {
               label="Email"
               name="email"
               containerStyle={styles.input}
-              // autoFocus
               enablesReturnKeyAutomatically
               returnKeyType="next"
             />
@@ -102,7 +98,6 @@ const styles = StyleSheet.create({
   container: {
     ...spacers.MA_10,
     flex: 1,
-    // justifyContent: 'center',
   },
   input: {
     ...spacers.MT_7,
@@ -121,13 +116,13 @@ const styles = StyleSheet.create({
   },
 });
 
-Register.defaultProps = {
+LoginForm.defaultProps = {
   onSubmit: () => null,
   onRegister: () => null,
   initialsValue: null,
 };
 
-Register.propTypes = {
+LoginForm.propTypes = {
   onSubmit: PropTypes.func,
   onRegister: PropTypes.func,
   initialsValue: PropTypes.shape({
@@ -136,4 +131,4 @@ Register.propTypes = {
   }),
 };
 
-export default Register;
+export default LoginForm;

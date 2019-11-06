@@ -15,6 +15,7 @@ const TextInputWrapper = objProps => {
       {...objProps}
       onChangeText={objProps.onChange}
       hasError={hasError}
+      strError={strError}
     />
   );
 };

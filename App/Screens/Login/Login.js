@@ -41,6 +41,15 @@ class Login extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  logoContainer: {
+    alignSelf: 'center',
+  },
+});
+
 Login.defaultProps = {
   initialsValue: null,
 };
@@ -53,12 +62,3 @@ Login.propTypes = {
 };
 
 export default Login;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  logoContainer: {
-    alignSelf: 'center',
-  },
-});

@@ -55,6 +55,7 @@ class LoginForm extends Component {
             <FormikInput
               label="Email"
               name="email"
+              keyboardType="email-address"
               containerStyle={styles.input}
               enablesReturnKeyAutomatically
               returnKeyType="next"

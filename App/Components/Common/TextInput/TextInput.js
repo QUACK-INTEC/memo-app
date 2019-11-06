@@ -8,6 +8,7 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import Text from '../Text';
+import InLineComponent from '../InLineComponent';
 
 class TextInputWrapper extends React.Component {
   constructor(props) {
@@ -31,13 +32,33 @@ class TextInputWrapper extends React.Component {
     return null;
   };
 
-  renderLabel = () => {
+  renderTitleLabel = () => {
     const { label, labelStyle, hasError } = this.props;
     const errorLabelStyle = hasError ? styles.errorLabelStyle : null;
 
+    return (
+      <Text.SemiBold text={label} style={[this.getLabelStyle(), errorLabelStyle, labelStyle]} />
+    );
+  };
+
+  renderErrorLabel = () => {
+    const { hasError, strError } = this.props;
+
+    if (!hasError) {
+      return null;
+    }
+
+    return (
+      <Text.ItalicLight text={`${strError}`} style={{ color: colors.ERROR, ...spacers.ML_1 }} />
+    );
+  };
+
+  renderLabel = () => {
+    const { label } = this.props;
+
     if (label) {
       return (
-        <Text.SemiBold text={label} style={[this.getLabelStyle(), errorLabelStyle, labelStyle]} />
+        <InLineComponent leftChild={this.renderTitleLabel} rightChild={this.renderErrorLabel} />
       );
     }
 
@@ -86,7 +107,6 @@ class TextInputWrapper extends React.Component {
     } = this.props;
     const { value: valueFromState } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
-
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
@@ -154,6 +174,7 @@ TextInputWrapper.defaultProps = {
   style: null,
   containerStyle: null,
   value: '',
+  strError: null,
 };
 
 TextInputWrapper.propTypes = {
@@ -163,6 +184,7 @@ TextInputWrapper.propTypes = {
   placeholder: PropTypes.string,
   label: PropTypes.string,
   value: PropTypes.string,
+  strError: PropTypes.string,
   labelStyle: PropTypes.shape({}),
   style: ViewPropTypes.style,
   containerStyle: ViewPropTypes.style,

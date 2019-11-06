@@ -14,10 +14,14 @@ const validation = objValues => {
 
   if (!name) {
     errors.name = 'Required';
+  } else if (!/^[a-zA-Z]+$/.test(name)) {
+    errors.name = 'Invalid name';
   }
 
   if (!lastname) {
     errors.lastname = 'Required';
+  } else if (!/^[a-zA-Z]+$/.test(lastname)) {
+    errors.lastname = 'Invalid lastname';
   }
 
   if (!password) {
@@ -74,7 +78,6 @@ class Register extends Component {
               label="Nombre"
               name="name"
               containerStyle={styles.input}
-              autoFocus
               enablesReturnKeyAutomatically
               returnKeyType="done"
             />

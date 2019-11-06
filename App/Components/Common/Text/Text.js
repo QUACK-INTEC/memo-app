@@ -34,7 +34,7 @@ const SimpleBaseText = {
   SemiBold: objProps => <BaseText {...objProps} predefinedStyle={styles.semiBold} />,
   SemiBoldItalic: objProps => <BaseText {...objProps} predefinedStyle={styles.semiBoldItalic} />,
   Thin: objProps => <BaseText {...objProps} predefinedStyle={styles.thin} />,
-  thinItalic: objProps => <BaseText {...objProps} predefinedStyle={styles.thinItalic} />,
+  ThinItalic: objProps => <BaseText {...objProps} predefinedStyle={styles.thinItalic} />,
 };
 
 const styles = StyleSheet.create({

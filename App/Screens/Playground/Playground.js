@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import Text from '../../Components/Common/Text';
+// Theme
+import { colors, spacers, fonts } from '../../Core/Theme';
+
+// Common
+import ImagePicker from '../../Components/Common/ImagePicker';
 
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
@@ -28,15 +32,61 @@ class Playground extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Hi friend</Text>
         <Button title="Press me" onPress={this.onPressButton} />
+        <ImagePicker />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: 'red', flex: 1 },
+  container: {
+    backgroundColor: colors.GREEN_LIGHT,
+    flex: 1,
+    ...spacers.MA_9,
+  },
+  boldXSText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_XS,
+  },
+  boldSText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_S,
+  },
+  boldMText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_M,
+  },
+  boldLText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_L,
+  },
+  boldXLText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_XL,
+  },
+  boldXXLText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_XXL,
+  },
+  boldXXXLText: {
+    fontFamily: 'poppins-bold',
+    color: 'blue',
+    ...fonts.BOLD,
+    ...fonts.SIZE_XXXL,
+  },
 });
 
 // Redux
@@ -58,6 +108,7 @@ const styles = StyleSheet.create({
 //     amenitiesLookup: getAmenitiesLookup(state, props),
 //     spaceFilters: getSpaceFilters(state, props),
 //     selectedDate: getSelectedDate(state, props),
+//
 //   };
 // };
 

@@ -13,6 +13,10 @@ Mobile App built for [Proyecto Final, Grupo QUACK](https://www.intec.edu.do) in 
 ## Requirements
 
 - All packages **must** be installed using Yarn.
+- All branches need to pass eslint test
+- All theme style need to be provided by the Core/Theme file
+
+- !Important! All branches need to have the format: `yourinitials/(feature-bugfix-hotfix)/name-branch`. Ex: jrtv/feature/setup-redux
 
 ## Technologies
 
@@ -66,7 +70,7 @@ $ yarn install
 1. Run **expo start** inside your React Native project folder:
 
 ```sh
-$ expo start
+$ expo start or yarn start
 ```
 
 2. Follow the instructions found on the console screen and your app should connect to the server!

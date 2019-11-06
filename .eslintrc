@@ -5,6 +5,8 @@
     "prettier/react"
   ],
   "rules": {
+    "react/prop-types": ["error", { "ignore": ["children","style","predefinedStyle", "logger"] }],
+    "no-fallthrough": "off",
     "react/jsx-props-no-spreading": "off",
     "no-use-before-define": "off",
     "react/jsx-filename-extension": [

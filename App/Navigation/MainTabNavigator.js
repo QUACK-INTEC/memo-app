@@ -4,9 +4,10 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 // Screens
 import Playground from '../Screens/Playground';
 import Home from '../Screens/Home';
+import Register from '../Screens/Register';
 
 const config = Platform.select({
-  web: { headerMode: 'screen' },
+  web: { headerMode: 'none' },
   default: {},
 });
 
@@ -32,6 +33,17 @@ const PlaygroundStack = createStackNavigator(
 
 PlaygroundStack.navigationOptions = {
   tabBarLabel: 'Playground',
+};
+
+const RegisterStack = createStackNavigator(
+  {
+    Register,
+  },
+  config
+);
+
+RegisterStack.navigationOptions = {
+  tabBarVisible: false,
 };
 
 const tabNavigator = createBottomTabNavigator({

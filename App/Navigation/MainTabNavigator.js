@@ -1,54 +1,106 @@
+import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-// Screens
+import TabBarLabel from '../Components/TabBar/TabBarLabel';
+import TabBarIcon from '../Components/TabBar/TabBarIcon';
+
 import Playground from '../Screens/Playground';
-import Home from '../Screens/Home';
-import Register from '../Screens/Register';
+import HomeScreen from '../Screens/Home';
+import CalendarScreen from '../Screens/Calendar';
+import ClassRoomScreen from '../Screens/ClassRooms';
+import ProfileScreen from '../Screens/Profile';
 
 const config = Platform.select({
   web: { headerMode: 'none' },
-  default: {},
+  default: { headerMode: 'none' },
 });
 
 const HomeStack = createStackNavigator(
   {
-    Home,
+    Home: HomeScreen,
   },
   config
 );
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Inicio" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" type="MEMO_ICONS" />,
 };
 
 HomeStack.path = '';
 
-const PlaygroundStack = createStackNavigator(
+const CalendarStack = createStackNavigator(
   {
-    Playground,
+    Calendar: CalendarScreen,
   },
   config
 );
 
-PlaygroundStack.navigationOptions = {
-  tabBarLabel: 'Playground',
+CalendarStack.navigationOptions = {
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Calendario" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="calendar" type="MEMO_ICONS" />,
 };
 
-const RegisterStack = createStackNavigator(
+CalendarStack.path = '';
+
+const AddStack = createStackNavigator(
   {
-    Register,
+    Profile: Playground,
   },
   config
 );
 
-RegisterStack.navigationOptions = {
-  tabBarVisible: false,
+AddStack.navigationOptions = {
+  tabBarLabel: ' ',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      center
+      focused={focused}
+      name="add"
+      type="MEMO_ICONS"
+      size="EXTRA_SMALL"
+      colorDef="WHITE"
+    />
+  ),
 };
+
+AddStack.path = '';
+
+const ClassRoomStack = createStackNavigator(
+  {
+    Clases: ClassRoomScreen,
+  },
+  config
+);
+
+ClassRoomStack.navigationOptions = {
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" type="MEMO_ICONS" />,
+};
+
+ClassRoomStack.path = '';
+
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfileScreen,
+  },
+  config
+);
+
+ProfileStack.navigationOptions = {
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" type="MEMO_ICONS" />,
+};
+
+ProfileStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  PlaygroundStack,
+  CalendarStack,
+  AddStack,
+  ClassRoomStack,
+  ProfileStack,
 });
 
 tabNavigator.path = '';

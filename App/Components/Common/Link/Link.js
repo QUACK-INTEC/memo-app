@@ -41,9 +41,9 @@ Link.defaultProps = {
 };
 
 Link.propTypes = {
-  text: null,
+  text: PropTypes.string,
   textStyle: ViewPropTypes.style,
-  disabled: null,
+  disabled: PropTypes.bool,
   onPress: PropTypes.func,
 };
 

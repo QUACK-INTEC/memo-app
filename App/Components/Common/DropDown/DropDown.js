@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, ViewPropTypes, StyleSheet, Picker } from 'react-native';
+import { View, ViewPropTypes, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
+
+import RNPickerSelect from 'react-native-picker-select';
 
 // Theme
 import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
@@ -15,6 +17,11 @@ class DropDownComponent extends React.Component {
     this.state = {
       value: null,
     };
+  }
+
+  componentDidMount() {
+    const { value } = this.props;
+    this.setState({ value });
   }
 
   handleOptionChange = value => {
@@ -34,12 +41,6 @@ class DropDownComponent extends React.Component {
     }
 
     return null;
-  };
-
-  renderOptions = () => {
-    const { options } = this.props;
-    if (!options) return null;
-    return options.map(obj => <Picker.Item key={obj.value} label={obj.label} value={obj.value} />);
   };
 
   getLabelStyle = () => {
@@ -72,22 +73,24 @@ class DropDownComponent extends React.Component {
   };
 
   render() {
-    const { style, value, containerStyle, hasError, ...rest } = this.props;
+    const { style, placeholder, options, disabled, containerStyle, hasError, ...rest } = this.props;
     const { value: valueFromState } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
 
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
-        <Picker
-          onValueChange={this.handleOptionChange}
+        <RNPickerSelect
+          placeholder={{
+            label: placeholder,
+            value: null,
+          }}
           {...rest}
-          selectedValue={Lodash.toString(value || valueFromState)}
-          ref={this.getInputReference}
-          itemStyle={[this.getDropDownStyle(), style]}
-        >
-          {this.renderOptions()}
-        </Picker>
+          onValueChange={this.handleOptionChange}
+          items={options}
+          disabled={disabled}
+          value={valueFromState}
+        />
       </View>
     );
   }
@@ -130,14 +133,14 @@ const styles = StyleSheet.create({
 DropDownComponent.defaultProps = {
   onChange: () => {},
   inputRef: () => null,
-  placeholder: null,
+  placeholder: 'Seleccione una opcion',
   label: null,
   labelStyle: null,
   disabled: null,
   hasError: false,
   style: null,
   containerStyle: null,
-  value: '',
+  value: null,
 };
 
 DropDownComponent.propTypes = {

@@ -52,14 +52,14 @@ class DropDownComponent extends React.Component {
     return styles.textTitle;
   };
 
-  getTextInputStyle = () => {
+  getDropDownStyle = () => {
     const { disabled } = this.props;
 
     if (disabled) {
-      return styles.textInputDisabled;
+      return styles.dropDownDisabled;
     }
 
-    return styles.textInput;
+    return styles.dropDown;
   };
 
   getInputReference = input => {
@@ -84,7 +84,7 @@ class DropDownComponent extends React.Component {
           {...rest}
           selectedValue={Lodash.toString(value || valueFromState)}
           ref={this.getInputReference}
-          itemStyle={[this.getTextInputStyle(), style]}
+          itemStyle={[this.getDropDownStyle(), style]}
         >
           {this.renderOptions()}
         </Picker>
@@ -102,13 +102,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.ERROR,
   },
-  textInput: {
+  dropDown: {
     ...fonts.SEMI_BOLD,
     color: colors.BLACK,
     ...spacers.MT_9,
     ...spacers.MB_14,
   },
-  textInputDisabled: {
+  dropDownDisabled: {
     ...fonts.SEMI_BOLD,
     color: colors.DISABLED,
     ...spacers.MT_9,

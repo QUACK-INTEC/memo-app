@@ -1,54 +1,123 @@
+import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-// Screens
+import TabBarLabel from '../Components/TabBar/TabBarLabel';
+import TabBarIcon from '../Components/TabBar/TabBarIcon';
+import { ICON_SIZE } from '../Components/Common/Icon';
+import { toBaseDesignPx, colors, spacers } from '../Core/Theme';
+
 import Playground from '../Screens/Playground';
-import Home from '../Screens/Home';
-import Register from '../Screens/Register';
+import HomeScreen from '../Screens/Home';
+import CalendarScreen from '../Screens/Calendar';
+import ClassRoomScreen from '../Screens/ClassRooms';
+import ProfileScreen from '../Screens/Profile';
 
 const config = Platform.select({
   web: { headerMode: 'none' },
-  default: {},
+  default: { headerMode: 'none' },
 });
 
 const HomeStack = createStackNavigator(
   {
-    Home,
+    Home: HomeScreen,
   },
   config
 );
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Inicio" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" />,
 };
 
 HomeStack.path = '';
 
-const PlaygroundStack = createStackNavigator(
+const CalendarStack = createStackNavigator(
   {
-    Playground,
+    Calendar: CalendarScreen,
   },
   config
 );
 
-PlaygroundStack.navigationOptions = {
-  tabBarLabel: 'Playground',
+CalendarStack.navigationOptions = {
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Calendario" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="calendar" />,
 };
 
-const RegisterStack = createStackNavigator(
+CalendarStack.path = '';
+
+// TODO: Open a modal when is add is pressed
+const AddStack = createStackNavigator(
   {
-    Register,
+    Add: Playground,
   },
   config
 );
 
-RegisterStack.navigationOptions = {
-  tabBarVisible: false,
+AddStack.navigationOptions = {
+  transitionConfig: {
+    isModal: true,
+  },
+  tabBarLabel: ' ',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      containerStyle={{
+        ...spacers.MB_2,
+        backgroundColor: colors.GREEN,
+        borderRadius: toBaseDesignPx(30),
+        width: toBaseDesignPx(60),
+        height: toBaseDesignPx(60),
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: toBaseDesignPx(3) },
+        shadowOpacity: toBaseDesignPx(0.2),
+        shadowRadius: toBaseDesignPx(4),
+        elevation: toBaseDesignPx(2),
+      }}
+      name="add"
+      size={ICON_SIZE.EXTRA_SMALL}
+      color={focused ? colors.GRAY_LIGHT : colors.WHITE}
+    />
+  ),
 };
+
+AddStack.path = '';
+
+const ClassRoomStack = createStackNavigator(
+  {
+    Clases: ClassRoomScreen,
+  },
+  config
+);
+
+ClassRoomStack.navigationOptions = {
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" />,
+};
+
+ClassRoomStack.path = '';
+
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfileScreen,
+  },
+  config
+);
+
+ProfileStack.navigationOptions = {
+  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
+};
+
+ProfileStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  PlaygroundStack,
+  CalendarStack,
+  AddStack,
+  ClassRoomStack,
+  ProfileStack,
 });
 
 tabNavigator.path = '';

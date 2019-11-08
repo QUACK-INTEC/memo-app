@@ -4,6 +4,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import TabBarLabel from '../Components/TabBar/TabBarLabel';
 import TabBarIcon from '../Components/TabBar/TabBarIcon';
+import { ICON_SIZE } from '../Components/Common/Icon';
+import { toBaseDesignPx, colors, spacers } from '../Core/Theme';
 
 import Playground from '../Screens/Playground';
 import HomeScreen from '../Screens/Home';
@@ -25,7 +27,7 @@ const HomeStack = createStackNavigator(
 
 HomeStack.navigationOptions = {
   tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Inicio" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" type="MEMO_ICONS" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" />,
 };
 
 HomeStack.path = '';
@@ -39,28 +41,43 @@ const CalendarStack = createStackNavigator(
 
 CalendarStack.navigationOptions = {
   tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Calendario" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="calendar" type="MEMO_ICONS" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="calendar" />,
 };
 
 CalendarStack.path = '';
 
+// TODO: Open a modal when is add is pressed
 const AddStack = createStackNavigator(
   {
-    Profile: Playground,
+    Add: Playground,
   },
   config
 );
 
 AddStack.navigationOptions = {
+  transitionConfig: {
+    isModal: true,
+  },
   tabBarLabel: ' ',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
-      center
-      focused={focused}
+      containerStyle={{
+        ...spacers.MB_2,
+        backgroundColor: colors.GREEN,
+        borderRadius: toBaseDesignPx(30),
+        width: toBaseDesignPx(60),
+        height: toBaseDesignPx(60),
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: toBaseDesignPx(3) },
+        shadowOpacity: toBaseDesignPx(0.2),
+        shadowRadius: toBaseDesignPx(4),
+        elevation: toBaseDesignPx(2),
+      }}
       name="add"
-      type="MEMO_ICONS"
-      size="EXTRA_SMALL"
-      colorDef="WHITE"
+      size={ICON_SIZE.EXTRA_SMALL}
+      color={focused ? colors.GRAY_LIGHT : colors.WHITE}
     />
   ),
 };
@@ -76,7 +93,7 @@ const ClassRoomStack = createStackNavigator(
 
 ClassRoomStack.navigationOptions = {
   tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" type="MEMO_ICONS" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" />,
 };
 
 ClassRoomStack.path = '';
@@ -90,7 +107,7 @@ const ProfileStack = createStackNavigator(
 
 ProfileStack.navigationOptions = {
   tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" type="MEMO_ICONS" />,
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
 };
 
 ProfileStack.path = '';

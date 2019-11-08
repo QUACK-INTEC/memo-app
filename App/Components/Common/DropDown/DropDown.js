@@ -76,21 +76,28 @@ class DropDownComponent extends React.Component {
     const { style, placeholder, options, disabled, containerStyle, hasError, ...rest } = this.props;
     const { value: valueFromState } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
-
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
-        <RNPickerSelect
-          placeholder={{
-            label: placeholder,
-            value: null,
-          }}
-          {...rest}
-          onValueChange={this.handleOptionChange}
-          items={options}
-          disabled={disabled}
-          value={valueFromState}
-        />
+        <View style={styles.inputContainer}>
+          <RNPickerSelect
+            placeholder={{
+              label: placeholder,
+              value: null,
+            }}
+            {...rest}
+            onValueChange={this.handleOptionChange}
+            items={options}
+            style={{
+              inputIOS: [this.getDropDownStyle(), style],
+              inputAndroid: [this.getDropDownStyle(), style],
+            }}
+            disabled={disabled}
+            value={valueFromState}
+            useNativeAndroidPickerStyle={false}
+          />
+          <Text.SemiBold text="▼" style={[styles.triangle]} />
+        </View>
       </View>
     );
   }
@@ -100,6 +107,16 @@ const styles = StyleSheet.create({
   mainView: {
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.GRAY_LIGHT,
+  },
+  inputContainer: {
+    ...spacers.PV_2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  triangle: {
+    color: colors.GRAY,
+    fontSize: toBaseDesignPx(10),
   },
   errorStyle: {
     borderBottomWidth: toBaseDesignPx(2),

@@ -27,7 +27,7 @@ class InfoCard extends React.Component {
           text={title}
           style={[styles.titleStyle, titleStyle]}
           numberOfLines={1}
-          ellipzeModde={'tail'}
+          ellipzeModde="tail"
         />
         {children}
       </TouchableOpacity>

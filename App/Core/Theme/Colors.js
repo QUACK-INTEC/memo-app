@@ -2,7 +2,7 @@ const GREEN_LIGHT = '#60ac80';
 const GREEN_MEDIUM = '#358155';
 const GREEN = '#78ce9c';
 const PURPLE = '#6D3581';
-const PURPLE_LIGHT = '#8B5E8F';
+const PURPLE_LIGHT = 'rgba(109, 53, 129, 0.52)';
 const ORANGE = '#eb9a00';
 const WHITE = '#FFFFFF';
 const BLACK = '#000000';
@@ -10,6 +10,7 @@ const GRAY = '#727272';
 const GRAY_LIGHT = '#d0d0d0';
 const TRANSPARENT = 'transparent';
 const RED = '#EA6D6D';
+const GREEN_OPACITY_LIGHT = 'rgba(120, 180, 145, 0.3)';
 
 // App colors
 const TEXT_TITLE_APP = GRAY_LIGHT;
@@ -31,6 +32,7 @@ const CALENDAR_DATE_SELECTED = 'rgba(96, 172, 128, 0.15)';
 const CALENDAR_DATE_BACKGROUND = 'rgba(96, 172, 128, 0.04)';
 
 export default {
+  GREEN_OPACITY_LIGHT,
   CALENDAR_DATE_BACKGROUND,
   CALENDAR_DATE_SELECTED,
   CALENDAR_DATE_NAME,

@@ -23,7 +23,12 @@ class InfoCard extends React.Component {
     const { children, title, style, titleStyle } = this.props;
     return (
       <TouchableOpacity style={[styles.buttonStyle, style]} onPress={this.handleOnPress}>
-        <Text.SemiBold text={title} style={[styles.titleStyle, titleStyle]} />
+        <Text.SemiBold
+          text={title}
+          style={[styles.titleStyle, titleStyle]}
+          numberOfLines={1}
+          ellipzeModde={'tail'}
+        />
         {children}
       </TouchableOpacity>
     );
@@ -37,12 +42,13 @@ const styles = StyleSheet.create({
     borderWidth: toBaseDesignPx(1),
     alignItems: 'center',
     backgroundColor: colors.WHITE,
+    width: toBaseDesignPx(151),
   },
   titleStyle: {
+    ...fonts.SIZE_XS,
     ...spacers.MT_4,
     ...spacers.ML_10,
     ...spacers.MR_10,
-    ...fonts.SIZE_XL,
     color: colors.GRAY,
   },
 });

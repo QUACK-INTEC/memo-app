@@ -190,7 +190,7 @@ TextInputWrapper.propTypes = {
   containerStyle: ViewPropTypes.style,
   multiline: PropTypes.bool,
   disabled: PropTypes.bool,
-  hasError: PropTypes.bool,
+  hasError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 export default TextInputWrapper;

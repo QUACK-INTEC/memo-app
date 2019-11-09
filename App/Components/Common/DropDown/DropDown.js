@@ -176,7 +176,7 @@ DropDownComponent.propTypes = {
   style: ViewPropTypes.style,
   containerStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
-  hasError: PropTypes.bool,
+  hasError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 export default DropDownComponent;

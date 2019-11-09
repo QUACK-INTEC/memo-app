@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Modal from '../Common/Modal';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
-import { colors, spacers } from '../../Core/Theme';
+import { colors, spacers, toBaseDesignPx } from '../../Core/Theme';
 
 class ModalForm extends React.Component {
   handleOnCloseModal = () => {
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     ...spacers.PA_7,
     flex: 1,
     backgroundColor: colors.WHITE,
-    borderTopEndRadius: 32,
-    borderTopStartRadius: 32,
+    borderTopEndRadius: toBaseDesignPx(32),
+    borderTopStartRadius: toBaseDesignPx(32),
   },
 });
 

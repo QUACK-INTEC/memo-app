@@ -1,19 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import PropTypes from 'prop-types';
 
 import { colors, spacers, fonts, toBaseDesignPx } from '../../Core/Theme';
 import Text from '../Common/Text';
-import SubjectCalendar from '../SubjectCalendar';
 import InLineComponent from '../Common/InLineComponent';
 import Section from '../Common/Section';
-// import ClassInfoCard from '../ClassInfoCard';
 
 class Home extends React.Component {
   renderTodayTitle = () => {
+    const { actualMonth } = this.props;
     return (
       <View>
         <Text.Bold text="Hoy," style={styles.textToday} />
-        <Text.Medium text="Noviembre 2019" style={styles.textMonthActual} />
+        <Text.Medium text={actualMonth} style={styles.textMonthActual} />
       </View>
     );
   };
@@ -23,19 +23,20 @@ class Home extends React.Component {
       <View>
         <InLineComponent>
           <View style={styles.infoSubjectCalendar} />
-          <Text.Light text="clases" />
+          <Text.Light text="clases" style={styles.infoText} />
         </InLineComponent>
         <InLineComponent>
           <View style={styles.infoEventCalendar} />
-          <Text.Light text="Eventos" />
+          <Text.Light text="Eventos" style={styles.infoText} />
         </InLineComponent>
       </View>
     );
   };
 
   render() {
+    const { renderEvents, renderSubjects } = this.props;
     return (
-      <SafeAreaView>
+      <SafeAreaView style={styles.container}>
         <Section>
           <View style={styles.headerContainer}>
             <InLineComponent
@@ -44,26 +45,26 @@ class Home extends React.Component {
               rightChild={this.renderInfoCalendar}
             />
           </View>
-          <View>
-            <SubjectCalendar subjectName="Proyecto final" subjectSchedule="18:00 - 20:00" />
-            <SubjectCalendar subjectName="Proyecto final" subjectSchedule="18:00 - 20:00" />
-            <SubjectCalendar subjectName="Proyecto final" subjectSchedule="18:00 - 20:00" />
-            <SubjectCalendar subjectName="Proyecto final" subjectSchedule="18:00 - 20:00" />
-          </View>
         </Section>
-        <View>
+        <ScrollView style={styles.container}>
+          <Section>{renderEvents}</Section>
           <Section
             title="Clases"
             viewStyle={styles.classesContainer}
             titleStyle={styles.classesTitle}
-          />
-        </View>
+          >
+            {renderSubjects}
+          </Section>
+        </ScrollView>
       </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   textToday: { ...fonts.SIZE_XXXL, color: colors.GRAY },
   textMonthActual: { ...fonts.SIZE_XL, color: colors.GRAY },
   infoSubjectCalendar: {
@@ -86,6 +87,13 @@ const styles = StyleSheet.create({
   },
   classesContainer: { ...spacers.MT_10 },
   classesTitle: { ...fonts.SIZE_XXL, color: colors.GRAY },
+  infoText: { color: colors.GRAY },
 });
+
+Home.propTypes = {
+  renderEvents: PropTypes.func.isRequired,
+  renderSubjects: PropTypes.func.isRequired,
+  actualMonth: PropTypes.string.isRequired,
+};
 
 export default Home;

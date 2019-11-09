@@ -2,7 +2,7 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-
+import Moment from 'moment';
 import { Provider } from 'react-redux';
 import * as Font from 'expo-font';
 
@@ -10,8 +10,15 @@ import AppNavigator from './Navigation/AppNavigator';
 import store from './Redux';
 import LoadingState from './Components/LoadingState';
 
+const LOCALE = {
+  months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Juilio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split(
+    '_'
+  ),
+  weekdaysShort: 'Dom_Lun_Mar_Mie_Jue_Vie_Sab'.split('_'),
+};
 class App extends Component {
   constructor() {
+    Moment.locale('es', LOCALE);
     super();
     this.state = {
       fontLoaded: false,

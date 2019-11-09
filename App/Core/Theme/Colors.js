@@ -11,6 +11,7 @@ const GRAY = '#727272';
 const GRAY_LIGHT = '#d0d0d0';
 const TRANSPARENT = 'transparent';
 const RED = '#EA6D6D';
+const GREEN_OPACITY_LIGHT = 'rgba(120, 180, 145, 0.3)';
 
 // App colors
 const TEXT_TITLE_APP = GRAY_LIGHT;
@@ -32,6 +33,7 @@ const CALENDAR_DATE_SELECTED = 'rgba(96, 172, 128, 0.15)';
 const CALENDAR_DATE_BACKGROUND = 'rgba(96, 172, 128, 0.04)';
 
 export default {
+  GREEN_OPACITY_LIGHT,
   CALENDAR_DATE_BACKGROUND,
   CALENDAR_DATE_SELECTED,
   CALENDAR_DATE_NAME,

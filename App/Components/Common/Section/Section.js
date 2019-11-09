@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   },
   viewStyle: {
     ...spacers.ML_3,
+    ...spacers.MR_3,
   },
 });
 

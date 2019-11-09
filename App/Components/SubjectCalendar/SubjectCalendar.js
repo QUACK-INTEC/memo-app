@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
     borderLeftWidth: toBaseDesignPx(7),
     borderLeftColor: colors.GREEN_LIGHT,
     backgroundColor: 'rgba(120, 180, 145, 0.3)',
-    borderRadius: toBaseDesignPx(5),
+    borderBottomRightRadius: toBaseDesignPx(5),
+    borderTopRightRadius: toBaseDesignPx(5),
   },
   inLineComponentStyle: {
     justifyContent: 'space-between',

@@ -1,9 +1,10 @@
 const GREEN_LIGHT = '#60ac80';
 const GREEN_MEDIUM = '#358155';
 const GREEN = '#78ce9c';
-const PURPLE = '#6D3581';
-const PURPLE_LIGHT = '#8B5E8F';
+const PURPLE = 'rgba(109, 53, 129, 0.88)';
+const PURPLE_LIGHT = 'rgba(109, 53, 129, 0.18)';
 const ORANGE = '#eb9a00';
+const ORANGE_LIGHT = 'rgba(235, 154, 0, 0.26)';
 const WHITE = '#FFFFFF';
 const BLACK = '#000000';
 const GRAY = '#727272';
@@ -59,4 +60,5 @@ export default {
   ERROR,
   TRANSPARENT,
   DISABLED,
+  ORANGE_LIGHT,
 };

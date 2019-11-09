@@ -12,7 +12,7 @@ import Text from '../Text';
 
 class Avatar extends React.Component {
   renderAvatar = () => {
-    const { src, uri, initialsText, style } = this.props;
+    const { src, uri, initialsText, style, textStyle } = this.props;
 
     if (src || uri) {
       return (
@@ -22,7 +22,7 @@ class Avatar extends React.Component {
 
     return (
       <View {...this.props} style={[styles.avatarStyle, style]}>
-        <Text.Medium text={initialsText} style={styles.textStyle} />
+        <Text.Medium text={initialsText} style={[styles.textStyle, textStyle]} />
       </View>
     );
   };
@@ -52,6 +52,7 @@ Avatar.defaultProps = {
   uri: null,
   initialsText: null,
   style: null,
+  textStyle: null,
 };
 
 Avatar.propTypes = {
@@ -59,6 +60,7 @@ Avatar.propTypes = {
   uri: PropTypes.string,
   initialsText: PropTypes.string,
   style: ViewPropTypes.style,
+  textStyle: PropTypes.shape({}),
 };
 
 export default Avatar;

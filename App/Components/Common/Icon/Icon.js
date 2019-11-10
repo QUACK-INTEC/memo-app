@@ -18,6 +18,9 @@ class Icon extends Component {
     const { size } = this.props;
 
     switch (size) {
+      case ICON_SIZE.TINY:
+        return toBaseDesignPx(24);
+
       case ICON_SIZE.EXTRA_SMALL:
         return toBaseDesignPx(40);
 

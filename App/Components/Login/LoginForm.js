@@ -12,15 +12,13 @@ const validation = objValues => {
   const { email, password } = objValues;
 
   if (!password) {
-    errors.password = 'Required';
-  } else if (password.length < 4) {
-    errors.password = 'Poor password';
+    errors.password = 'Requerido';
   }
 
   if (!email) {
-    errors.email = 'Required';
+    errors.email = 'Requerido';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-    errors.email = 'Invalid email address';
+    errors.email = 'Correo electronico invalido';
   }
 
   return errors;

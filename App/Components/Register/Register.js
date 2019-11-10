@@ -10,30 +10,30 @@ import ImagePicker from '../Common/ImagePicker';
 
 const validation = objValues => {
   const errors = {};
-  const { email, name, lastname, password } = objValues;
+  const { email, firstName, lastName, password } = objValues;
 
-  if (!name) {
-    errors.name = 'Required';
-  } else if (!/^[a-zA-Z]+$/.test(name)) {
-    errors.name = 'Invalid name';
+  if (!firstName) {
+    errors.firstName = 'Campo obligatorio';
+  } else if (!/^[a-zA-Z]+$/.test(firstName)) {
+    errors.firstName = 'Nombre invalido';
   }
 
-  if (!lastname) {
-    errors.lastname = 'Required';
-  } else if (!/^[a-zA-Z]+$/.test(lastname)) {
-    errors.lastname = 'Invalid lastname';
+  if (!lastName) {
+    errors.lastName = 'Campo obligatorio';
+  } else if (!/^[a-zA-Z]+$/.test(lastName)) {
+    errors.lastName = 'Apellido invalido';
   }
 
   if (!password) {
-    errors.password = 'Required';
+    errors.password = 'Campo obligatorio';
   } else if (password.length < 4) {
-    errors.password = 'Poor password';
+    errors.password = 'Contraseña muy leve';
   }
 
   if (!email) {
-    errors.email = 'Required';
+    errors.email = 'Campo obligatorio';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-    errors.email = 'Invalid email address';
+    errors.email = 'Correo electronico invalido';
   }
 
   return errors;
@@ -50,15 +50,15 @@ class Register extends Component {
     onBack();
   };
 
+  // TODO: add field for profileImage when backend support image
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
     return {
       email: null,
-      lastname: null,
+      firstName: null,
+      lastName: null,
       password: null,
-      name: null,
-      profileImage: null,
       ...initialsValue,
     };
   };
@@ -76,14 +76,14 @@ class Register extends Component {
           <View>
             <FormikInput
               label="Nombre"
-              name="name"
+              name="firstName"
               containerStyle={styles.input}
               enablesReturnKeyAutomatically
               returnKeyType="done"
             />
             <FormikInput
               label="Apellido"
-              name="lastname"
+              name="lastName"
               containerStyle={styles.input}
               returnKeyType="done"
             />

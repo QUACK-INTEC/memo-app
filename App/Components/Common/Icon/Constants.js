@@ -1,4 +1,5 @@
 const ICON_SIZE = {
+  TINY: 'Tiny',
   EXTRA_SMALL: 'ExtraSmall',
   SMALL: 'Small',
   MEDIUM: 'Medium',

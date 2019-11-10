@@ -47,13 +47,13 @@ class Home extends React.Component {
           </View>
         </Section>
         <ScrollView style={styles.container}>
-          <Section>{renderEvents}</Section>
+          <Section>{renderEvents()}</Section>
           <Section
             title="Clases"
             viewStyle={styles.classesContainer}
             titleStyle={styles.classesTitle}
           >
-            {renderSubjects}
+            {renderSubjects()}
           </Section>
         </ScrollView>
       </SafeAreaView>

@@ -21,14 +21,34 @@ class Link extends React.Component {
     return null;
   };
 
+  renderLeftIcon() {
+    const { leftMemoSrc, leftMemoUri } = this.props;
+
+    if (leftMemoSrc || leftMemoUri) {
+      return <ImageWrapper memoSrc={leftMemoSrc} uri={leftMemoUri} />;
+    }
+
+    return null;
+  }
+
+  renderRightIcon() {
+    const { rightMemoSrc, rightMemoUri } = this.props;
+
+    if (rightMemoSrc || rightMemoUri) {
+      return <ImageWrapper memoSrc={rightMemoSrc} uri={rightMemoUri} />;
+    }
+
+    return null;
+  }
+
   render() {
-    const { text, textStyle, icon } = this.props;
+    const { text, textStyle } = this.props;
     return (
       <TouchableOpacity onPress={this.handleOnPress}>
         <InLineComponent>
-          <ImageWrapper src={icon} memoSrc={icon} />
+          {this.renderLeftIcon()}
           <Text.Black style={[styles.textStyle, textStyle]} text={text} />
-          <ImageWrapper src={icon} />
+          {this.renderRightIcon()}
         </InLineComponent>
       </TouchableOpacity>
     );
@@ -40,17 +60,22 @@ const styles = StyleSheet.create({
 });
 
 Link.defaultProps = {
-  text: null,
   textStyle: null,
+  leftMemoSrc: null,
+  leftMemoUri: null,
+  rightMemoSrc: null,
+  rightMemoUri: null,
   disabled: null,
-  icon: null,
   onPress: () => null,
 };
 
 Link.propTypes = {
-  text: PropTypes.string,
+  text: PropTypes.string.isRequired,
   textStyle: ViewPropTypes.style,
-  icon: PropTypes.string,
+  leftMemoSrc: PropTypes.string,
+  leftMemoUri: PropTypes.string,
+  rightMemoSrc: PropTypes.string,
+  rightMemoUri: PropTypes.string,
   disabled: PropTypes.bool,
   onPress: PropTypes.func,
 };

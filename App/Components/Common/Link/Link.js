@@ -22,20 +22,20 @@ class Link extends React.Component {
   };
 
   renderLeftIcon() {
-    const { leftMemoSrc, leftMemoUri } = this.props;
+    const { leftMemoSrc, leftUri } = this.props;
 
-    if (leftMemoSrc || leftMemoUri) {
-      return <ImageWrapper memoSrc={leftMemoSrc} uri={leftMemoUri} />;
+    if (leftMemoSrc || leftUri) {
+      return <ImageWrapper memoSrc={leftMemoSrc} uri={leftUri} />;
     }
 
     return null;
   }
 
   renderRightIcon() {
-    const { rightMemoSrc, rightMemoUri } = this.props;
+    const { rightMemoSrc, rightUri } = this.props;
 
-    if (rightMemoSrc || rightMemoUri) {
-      return <ImageWrapper memoSrc={rightMemoSrc} uri={rightMemoUri} />;
+    if (rightMemoSrc || rightUri) {
+      return <ImageWrapper memoSrc={rightMemoSrc} uri={rightUri} />;
     }
 
     return null;
@@ -45,10 +45,8 @@ class Link extends React.Component {
     const { text, textStyle } = this.props;
     return (
       <TouchableOpacity onPress={this.handleOnPress}>
-        <InLineComponent>
-          {this.renderLeftIcon()}
+        <InLineComponent leftChild={this.renderLeftIcon} rightChild={this.renderRightIcon}>
           <Text.Black style={[styles.textStyle, textStyle]} text={text} />
-          {this.renderRightIcon()}
         </InLineComponent>
       </TouchableOpacity>
     );
@@ -62,9 +60,9 @@ const styles = StyleSheet.create({
 Link.defaultProps = {
   textStyle: null,
   leftMemoSrc: null,
-  leftMemoUri: null,
+  leftUri: null,
   rightMemoSrc: null,
-  rightMemoUri: null,
+  rightUri: null,
   disabled: null,
   onPress: () => null,
 };
@@ -72,10 +70,10 @@ Link.defaultProps = {
 Link.propTypes = {
   text: PropTypes.string.isRequired,
   textStyle: ViewPropTypes.style,
-  leftMemoSrc: PropTypes.string,
-  leftMemoUri: PropTypes.string,
-  rightMemoSrc: PropTypes.string,
-  rightMemoUri: PropTypes.string,
+  leftMemoSrc: PropTypes.number,
+  leftUri: PropTypes.string,
+  rightMemoSrc: PropTypes.number,
+  rightUri: PropTypes.string,
   disabled: PropTypes.bool,
   onPress: PropTypes.func,
 };

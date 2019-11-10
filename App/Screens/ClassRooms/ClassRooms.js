@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 
-import Text from '../../Components/Common/Text';
+import ClassesComponent from '../../Components/Classes';
 
-const ClassRooms = () => (
-  <View style={styles.container}>
-    <Text.Bold text="CLASS ROOMS" />
-  </View>
-);
+class ClassRooms extends React.Component {
+  renderClasses = () => {
+    // TODO: List all my classes when backend is ready
+    return null;
+  };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
+  render() {
+    return <ClassesComponent renderClasses={this.renderClasses} />;
+  }
+}
 
 export default ClassRooms;

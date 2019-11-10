@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { colors, fonts } from '../../../Core/Theme';
 
 // Common
+import ImageWrapper from '../ImageWrapper';
+import InLineComponent from '../InLineComponent';
 import Text from '../Text';
 
 class Link extends React.Component {
@@ -20,10 +22,14 @@ class Link extends React.Component {
   };
 
   render() {
-    const { text, textStyle } = this.props;
+    const { text, textStyle, icon } = this.props;
     return (
       <TouchableOpacity onPress={this.handleOnPress}>
-        <Text.Black style={[styles.textStyle, textStyle]} text={text} />
+        <InLineComponent>
+          <ImageWrapper src={icon} memoSrc={icon} />
+          <Text.Black style={[styles.textStyle, textStyle]} text={text} />
+          <ImageWrapper src={icon} />
+        </InLineComponent>
       </TouchableOpacity>
     );
   }
@@ -37,12 +43,14 @@ Link.defaultProps = {
   text: null,
   textStyle: null,
   disabled: null,
+  icon: null,
   onPress: () => null,
 };
 
 Link.propTypes = {
   text: PropTypes.string,
   textStyle: ViewPropTypes.style,
+  icon: PropTypes.string,
   disabled: PropTypes.bool,
   onPress: PropTypes.func,
 };

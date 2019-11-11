@@ -8,8 +8,8 @@ class InLineComponent extends React.Component {
     return (
       <View style={[styles.viewStyle, viewStyle]}>
         {leftChild()}
-        {rightChild()}
         {children}
+        {rightChild()}
       </View>
     );
   };

@@ -2,19 +2,29 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import { createPromise } from 'redux-promise-middleware';
 import reduxThunk from 'redux-thunk';
-import Constants from 'expo-constants';
+
+// import Constants from 'expo-constants';
 // import Config from 'react-native-config';
-import { persistStore } from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
+
+import { AsyncStorage } from 'react-native';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 // Reducers
 import userManagerReducer, { actionTypes as actionTypesUserManager } from './Common/UserManager';
 
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+};
+
 const rootReducer = combineReducers({
   userManager: userManagerReducer,
 });
 
-const ipMatch = Constants.manifest.hostUri.match(/([0-9.]+):/)[1];
+const persistedReducer = persistReducer(persistConfig, fnRootReducerInterceptor);
+
+const ipMatch = false; // Constants.manifest.hostUri.match(/([0-9.]+):/)[1];
 
 // eslint-disable-next-line no-undef
 const composeEnhancers = composeWithDevTools({
@@ -30,13 +40,16 @@ function fnRootReducerInterceptor(objState, objAction) {
 }
 
 const store = createStore(
-  fnRootReducerInterceptor,
+  persistedReducer,
+  // fnRootReducerInterceptor,
   composeEnhancers(applyMiddleware(reduxThunk, createPromise()))
 );
 
-const startWithPersistStore = fnCallback => {
+const Persistor = persistStore(store);
+
+/* const startWithPersistStore = fnCallback => {
   persistStore(store, null, fnCallback);
   return store;
-};
+}; */
 
-export { store as default, startWithPersistStore };
+export { store as default, Persistor };

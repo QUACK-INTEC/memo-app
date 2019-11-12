@@ -6,8 +6,9 @@ import Moment from 'moment';
 import { Provider } from 'react-redux';
 import * as Font from 'expo-font';
 
+import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from './Navigation/AppNavigator';
-import store from './Redux';
+import store, { Persistor } from './Redux';
 import LoadingState from './Components/LoadingState';
 
 const LOCALE = {
@@ -60,10 +61,11 @@ class App extends Component {
         </View>
       );
     }
-
     return (
       <Provider store={store}>
-        <AppNavigator />
+        <PersistGate persistor={Persistor} loading={<LoadingState.Medium />}>
+          <AppNavigator />
+        </PersistGate>
       </Provider>
     );
   }

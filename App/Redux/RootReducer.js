@@ -2,8 +2,8 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import { createPromise } from 'redux-promise-middleware';
 import reduxThunk from 'redux-thunk';
+import Constants from 'expo-constants';
 
-// import Constants from 'expo-constants';
 // import Config from 'react-native-config';
 import { persistStore, persistReducer } from 'redux-persist';
 
@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, fnRootReducerInterceptor);
 
-const ipMatch = false; // Constants.manifest.hostUri.match(/([0-9.]+):/)[1];
+const ipMatch = Constants.manifest.hostUri.match(/([0-9.]+):/)[1];
 
 // eslint-disable-next-line no-undef
 const composeEnhancers = composeWithDevTools({

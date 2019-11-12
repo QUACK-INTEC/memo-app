@@ -7,6 +7,8 @@ import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 
+const UNIVERSITYS = [{ label: 'INTEC', value: '1' }];
+
 const validation = objValues => {
   const errors = {};
   const { user, password, university } = objValues;
@@ -31,11 +33,6 @@ class SyncForm extends Component {
     onSubmit(objValues);
   };
 
-  handleRegister = () => {
-    const { onRegister } = this.props;
-    onRegister();
-  };
-
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
@@ -54,7 +51,7 @@ class SyncForm extends Component {
           <View>
             <FormikInput
               type="dropdown"
-              options={[{ label: 'INTEC', value: '1' }]}
+              options={UNIVERSITYS}
               placeholder="Seleccione su universidad"
               label="Universidad"
               name="university"
@@ -128,13 +125,11 @@ const styles = StyleSheet.create({
 
 SyncForm.defaultProps = {
   onSubmit: () => null,
-  onRegister: () => null,
   initialsValue: null,
 };
 
 SyncForm.propTypes = {
   onSubmit: PropTypes.func,
-  onRegister: PropTypes.func,
   initialsValue: PropTypes.shape({
     user: PropTypes.string,
     password: PropTypes.string,

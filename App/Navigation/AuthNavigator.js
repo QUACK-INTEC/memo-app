@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
 // Screens
-import LoginScreen from '../Screens/SyncAccount';
+import LoginScreen from '../Screens/Login';
 import RegisterScreen from '../Screens/Register';
 
 const config = Platform.select({

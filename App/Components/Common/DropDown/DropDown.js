@@ -88,15 +88,10 @@ class DropDownComponent extends React.Component {
             {...rest}
             onValueChange={this.handleOptionChange}
             items={options}
-            style={{
-              inputIOS: [this.getDropDownStyle(), style],
-              inputAndroid: [this.getDropDownStyle(), style],
-            }}
             disabled={disabled}
             value={valueFromState}
             useNativeAndroidPickerStyle={false}
           />
-          <Text.SemiBold text="▼" style={[styles.triangle]} />
         </View>
       </View>
     );
@@ -110,9 +105,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     ...spacers.PV_2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   triangle: {
     color: colors.GRAY,

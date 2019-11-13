@@ -71,6 +71,15 @@ class LoginForm extends Component {
               returnKeyType="done"
               secureTextEntry
             />
+            <FormikInput
+              type="dropdown"
+              options={[{ label: 'test', value: '1' }]}
+              label="Contraseña"
+              name="password2"
+              containerStyle={styles.input}
+              returnKeyType="done"
+              secureTextEntry
+            />
           </View>
           <View style={styles.buttonsContainer}>
             <Button

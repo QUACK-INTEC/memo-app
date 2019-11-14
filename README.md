@@ -65,12 +65,22 @@ $ git clone
 $ yarn install
 ```
 
-## Usage
+## **Run Redux Devtools**
 
-1. Run **expo start** inside your React Native project folder:
+1. Need to have install [React Native Debugger](https://github.com/jhen0409/react-native-debugger) app in your machine.
 
-```sh
-$ expo start or yarn start
-```
+2. Then run your app and enable Remote Debug JS.
 
-2. Follow the instructions found on the console screen and your app should connect to the server!
+3. Open React Native Debugger and edit the config file with your port number where is your debugger running in the web browser and save these changes.
+
+   - Look something like this in the config file:
+  ```sh
+    // RNDebugger will open debugger window with the ports when app launched
+    defaultRNPackagerPorts: [YOUR_PORT_NUMBER],
+  ```
+
+4. Close the tab where is your debugger-cli running.
+
+5. Restart the app (React Native Debugger).
+
+6. Then refresh your app in your device.

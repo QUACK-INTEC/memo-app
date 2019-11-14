@@ -6,47 +6,40 @@ import { Formik } from 'formik';
 import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
-import LinkComponent from '../Common/Link';
+
+const UNIVERSITYS = [{ label: 'INTEC', value: '1' }];
 
 const validation = objValues => {
   const errors = {};
-  const { email, password } = objValues;
+  const { user, password, university } = objValues;
 
+  if (!university) {
+    errors.university = 'Requerido';
+  }
   if (!password) {
     errors.password = 'Requerido';
   }
 
-  if (!email) {
-    errors.email = 'Requerido';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-    errors.email = 'Correo electronico invalido';
+  if (!user) {
+    errors.user = 'Requerido';
   }
 
   return errors;
 };
 
-class LoginForm extends Component {
+class SyncForm extends Component {
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
-  };
-
-  handleRegister = () => {
-    const { onRegister } = this.props;
-    onRegister();
-  };
-
-  handlePasswordRecovery = () => {
-    const { onPasswordRecovery } = this.props;
-    onPasswordRecovery();
   };
 
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
     return {
-      email: null,
+      user: null,
       password: null,
+      university: null,
       ...initialsValue,
     };
   };
@@ -57,8 +50,18 @@ class LoginForm extends Component {
         <KeyboardAvoidingView behavior="padding">
           <View>
             <FormikInput
-              label="Email"
-              name="email"
+              type="dropdown"
+              options={UNIVERSITYS}
+              placeholder="Seleccione su universidad"
+              label="Universidad"
+              name="university"
+              containerStyle={styles.input}
+              enablesReturnKeyAutomatically
+              returnKeyType="next"
+            />
+            <FormikInput
+              label="Usuario"
+              name="user"
               keyboardType="email-address"
               containerStyle={styles.input}
               enablesReturnKeyAutomatically
@@ -74,15 +77,11 @@ class LoginForm extends Component {
           </View>
           <View style={styles.buttonsContainer}>
             <Button
-              label="Entrar"
+              label="Sincronizar mi cuenta"
               containerStyle={styles.createAccountButton}
               onPress={objForm.handleSubmit}
               disabled={!objForm.isValid}
             />
-            <Button label="Registrarte" secondary onPress={this.handleRegister} />
-            <View style={styles.linkContainer}>
-              <LinkComponent text="Recuperar Contraseña" onPress={this.handlePasswordRecovery} />
-            </View>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -103,8 +102,9 @@ class LoginForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...spacers.MA_5,
+    ...spacers.MA_10,
     flex: 1,
+    justifyContent: 'center',
   },
   input: {
     ...spacers.MT_7,
@@ -121,27 +121,20 @@ const styles = StyleSheet.create({
   createAccountButton: {
     ...spacers.MB_7,
   },
-  linkContainer: {
-    ...spacers.MT_5,
-    alignItems: 'center',
-  },
 });
 
-LoginForm.defaultProps = {
+SyncForm.defaultProps = {
   onSubmit: () => null,
-  onRegister: () => null,
-  onPasswordRecovery: () => null,
   initialsValue: null,
 };
 
-LoginForm.propTypes = {
+SyncForm.propTypes = {
   onSubmit: PropTypes.func,
-  onRegister: PropTypes.func,
-  onPasswordRecovery: PropTypes.func,
   initialsValue: PropTypes.shape({
-    email: PropTypes.string,
+    user: PropTypes.string,
     password: PropTypes.string,
+    university: PropTypes.string,
   }),
 };
 
-export default LoginForm;
+export default SyncForm;

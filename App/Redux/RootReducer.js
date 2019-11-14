@@ -1,8 +1,7 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'remote-redux-devtools';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { createPromise } from 'redux-promise-middleware';
 import reduxThunk from 'redux-thunk';
-import Constants from 'expo-constants';
 // import Config from 'react-native-config';
 import { persistStore } from 'redux-persist';
 // import AsyncStorage from '@react-native-community/async-storage';
@@ -12,13 +11,6 @@ import userManagerReducer, { actionTypes as actionTypesUserManager } from './Com
 
 const rootReducer = combineReducers({
   userManager: userManagerReducer,
-});
-
-const ipMatch = Constants.manifest.hostUri.match(/([0-9.]+):/)[1];
-
-// eslint-disable-next-line no-undef
-const composeEnhancers = composeWithDevTools({
-  hostname: `${ipMatch ? ipMatch[1] : 'localhost'}:8082`,
 });
 
 function fnRootReducerInterceptor(objState, objAction) {
@@ -31,7 +23,7 @@ function fnRootReducerInterceptor(objState, objAction) {
 
 const store = createStore(
   fnRootReducerInterceptor,
-  composeEnhancers(applyMiddleware(reduxThunk, createPromise()))
+  composeWithDevTools(applyMiddleware(reduxThunk, createPromise()))
 );
 
 const startWithPersistStore = fnCallback => {

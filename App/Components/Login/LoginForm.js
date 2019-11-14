@@ -1,26 +1,25 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView, Text } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 
 import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
+import LinkComponent from '../Common/Link';
 
 const validation = objValues => {
   const errors = {};
   const { email, password } = objValues;
 
   if (!password) {
-    errors.password = 'Required';
-  } else if (password.length < 4) {
-    errors.password = 'Poor password';
+    errors.password = 'Requerido';
   }
 
   if (!email) {
-    errors.email = 'Required';
+    errors.email = 'Requerido';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-    errors.email = 'Invalid email address';
+    errors.email = 'Correo electronico invalido';
   }
 
   return errors;
@@ -35,6 +34,11 @@ class LoginForm extends Component {
   handleRegister = () => {
     const { onRegister } = this.props;
     onRegister();
+  };
+
+  handlePasswordRecovery = () => {
+    const { onPasswordRecovery } = this.props;
+    onPasswordRecovery();
   };
 
   getInitialsValue = () => {
@@ -76,7 +80,9 @@ class LoginForm extends Component {
               disabled={!objForm.isValid}
             />
             <Button label="Registrarte" secondary onPress={this.handleRegister} />
-            <Text>Recuperar Contraseña</Text>
+            <View style={styles.linkContainer}>
+              <LinkComponent text="Recuperar Contraseña" onPress={this.handlePasswordRecovery} />
+            </View>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -97,7 +103,7 @@ class LoginForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...spacers.MA_10,
+    ...spacers.MA_5,
     flex: 1,
   },
   input: {
@@ -115,17 +121,23 @@ const styles = StyleSheet.create({
   createAccountButton: {
     ...spacers.MB_7,
   },
+  linkContainer: {
+    ...spacers.MT_5,
+    alignItems: 'center',
+  },
 });
 
 LoginForm.defaultProps = {
   onSubmit: () => null,
   onRegister: () => null,
+  onPasswordRecovery: () => null,
   initialsValue: null,
 };
 
 LoginForm.propTypes = {
   onSubmit: PropTypes.func,
   onRegister: PropTypes.func,
+  onPasswordRecovery: PropTypes.func,
   initialsValue: PropTypes.shape({
     email: PropTypes.string,
     password: PropTypes.string,

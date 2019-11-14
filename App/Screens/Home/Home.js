@@ -1,16 +1,30 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import Moment from 'moment';
 
-import Text from '../../Components/Common/Text';
+import HomeComponent from '../../Components/Home';
 
-const Home = () => (
-  <View style={styles.container}>
-    <Text.Bold text="home" />
-  </View>
-);
+class Home extends React.Component {
+  renderSubjects = () => {
+    // TODO: Flatlist component with rendering the subjects
 
-const styles = StyleSheet.create({
-  container: { backgroundColor: 'red', flex: 1 },
-});
+    return null;
+  };
+
+  renderEvents = () => {
+    // TODO: Flatlist component with rendering the events
+
+    return null;
+  };
+
+  render() {
+    return (
+      <HomeComponent
+        actualMonth={Moment().format('MMMM YYYY')}
+        renderSubjects={this.renderSubjects}
+        renderEvents={this.renderEvents}
+      />
+    );
+  }
+}
 
 export default Home;

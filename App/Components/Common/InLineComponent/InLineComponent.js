@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 
 class InLineComponent extends React.Component {
   renderInLineComponent = () => {
-    const { leftChild, rightChild, viewStyle } = this.props;
+    const { leftChild, rightChild, viewStyle, children } = this.props;
     return (
       <View style={[styles.viewStyle, viewStyle]}>
         {leftChild()}
+        {children}
         {rightChild()}
       </View>
     );

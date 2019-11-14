@@ -4,11 +4,13 @@ import { ViewPropTypes, StyleSheet } from 'react-native';
 import Lodash from 'lodash';
 import { Field, FastField } from 'formik';
 import TextInput from './TextInput';
+import DropDown from './DropDown';
 
 import { colors } from '../../Core/Theme';
 
 const objInputs = {
   input: TextInput,
+  dropdown: DropDown,
 };
 
 class FormikInput extends Component {

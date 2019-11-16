@@ -38,13 +38,7 @@ class BiButon extends React.Component {
         <TouchableOpacity onPress={this.handleLeftPress} style={styles.flexStyle}>
           <View style={[styles.leftButtonStyle, leftButtonStyle]}>{leftChild()}</View>
         </TouchableOpacity>
-        <View
-          style={{
-            width: toBaseDesignPx(0.7),
-            backgroundColor: divisionColor,
-            height: '100%',
-          }}
-        />
+        <View style={[styles.divisonBarStyle, { backgroundColor: divisionColor }]} />
         <TouchableOpacity onPress={this.handleRightPress} style={styles.flexstyle}>
           <View style={[styles.rightButtonStyle, rightButtonStyle]}>{rightChild()}</View>
         </TouchableOpacity>
@@ -88,6 +82,10 @@ const styles = StyleSheet.create({
   },
   flexStyle: {
     flex: 1,
+  },
+  divisonBarStyle: {
+    width: toBaseDesignPx(0.7),
+    height: '100%',
   },
 });
 

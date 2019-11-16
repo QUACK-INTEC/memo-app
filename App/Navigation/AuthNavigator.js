@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation';
 import LoginScreen from '../Screens/Login';
 import RegisterScreen from '../Screens/Register';
 import RecoverPasswordScreen from '../Screens/RecoverPassword';
+import SyncScreen from '../Screens/SyncAccount';
 
 const config = Platform.select({
   web: { headerMode: 'none' },
@@ -20,6 +21,12 @@ const AuthNavigator = createStackNavigator(
     },
     Register: {
       screen: RegisterScreen,
+    },
+    Sync: {
+      screen: SyncScreen,
+      navigationOptions: () => ({
+        gesturesEnabled: false,
+      }),
     },
     RecoverPassword: {
       screen: RecoverPasswordScreen,

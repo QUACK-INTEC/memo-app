@@ -21,16 +21,16 @@ class Login extends Component {
 
   handleRegister = () => {
     const {
-      navigation: { navigate },
+      navigation: { push },
     } = this.props;
-    navigate('Register');
+    push('Register');
   };
 
   handlePasswordRecovery = () => {
     const {
-      navigation: { navigate },
+      navigation: { push },
     } = this.props;
-    navigate('RecoverPassword');
+    push('RecoverPassword');
   };
 
   render() {

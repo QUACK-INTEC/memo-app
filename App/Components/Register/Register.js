@@ -7,6 +7,7 @@ import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import ImagePicker from '../Common/ImagePicker';
+import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
 const validation = objValues => {
   const errors = {};
@@ -67,6 +68,7 @@ class Register extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView behavior="padding">
+          {/* <Icon type={ICON_TYPE.FONT_AWESOME}/> */}
           <ImagePicker
             style={styles.imagePicker}
             onChangeImage={strImageUri => {
@@ -102,6 +104,13 @@ class Register extends Component {
               returnKeyType="done"
               secureTextEntry
             />
+            <FormikInput
+              label="Confirmar contraseña"
+              name="passwordVerify"
+              containerStyle={styles.input}
+              returnKeyType="done"
+              secureTextEntry
+            />
           </View>
 
           <View style={styles.buttonsContainer}>
@@ -111,11 +120,11 @@ class Register extends Component {
               onPress={objForm.handleSubmit}
               disabled={!objForm.isValid}
             />
-            <Button
+            {/* <Button
               label="Ya tengo una cuenta creada!"
               secondary
               onPress={this.handleBackToLogin}
-            />
+            /> */}
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>

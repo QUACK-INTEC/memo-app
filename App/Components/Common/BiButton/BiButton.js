@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
-import { toBaseDesignPx } from '../../../Core/Theme';
+import { toBaseDesignPx, colors } from '../../../Core/Theme';
 
 // Common
 import InLineComponent from '../InLineComponent';
@@ -29,16 +29,47 @@ class BiButon extends React.Component {
     return null;
   };
 
+  renderLeftChild = () => {
+    const { leftChild } = this.props;
+
+    return (
+      <TouchableOpacity
+        onPress={this.handleLeftPress}
+        style={{
+          flex: 1,
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center' }}>
+          {leftChild()}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  renderRightChild = () => {
+    const { rightChild } = this.props;
+
+    return (
+      <TouchableOpacity onPress={this.handleRightPress} style={{ flex: 1 }}>
+        {rightChild(styles.rightButtonStyle)}
+      </TouchableOpacity>
+    );
+  };
+
   render() {
-    const { leftChild, rightChild } = this.props;
+    const {  divisionBarColor } = this.props;
+    const divisionColor = divisionBarColor || colors.GRAY_LIGHT;
     return (
       <InLineComponent viewStyle={styles.inLineComponentStyle}>
-        <TouchableOpacity onPress={this.handleLeftPress}>
-          {leftChild(styles.leftButtonStyle)}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.handleRightPress}>
-          <View style={styles.rightButtonStyle}>{rightChild(styles.rightButtonStyle)}</View>
-        </TouchableOpacity>
+        {this.renderLeftChild()}
+        <View
+          style={{
+            width: toBaseDesignPx(0.7),
+            backgroundColor: divisionColor,
+            height: '100%',
+          }}
+        />
+        {this.renderRightChild()}
       </InLineComponent>
     );
   }
@@ -59,7 +90,8 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 1,
     borderColor: 'rgba(0,0,0,0.11)',
-    borderWidth: 1,
+    borderWidth: toBaseDesignPx(0.5),
+    overflow: 'hidden',
   },
   leftButtonStyle: {
     borderRightColor: 'rgba(103,103,103,0.47)',

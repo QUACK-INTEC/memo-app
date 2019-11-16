@@ -5,10 +5,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // Theme
-import { colors, spacers, fonts } from '../../Core/Theme';
+import { colors, spacers, fonts, toBaseDesignPx } from '../../Core/Theme';
 
 // Common
 import ImagePicker from '../../Components/Common/ImagePicker';
+import Text from '../../Components/Common/Text';
+import BiButton from '../../Components/Common/BiButton';
+import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
@@ -29,22 +32,112 @@ class Playground extends Component {
     setToken(token);
   };
 
+  leftButton = defaultStyle => {
+    return (
+      <View
+        style={{
+          backgroundColor: colors.GREEN,
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}
+      >
+        <Icon
+          type={ICON_TYPE.FONT_AWESOME}
+          size={ICON_SIZE.TINY}
+          name="chevron-down"
+          color={colors.WHITE}
+        />
+      </View>
+    );
+  };
+
+  leftText = defaultStyle => {
+    return (
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Text.Medium
+          text="global"
+          style={{
+            color: colors.PURPLE_LIGHT,
+          }}
+        />
+      </View>
+    );
+  };
+
+  rightButton = defaultStyle => {
+    return (
+      <View
+        style={{
+          backgroundColor: colors.GREEN,
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}
+      >
+        <Icon
+          type={ICON_TYPE.FONT_AWESOME}
+          size={ICON_SIZE.TINY}
+          name="chevron-up"
+          color={colors.WHITE}
+        />
+      </View>
+    );
+  };
+
+  rightText = defaultStyle => {
+    return (
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Text.Medium
+          text="privado"
+          style={{
+            color: colors.ORANGE_LIGHT,
+          }}
+        />
+      </View>
+    );
+  };
+
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <Button title="Press me" onPress={this.onPressButton} />
         <ImagePicker />
+        <BiButton
+          // containerBackgoundColor={colors.GREEN}
+          leftChild={this.leftButton}
+          rightChild={this.rightButton}
+          onLeftPress={() => alert('left')}
+          onRightPress={() => alert('right')}
+        />
+        <View style={{ height: toBaseDesignPx(10) }} />
+        <BiButton
+          leftChild={this.leftText}
+          rightChild={this.rightText}
+          onLeftPress={() => alert('left')}
+          onRightPress={() => alert('right')}
+        />
+        <View style={styles.container}>
+          <View style={styles.buttonContainer}>
+            <Text.Medium text="shadow Applied" style={styles.textStyle} />
+          </View>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.GREEN_LIGHT,
-    flex: 1,
-    ...spacers.MA_9,
-  },
   boldXSText: {
     fontFamily: 'poppins-bold',
     color: 'blue',
@@ -86,6 +179,28 @@ const styles = StyleSheet.create({
     color: 'blue',
     ...fonts.BOLD,
     ...fonts.SIZE_XXXL,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  textStyle: {
+    color: '#FFFFFF',
+  },
+  buttonContainer: {
+    backgroundColor: '#2E9298',
+    borderRadius: 10,
+    padding: 10,
+    // shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 });
 

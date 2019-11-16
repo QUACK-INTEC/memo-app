@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -74,10 +74,10 @@ class SyncAccount extends Component {
     const { isLoading } = this.state;
     const { initialsValue } = this.props;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <LoadingState.Modal isVisible={isLoading} />
         <SyncComponent onSubmit={this.handleSubmit} initialsValue={initialsValue} />
-      </View>
+      </SafeAreaView>
     );
   }
 }

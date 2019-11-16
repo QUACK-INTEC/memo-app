@@ -24,6 +24,9 @@ const AuthNavigator = createStackNavigator(
     },
     Sync: {
       screen: SyncScreen,
+      navigationOptions: () => ({
+        gesturesEnabled: false,
+      }),
     },
     RecoverPassword: {
       screen: RecoverPasswordScreen,

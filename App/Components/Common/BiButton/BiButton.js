@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
@@ -29,39 +29,15 @@ class BiButon extends React.Component {
     return null;
   };
 
-  renderLeftChild = () => {
-    const { leftChild } = this.props;
-
-    return (
-      <TouchableOpacity
-        onPress={this.handleLeftPress}
-        style={{
-          flex: 1,
-        }}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center' }}>
-          {leftChild()}
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  renderRightChild = () => {
-    const { rightChild } = this.props;
-
-    return (
-      <TouchableOpacity onPress={this.handleRightPress} style={{ flex: 1 }}>
-        {rightChild(styles.rightButtonStyle)}
-      </TouchableOpacity>
-    );
-  };
-
   render() {
-    const {  divisionBarColor } = this.props;
+    const { divisionBarColor } = this.props;
     const divisionColor = divisionBarColor || colors.GRAY_LIGHT;
+    const { leftChild, rightChild, leftButtonStyle, rightButtonStyle } = this.props;
     return (
       <InLineComponent viewStyle={styles.inLineComponentStyle}>
-        {this.renderLeftChild()}
+        <TouchableOpacity onPress={this.handleLeftPress} style={styles.flexStyle}>
+          <View style={[styles.leftButtonStyle, leftButtonStyle]}>{leftChild()}</View>
+        </TouchableOpacity>
         <View
           style={{
             width: toBaseDesignPx(0.7),
@@ -69,7 +45,9 @@ class BiButon extends React.Component {
             height: '100%',
           }}
         />
-        {this.renderRightChild()}
+        <TouchableOpacity onPress={this.handleRightPress} style={styles.flexstyle}>
+          <View style={[styles.rightButtonStyle, rightButtonStyle]}>{rightChild()}</View>
+        </TouchableOpacity>
       </InLineComponent>
     );
   }
@@ -83,31 +61,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: {
-      width: 0,
-      height: 3,
+      width: toBaseDesignPx(0),
+      height: toBaseDesignPx(3),
     },
-    shadowOpacity: 0.11,
-    shadowRadius: 6,
-    elevation: 1,
-    borderColor: 'rgba(0,0,0,0.11)',
-    borderWidth: toBaseDesignPx(0.5),
-    overflow: 'hidden',
+    shadowRadius: toBaseDesignPx(6),
+    shadowOpacity: toBaseDesignPx(0.11),
+    elevation: toBaseDesignPx(1),
   },
   leftButtonStyle: {
-    borderRightColor: 'rgba(103,103,103,0.47)',
-    borderRightWidth: toBaseDesignPx(0.5),
     width: toBaseDesignPx(82.7),
     height: toBaseDesignPx(44.5),
     borderTopLeftRadius: toBaseDesignPx(11.5),
     borderBottomLeftRadius: toBaseDesignPx(11.5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
   rightButtonStyle: {
-    borderLeftColor: 'rgba(103,103,103,0.47)',
-    borderLeftWidth: toBaseDesignPx(0.5),
     width: toBaseDesignPx(82.7),
     height: toBaseDesignPx(44.5),
     borderTopRightRadius: toBaseDesignPx(11.5),
     borderBottomRightRadius: toBaseDesignPx(11.5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  flexStyle: {
+    flex: 1,
   },
 });
 
@@ -119,6 +99,9 @@ BiButon.defaultProps = {
   leftDisabled: false,
   leftChild: () => null,
   rightChild: () => null,
+  rightButtonStyle: null,
+  leftButtonStyle: null,
+  divisionBarColor: null,
 };
 
 BiButon.propTypes = {
@@ -129,6 +112,9 @@ BiButon.propTypes = {
   leftDisabled: PropTypes.bool,
   leftChild: PropTypes.func,
   rightChild: PropTypes.func,
+  rightButtonStyle: ViewPropTypes.style,
+  leftButtonStyle: ViewPropTypes.style,
+  divisionBarColor: PropTypes.string,
 };
 
 export default BiButon;

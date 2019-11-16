@@ -46,7 +46,7 @@ function Logger(objMessages, objInternalOptions) {
 
   const error = objOption => {
     const errorMessage = getMessage(objOption);
-
+    console.log({ Error: objOption });
     if (errorMessage && !objOption.skipFeedback) {
       if (objInternalOptions.errorMethod) {
         return objInternalOptions.errorMethod({

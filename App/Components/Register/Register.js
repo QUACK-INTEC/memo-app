@@ -12,7 +12,7 @@ import Link from '../Common/Link';
 
 const validation = objValues => {
   const errors = {};
-  const { email, firstName, lastName, password } = objValues;
+  const { email, firstName, lastName, password, passwordVerify } = objValues;
 
   if (!firstName) {
     errors.firstName = 'Campo obligatorio';
@@ -30,6 +30,12 @@ const validation = objValues => {
     errors.password = 'Campo obligatorio';
   } else if (password.length < 4) {
     errors.password = 'Contraseña muy leve';
+  }
+
+  if (!passwordVerify) {
+    errors.passwordVerify = '*';
+  } else if (passwordVerify !== password) {
+    errors.passwordVerify = '*';
   }
 
   if (!email) {

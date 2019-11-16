@@ -60,9 +60,9 @@ class SubjectPostRecent extends React.Component {
 
 const styles = StyleSheet.create({
   inLineContainer: { justifyContent: 'space-between' },
-  dateCreatedText: { ...fonts.SIZE_XS, ...spacers.MR_8, color: colors.GRAY },
+  dateCreatedText: { ...fonts.SIZE_XXS, ...spacers.MR_8, color: colors.GRAY },
   containerDateInfo: { flexDirection: 'row', alignItems: 'center' },
-  userPostText: { ...fonts.SIZE_XS, color: colors.GRAY, width: toBaseDesignPx(198) },
+  userPostText: { ...fonts.SIZE_XXS, color: colors.GRAY, width: toBaseDesignPx(198) },
   postTitleText: { ...fonts.SIZE_L, color: colors.GRAY, width: toBaseDesignPx(218) },
 });
 

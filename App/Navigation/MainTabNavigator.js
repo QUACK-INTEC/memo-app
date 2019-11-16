@@ -7,11 +7,15 @@ import TabBarIcon from '../Components/TabBar/TabBarIcon';
 import { ICON_SIZE } from '../Components/Common/Icon';
 import { toBaseDesignPx, colors, spacers } from '../Core/Theme';
 
+// Screens root
 import Playground from '../Screens/Playground';
 import HomeScreen from '../Screens/Home';
 import CalendarScreen from '../Screens/Calendar';
 import ClassRoomScreen from '../Screens/ClassRooms';
 import ProfileScreen from '../Screens/Profile';
+
+// Screens
+import ClassHubScreen from '../Screens/ClassHub';
 
 const config = Platform.select({
   web: { headerMode: 'none' },
@@ -87,6 +91,7 @@ AddStack.path = '';
 const ClassRoomStack = createStackNavigator(
   {
     Clases: ClassRoomScreen,
+    ClassHub: ClassHubScreen,
   },
   config
 );

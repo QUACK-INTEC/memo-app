@@ -43,16 +43,44 @@ class Icon extends Component {
 
     switch (type) {
       case ICON_TYPE.FONT_AWESOME:
-        return <FontAwesome {...this.props} size={this.getSize()} />;
+        return (
+          <FontAwesome.Button
+            {...this.props}
+            size={this.getSize()}
+            backgroundColor="transparent"
+            underlayColor="transparent"
+          />
+        );
 
       case ICON_TYPE.GLYPH_ICONS:
-        return <Glyphicons {...this.props} size={this.getSize()} />;
+        return (
+          <Glyphicons
+            {...this.props}
+            size={this.getSize()}
+            backgroundColor="transparent"
+            underlayColor="transparent"
+          />
+        );
 
       case ICON_TYPE.MEMO_ICONS:
-        return <MemoIcon {...this.props} size={this.getSize()} />;
+        return (
+          <MemoIcon
+            {...this.props}
+            size={this.getSize()}
+            backgroundColor="transparent"
+            underlayColor="transparent"
+          />
+        );
 
       default:
-        return <Ionicons {...this.props} size={this.getSize()} />;
+        return (
+          <Ionicons.Button
+            {...this.props}
+            size={this.getSize()}
+            backgroundColor="transparent"
+            underlayColor="transparent"
+          />
+        );
     }
   };
 

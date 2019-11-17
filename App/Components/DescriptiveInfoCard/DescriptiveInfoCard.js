@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ViewPropTypes } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -53,7 +53,7 @@ DescriptiveInfoCard.propTypes = {
   disabled: PropTypes.bool,
   titleStyle: PropTypes.string,
   subtitle: PropTypes.string,
-  subtitleStyle: ViewPropTypes.style,
+  subtitleStyle: PropTypes.shape({}),
 };
 
 export default DescriptiveInfoCard;

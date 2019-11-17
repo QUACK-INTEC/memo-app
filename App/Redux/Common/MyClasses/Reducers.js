@@ -1,5 +1,7 @@
 import typeToReducer from 'type-to-reducer';
 import Lodash from 'lodash';
+import { normalize, schema } from 'normalizr';
+
 import * as types from './ActionTypes';
 
 const initialState = {
@@ -8,10 +10,14 @@ const initialState = {
 
 // SET_MY_CLASSES
 const onSetMyClasses = (state, action) => {
-  const listMyClasses = Lodash.get(action, ['payload'], []);
+  const listClassesPayload = Lodash.get(action, ['payload'], []);
+  const classesSchema = new schema.Entity('classes', {}, { idAttribute: 'id' });
+  const listClasses = new schema.Array(classesSchema);
+  const listClassesNormalized = normalize(listClassesPayload, listClasses);
+
   return {
     ...state,
-    classes: listMyClasses,
+    classes: listClassesNormalized,
   };
 };
 

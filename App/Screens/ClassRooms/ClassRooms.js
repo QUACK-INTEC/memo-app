@@ -7,9 +7,17 @@ import ClassesComponent from '../../Components/Classes';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import ClassInfoCard from '../../Components/ClassInfoCard';
 import { spacers } from '../../Core/Theme';
-import { MyClasses } from '../../Models';
+import { Classes } from '../../Models';
 
 class ClassRooms extends React.Component {
+  handleOnPressClassItem = (idSection, objSection) => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+
+    return navigate('ClassHub', { id: idSection, sectionInfo: objSection });
+  };
+
   renderSubject = ({ item }) => {
     return (
       <View style={styles.myClassContainer}>
@@ -17,14 +25,15 @@ class ClassRooms extends React.Component {
           subject="Falta del api"
           professor={item.professorName}
           schedule={item.classDays}
+          onPress={() => this.handleOnPressClassItem(item.id, item)}
         />
       </View>
     );
   };
 
   renderClasses = () => {
-    const { myClasses } = this.props;
-    const myClassesFormatted = MyClasses.getMyClassesData(myClasses);
+    const { myClasses, myClassesLookup } = this.props;
+    const myClassesFormatted = Classes.getClassesData(myClasses, myClassesLookup);
 
     return (
       <FlatList
@@ -48,16 +57,19 @@ const styles = StyleSheet.create({
 
 ClassRooms.defaultProps = {
   myClasses: [],
+  myClassesLookup: {},
 };
 
 ClassRooms.propTypes = {
-  myClasses: PropTypes.arrayOf(PropTypes.shape({})),
+  myClasses: PropTypes.arrayOf(PropTypes.string),
+  myClassesLookup: PropTypes.shape({}),
 };
 
 const mapStateToProps = (state, props) => {
-  const { getMyClasses } = myClassesSelectors;
+  const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
   return {
     myClasses: getMyClasses(state, props),
+    myClassesLookup: getMyClassesLookup(state, props),
   };
 };
 

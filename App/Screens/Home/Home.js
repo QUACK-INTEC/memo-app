@@ -19,7 +19,7 @@ import {
   actions as classesActions,
   selectors as myClassesSelectors,
 } from '../../Redux/Common/MyClasses';
-import { MyClasses } from '../../Models';
+import { Classes } from '../../Models';
 
 class Home extends React.Component {
   constructor(props) {
@@ -47,7 +47,7 @@ class Home extends React.Component {
         this.setState({ isLoading: false });
         return setTimeout(() => {
           logger.error({
-            key: MessagesKey.SIGN_IN_FAILED,
+            key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_FAILED,
             data: objError,
           });
         }, 800);
@@ -58,21 +58,33 @@ class Home extends React.Component {
     return Api.GetMyClasses();
   };
 
+  handleOnPressClassItem = (idSection, objSection) => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+
+    return navigate('ClassHub', { id: idSection, sectionInfo: objSection });
+  };
+
   renderSubject = ({ item }) => {
+    console.log({ item });
     return (
       <View style={styles.myClassContainer}>
         <ClassInfoCard
           subject="Falta del api"
           professor={item.professorName}
           schedule={item.classDays}
+          onPress={() => this.handleOnPressClassItem(item.id, item)}
         />
       </View>
     );
   };
 
   renderSubjects = () => {
-    const { myClasses } = this.props;
-    const myClassesFormatted = MyClasses.getMyClassesData(myClasses);
+    const { myClasses, myClassesLookup } = this.props;
+    const myClassesFormatted = Classes.getClassesData(myClasses, myClassesLookup);
+
+    if (Lodash.isNull(myClasses) || Lodash.isEmpty(myClassesLookup)) return null;
 
     return (
       <FlatList
@@ -129,23 +141,26 @@ const styles = StyleSheet.create({
   goToCalendarText: { color: colors.GREEN_LIGHT, ...fonts.SIZE_S },
   noEventsText: { color: colors.GRAY, ...spacers.MT_16, ...spacers.MB_2 },
   myClassContainer: { ...spacers.MA_1 },
-  classContainer: { justifyContent: 'space-between' },
+  classesContainer: { justifyContent: 'space-between' },
 });
 
 Home.defaultProps = {
   myClasses: [],
   setMyClasses: () => null,
+  myClassesLookup: {},
 };
 
 Home.propTypes = {
-  myClasses: PropTypes.arrayOf(PropTypes.shape({})),
+  myClasses: PropTypes.arrayOf(PropTypes.string),
   setMyClasses: PropTypes.func,
+  myClassesLookup: PropTypes.shape({}),
 };
 
 const mapStateToProps = (state, props) => {
-  const { getMyClasses } = myClassesSelectors;
+  const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
   return {
     myClasses: getMyClasses(state, props),
+    myClassesLookup: getMyClassesLookup(state, props),
   };
 };
 

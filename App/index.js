@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable react/no-unused-state */
 /* eslint-disable global-require */
 import React, { Component } from 'react';
@@ -5,6 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import Moment from 'moment';
 import { Provider } from 'react-redux';
 import * as Font from 'expo-font';
+import { enableScreens } from 'react-native-screens';
 
 import AppNavigator from './Navigation/AppNavigator';
 import store from './Redux';
@@ -16,6 +18,7 @@ const LOCALE = {
   ),
   weekdaysShort: 'Dom_Lun_Mar_Mie_Jue_Vie_Sab'.split('_'),
 };
+enableScreens();
 class App extends Component {
   constructor() {
     Moment.locale('es', LOCALE);

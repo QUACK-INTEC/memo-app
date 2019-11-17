@@ -63,6 +63,7 @@ class LoginForm extends Component {
             containerStyle={styles.inputMail}
             enablesReturnKeyAutomatically
             returnKeyType="next"
+            autoCapitalize="none"
           />
           <FormikInput
             label="Contraseña"

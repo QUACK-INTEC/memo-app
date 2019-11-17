@@ -23,7 +23,7 @@ class Home extends React.Component {
       <View>
         <InLineComponent>
           <View style={styles.infoSubjectCalendar} />
-          <Text.Light text="clases" style={styles.infoText} />
+          <Text.Light text="Clases" style={styles.infoText} />
         </InLineComponent>
         <InLineComponent>
           <View style={styles.infoEventCalendar} />

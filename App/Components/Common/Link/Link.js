@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, ViewPropTypes } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
@@ -74,7 +74,7 @@ Link.defaultProps = {
 
 Link.propTypes = {
   text: PropTypes.string.isRequired,
-  textStyle: ViewPropTypes.style,
+  textStyle: PropTypes.shape({}),
   leftMemoSrc: PropTypes.number,
   leftUri: PropTypes.string,
   rightMemoSrc: PropTypes.number,

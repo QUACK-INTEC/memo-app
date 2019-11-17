@@ -8,9 +8,11 @@ import { persistStore } from 'redux-persist';
 
 // Reducers
 import userManagerReducer, { actionTypes as actionTypesUserManager } from './Common/UserManager';
+import myClassesManager from './Common/MyClasses';
 
 const rootReducer = combineReducers({
   userManager: userManagerReducer,
+  MyClasses: myClassesManager,
 });
 
 function fnRootReducerInterceptor(objState, objAction) {

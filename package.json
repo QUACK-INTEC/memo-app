@@ -1,4 +1,4 @@
-{
+ {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "redux-devtools": "redux-devtools --hostname=localhost --port=8082 --injectserver=reactnative",
@@ -44,6 +44,7 @@
     "react-native-picker-select": "^6.3.3",
     "react-native-radio-button": "^2.0.1",
     "react-native-responsive-fontsize": "^0.3.0",
+    "react-native-screens": "^2.0.0-alpha.11",
     "react-native-swipeable": "^0.6.0",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.12.0",

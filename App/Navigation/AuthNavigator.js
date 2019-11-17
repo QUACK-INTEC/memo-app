@@ -11,6 +11,7 @@ const config = Platform.select({
   web: { headerMode: 'none' },
   default: {
     headerMode: 'none',
+    unmountInactiveRoutes: true,
   },
 });
 

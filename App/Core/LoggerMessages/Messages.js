@@ -6,6 +6,8 @@ export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAILED = 'SIGN_IN_FAILED';
 export const SYNC_UNIVERSITY_SUCCESS = 'SYNC_UNIVERSITY_SUCCESS';
 export const SYNC_UNIVERSITY_FAILED = 'SYNC_UNIVERSITY_FAILED';
+export const LOAD_EVENTS_AND_MYCLASSES_SUCCESS = 'LOAD_EVENTS_AND_MYCLASSES_SUCCESS';
+export const LOAD_EVENTS_AND_MYCLASSES_FAILED = 'LOAD_EVENTS_AND_MYCLASSES_FAILED';
 
 const getLoggerMessages = () => {
   return {
@@ -17,6 +19,8 @@ const getLoggerMessages = () => {
     [REGISTER_FAILED]: 'Error creating the new account. Try again later.',
     [SYNC_UNIVERSITY_SUCCESS]: null,
     [SYNC_UNIVERSITY_FAILED]: null,
+    [LOAD_EVENTS_AND_MYCLASSES_SUCCESS]: null,
+    [LOAD_EVENTS_AND_MYCLASSES_FAILED]: null,
   };
 };
 

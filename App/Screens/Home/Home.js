@@ -1,6 +1,10 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import Moment from 'moment';
+import Lodash from 'lodash';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
 import LoadingState from '../../Components/LoadingState';
 import Text from '../../Components/Common/Text';
@@ -8,34 +12,83 @@ import Link from '../../Components/Common/Link';
 import HomeComponent from '../../Components/Home';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 import { colors, fonts, spacers } from '../../Core/Theme';
+import Api from '../../Core/Api';
+import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
+import ClassInfoCard from '../../Components/ClassInfoCard';
+import {
+  actions as classesActions,
+  selectors as myClassesSelectors,
+} from '../../Redux/Common/MyClasses';
+import { MyClasses } from '../../Models';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
     };
   }
 
   componentDidMount() {
-    // TODO: Handle from API the subjects and events for today
-    this.setState({ isLoading: true });
-    setTimeout(() => {
-      this.setState({ isLoading: false });
-    }, 2000);
+    const { setMyClasses, logger } = this.props;
+
+    Promise.all([this.getMyClasses()])
+      .then(listValues => {
+        this.setState({ isLoading: false });
+        const [objClassResponse] = listValues;
+        const listMyClasses = Lodash.get(objClassResponse, ['data', 'data'], []);
+        setMyClasses(listMyClasses);
+        return logger.success({
+          key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_SUCCESS,
+          data: listValues,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SIGN_IN_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
   }
 
-  renderSubjects = () => {
-    // TODO: Flatlist component with rendering the subjects
+  getMyClasses = () => {
+    return Api.GetMyClasses();
+  };
 
-    return null;
+  renderSubject = ({ item }) => {
+    return (
+      <View style={styles.myClassContainer}>
+        <ClassInfoCard
+          subject="Falta del api"
+          professor={item.professorName}
+          schedule={item.classDays}
+        />
+      </View>
+    );
+  };
+
+  renderSubjects = () => {
+    const { myClasses } = this.props;
+    const myClassesFormatted = MyClasses.getMyClassesData(myClasses);
+
+    return (
+      <FlatList
+        columnWrapperStyle={styles.classesContainer}
+        data={myClassesFormatted}
+        numColumns={2}
+        renderItem={this.renderSubject}
+        keyExtractor={item => item.id}
+      />
+    );
   };
 
   renderEvents = () => {
-    // TODO: Flatlist component with rendering the events
     const { isLoading } = this.state;
 
-    if (isLoading) return null;
+    if (isLoading) return <></>;
 
     return (
       <View style={styles.noEventsContainer}>
@@ -75,6 +128,39 @@ const styles = StyleSheet.create({
   },
   goToCalendarText: { color: colors.GREEN_LIGHT, ...fonts.SIZE_S },
   noEventsText: { color: colors.GRAY, ...spacers.MT_16, ...spacers.MB_2 },
+  myClassContainer: { ...spacers.MA_1 },
+  classContainer: { justifyContent: 'space-between' },
 });
 
-export default Home;
+Home.defaultProps = {
+  myClasses: [],
+  setMyClasses: () => null,
+};
+
+Home.propTypes = {
+  myClasses: PropTypes.arrayOf(PropTypes.shape({})),
+  setMyClasses: PropTypes.func,
+};
+
+const mapStateToProps = (state, props) => {
+  const { getMyClasses } = myClassesSelectors;
+  return {
+    myClasses: getMyClasses(state, props),
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setMyClasses: classesActions.setClasses,
+    },
+    dispatch
+  );
+};
+
+export default WithLogger(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Home)
+);

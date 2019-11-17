@@ -33,12 +33,17 @@ const SyncUniversity = objUserDetailUniversity => {
   return MemoApi.post(`sync`, objUserDetailUniversity);
 };
 
+const GetMyClasses = () => {
+  return MemoApi.get(`sections`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
   Login,
   Register,
   SyncUniversity,
+  GetMyClasses,
 };
 
 export default Api;

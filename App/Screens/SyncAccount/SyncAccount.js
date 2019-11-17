@@ -16,7 +16,26 @@ class SyncAccount extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      universities: [],
     };
+  }
+
+  componentDidMount() {
+    const { logger } = this.props;
+    Api.GetSupportedUniversities()
+      .then(objResponse => {
+        console.log({ objResponse });
+        return logger.success({
+          key: MessagesKey.LOAD_SUPPORTED_UNIVERSITIES_SUCCESS,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        return logger.error({
+          key: MessagesKey.LOAD_SUPPORTED_UNIVERSITIES_FAILED,
+          data: objError,
+        });
+      });
   }
 
   setLoading = isLoading => {

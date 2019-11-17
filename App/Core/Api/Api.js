@@ -37,6 +37,10 @@ const GetMyClasses = () => {
   return MemoApi.get(`sections`);
 };
 
+const GetSupportedUniversities = () => {
+  return MemoApi.get(`sync/universities`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -44,6 +48,7 @@ const Api = {
   Register,
   SyncUniversity,
   GetMyClasses,
+  GetSupportedUniversities,
 };
 
 export default Api;

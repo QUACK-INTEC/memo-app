@@ -31,18 +31,16 @@ class Toggle extends React.Component {
       ...labelStyle,
     };
     return (
-      <View>
-        <ToggleSwitch
-          isOn={isOn}
-          onColor={onColor}
-          offColor={offColor}
-          label={label}
-          labelStyle={objLabelStyle}
-          size={size}
-          onToggle={this.handleToggleChange}
-          disabled={disabled}
-        />
-      </View>
+      <ToggleSwitch
+        isOn={isOn}
+        onColor={onColor}
+        offColor={offColor}
+        label={label}
+        labelStyle={objLabelStyle}
+        size={size}
+        onToggle={this.handleToggleChange}
+        disabled={disabled}
+      />
     );
   };
 

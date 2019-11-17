@@ -67,7 +67,6 @@ class Home extends React.Component {
   };
 
   renderSubject = ({ item }) => {
-    console.log({ item });
     return (
       <View style={styles.myClassContainer}>
         <ClassInfoCard

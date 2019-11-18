@@ -49,14 +49,14 @@ class UpDownVoteSimple extends React.Component {
           name="chevron-up"
           type={ICON_TYPE.FONT_AWESOME}
           size={ICON_SIZE.TINY}
-          color={isUpVote ? colors.GREEN : colors.GRAY}
+          color={isUpVote ? colors.GREEN : colors.GRAY_LIGHT}
           onPress={this.handleUpVote}
         />
         <Icon
           name="chevron-down"
           type={ICON_TYPE.FONT_AWESOME}
           size={ICON_SIZE.TINY}
-          color={isDownVote ? 'red' : colors.GRAY}
+          color={isDownVote ? 'red' : colors.GRAY_LIGHT}
           onPress={this.handleDownVote}
         />
       </View>

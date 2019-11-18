@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarLabel from '../Components/TabBar/TabBarLabel';
@@ -84,6 +84,23 @@ AddStack.navigationOptions = {
       color={focused ? colors.GRAY_LIGHT : colors.WHITE}
     />
   ),
+  tabBarOnPress: () => {
+    // TO-DO Open Modal!
+    Alert.alert(
+      'Agregar publicacion',
+      'Desea agregar una nueva publicacion?',
+      [
+        { text: 'Despues', onPress: () => null },
+        {
+          text: 'No',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Si', onPress: null },
+      ],
+      { cancelable: false }
+    );
+  },
 };
 
 AddStack.path = '';

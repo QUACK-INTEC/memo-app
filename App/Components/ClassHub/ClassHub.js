@@ -8,7 +8,7 @@ import Link from '../Common/Link';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import { toBaseDesignPx, spacers, fonts, colors, constants } from '../../Core/Theme';
 
-class ClassHub extends React.Component {
+class ClassHub extends React.PureComponent {
   renderHeaderHub = () => {
     const {
       onBackArrowPress,
@@ -35,19 +35,16 @@ class ClassHub extends React.Component {
 
           <View style={styles.headerSubjectInfo}>
             <Text.Bold text={subjectName} style={styles.subjetNameText} />
-            <Text.Medium
-              text="Sabados 9:00 - 11:00"
-              style={{ ...fonts.SIZE_L, color: colors.WHITE }}
-            />
-            <Text.Medium
-              text="Lunes 9:00 - 11:00"
-              style={{ ...fonts.SIZE_L, color: colors.WHITE }}
-            />
-            {/* TODO: Render from parent {renderSubjectSchedule()} */}
             {renderSubjectSchedule()}
-            <Text.Medium text={`Profesor: ${subjectTeacher}`} style={styles.subjectBasicInfo} />
-            <Text.Medium text={`Sección: ${subjectSection}`} style={styles.subjectBasicInfo} />
-            <Text.Medium text={`Curso: ${subjectRoom}`} style={styles.subjectBasicInfo} />
+            {subjectTeacher ? (
+              <Text.Medium text={`Profesor: ${subjectTeacher}`} style={styles.subjectBasicInfo} />
+            ) : null}
+            {subjectSection ? (
+              <Text.Medium text={`Sección: ${subjectSection}`} style={styles.subjectBasicInfo} />
+            ) : null}
+            {subjectRoom ? (
+              <Text.Medium text={`Curso: ${subjectRoom}`} style={styles.subjectBasicInfo} />
+            ) : null}
 
             <View style={styles.subjectFooterContainer}>
               <Link
@@ -55,10 +52,12 @@ class ClassHub extends React.Component {
                 onPress={onPressGoToEvents}
                 textStyle={styles.linkGoToEvents}
               />
-              <Text.Medium
-                text={`${subjectStudents} Participantes`}
-                style={styles.subjectStudentsText}
-              />
+              {subjectStudents ? (
+                <Text.Medium
+                  text={`${subjectStudents} Participantes`}
+                  style={styles.subjectStudentsText}
+                />
+              ) : null}
             </View>
           </View>
         </View>
@@ -177,10 +176,10 @@ ClassHub.propTypes = {
   renderSubjectSchedule: PropTypes.func,
   renderRecentsPosts: PropTypes.func,
   subjectTeacher: PropTypes.string,
-  subjectSection: PropTypes.number,
+  subjectSection: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subjectRoom: PropTypes.string,
   onPressGoToEvents: PropTypes.func,
-  subjectStudents: PropTypes.string,
+  subjectStudents: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default ClassHub;

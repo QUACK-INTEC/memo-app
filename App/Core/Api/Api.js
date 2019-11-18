@@ -37,6 +37,14 @@ const GetMyClasses = () => {
   return MemoApi.get(`sections`);
 };
 
+const GetSectionInfo = idSection => {
+  return MemoApi.get(`sections/${idSection}`);
+};
+
+const GetSectionStudents = idSection => {
+  return MemoApi.get(`sections/${idSection}/students`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -44,6 +52,8 @@ const Api = {
   Register,
   SyncUniversity,
   GetMyClasses,
+  GetSectionInfo,
+  GetSectionStudents,
 };
 
 export default Api;

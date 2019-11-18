@@ -91,14 +91,24 @@ AddStack.path = '';
 const ClassRoomStack = createStackNavigator(
   {
     Clases: ClassRoomScreen,
-    ClassHub: ClassHubScreen,
+    ClassHub: {
+      screen: ClassHubScreen,
+    },
   },
   config
 );
 
-ClassRoomStack.navigationOptions = {
-  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" />,
+ClassRoomStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+    tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" />,
+  };
 };
 
 ClassRoomStack.path = '';

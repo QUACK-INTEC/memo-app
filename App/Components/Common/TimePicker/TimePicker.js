@@ -24,12 +24,12 @@ class TimePicker extends React.Component {
   };
 
   handleDatePicked = date => {
-    this.setState({ date: `${date.getHours()}:${date.getMinutes()}` });
-    this.hideDateTimePicker();
+    this.setState({ date: `${date.getHours()}:${date.getMinutes()}` }, this.hideDateTimePicker());
   };
 
   render() {
     const { date, isDateTimePickerVisible } = this.state;
+    const { style } = this.props;
     return (
       <>
         <TouchableOpacity onPress={this.showDateTimePicker}>
@@ -41,7 +41,7 @@ class TimePicker extends React.Component {
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
           />
-          <Text.SemiBold text={date} />
+          <Text.SemiBold text={date} style={style} />
         </TouchableOpacity>
       </>
     );
@@ -50,10 +50,12 @@ class TimePicker extends React.Component {
 
 TimePicker.defaultProps = {
   time: null,
+  textStyle: null,
 };
 
 TimePicker.propTypes = {
   time: PropTypes.string,
+  textStyle: PropTypes.shape({}),
 };
 
 export default TimePicker;

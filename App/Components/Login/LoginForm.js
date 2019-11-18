@@ -71,6 +71,14 @@ class LoginForm extends Component {
               returnKeyType="done"
               secureTextEntry
             />
+            <FormikInput
+              type="datepicker"
+              label="Fecha Inicial"
+              name="fechainicial"
+              containerStyle={styles.input}
+              returnKeyType="done"
+              secureTextEntry
+            />
           </View>
           <View style={styles.buttonsContainer}>
             <Button

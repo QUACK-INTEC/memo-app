@@ -130,6 +130,7 @@ class PostInfo extends React.Component {
         size={ICON_SIZE.TINY}
         name="chevron-down"
         color={colors.WHITE}
+        onPress={this.handleDownVote}
       />
     );
   };
@@ -141,6 +142,7 @@ class PostInfo extends React.Component {
         size={ICON_SIZE.TINY}
         name="chevron-up"
         color={colors.WHITE}
+        onPress={this.handleUpVote}
       />
     );
   };
@@ -164,8 +166,6 @@ class PostInfo extends React.Component {
           <BiButton
             leftChild={this.leftArrow}
             rightChild={this.rightArrow}
-            onLeftPress={this.handleDownVote}
-            onRightPress={this.handleUpVote}
             leftButtonStyle={styles.arrowButtonStyle}
             rightButtonStyle={styles.arrowButtonStyle}
           />

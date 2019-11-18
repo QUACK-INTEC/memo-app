@@ -1,5 +1,5 @@
-import MyClasses from './MyClasses';
+import Classes from './Classes';
 
-export { MyClasses };
+export { Classes };
 
-export default MyClasses;
+export default Classes;

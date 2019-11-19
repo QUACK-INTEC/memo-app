@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     borderColor: colors.GRAY_LIGHT,
   },
   textStyle: { color: colors.GRAY_LIGHT, ...fonts.SIZE_XS },
-  timeStyle: { textDecorationLine: 'underline', color: colors.GRAY, ...fonts.SIZE_XS },
+  timeStyle: { color: colors.GRAY, ...fonts.SIZE_XS },
 });
 
 TimePickerWrapper.defaultProps = {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
+import Lodash from 'lodash';
 
 import Text from '../Common/Text';
-import Section from '../Common/Section';
 import Link from '../Common/Link';
 import InLineComponent from '../Common/InLineComponent';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
@@ -22,7 +22,7 @@ const validation = objValues => {
   return errors;
 };
 
-class PostInfo extends React.Component {
+class PostComments extends React.Component {
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
@@ -64,7 +64,8 @@ class PostInfo extends React.Component {
 
   postComment = objValues => {
     const { onCommentPost } = this.props;
-    onCommentPost(objValues);
+    const comment = Lodash.get(objValues, 'comment', null);
+    onCommentPost(comment);
   };
 
   renderComponent = objForm => {
@@ -81,9 +82,7 @@ class PostInfo extends React.Component {
             />
           </View>
         </View>
-        <ScrollView style={styles.container}>
-          <Section>{renderComments()}</Section>
-        </ScrollView>
+        <View style={styles.container}>{renderComments()}</View>
         <InLineComponent viewStyle={styles.createCommentSection}>
           <FormikInput
             placeholder=" Escribe algo sobre este post..."
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
     ...spacers.MT_3,
     ...spacers.MB_14,
   },
-  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT, flex: 1 },
+  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT },
   titleStyle: {
     ...fonts.SIZE_XXL,
     ...spacers.MR_15,
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
   },
 });
 
-PostInfo.defaultProps = {
+PostComments.defaultProps = {
   onBackArrow: () => null,
   renderComments: () => null,
   onAuthorPress: () => null,
@@ -189,7 +188,7 @@ PostInfo.defaultProps = {
   initialsValue: null,
 };
 
-PostInfo.propTypes = {
+PostComments.propTypes = {
   onBackArrow: PropTypes.func,
   onAuthorPress: PropTypes.func,
   renderComments: PropTypes.func,
@@ -201,4 +200,4 @@ PostInfo.propTypes = {
   }),
 };
 
-export default PostInfo;
+export default PostComments;

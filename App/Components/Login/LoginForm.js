@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
+import LinkComponent from '../Common/Link';
 
 const validation = objValues => {
   const errors = {};
@@ -35,6 +37,11 @@ class LoginForm extends Component {
     onRegister();
   };
 
+  handlePasswordRecovery = () => {
+    const { onPasswordRecovery } = this.props;
+    onPasswordRecovery();
+  };
+
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
@@ -47,25 +54,24 @@ class LoginForm extends Component {
 
   renderForm = objForm => {
     return (
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior="padding">
-          <View>
-            <FormikInput
-              label="Email"
-              name="email"
-              keyboardType="email-address"
-              containerStyle={styles.input}
-              enablesReturnKeyAutomatically
-              returnKeyType="next"
-            />
-            <FormikInput
-              label="Contraseña"
-              name="password"
-              containerStyle={styles.input}
-              returnKeyType="done"
-              secureTextEntry
-            />
-          </View>
+      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
+        <SafeAreaView style={styles.container}>
+          <FormikInput
+            label="Email"
+            name="email"
+            keyboardType="email-address"
+            containerStyle={styles.inputMail}
+            enablesReturnKeyAutomatically
+            returnKeyType="next"
+            autoCapitalize="none"
+          />
+          <FormikInput
+            label="Contraseña"
+            name="password"
+            containerStyle={styles.input}
+            returnKeyType="done"
+            secureTextEntry
+          />
           <View style={styles.buttonsContainer}>
             <Button
               label="Entrar"
@@ -74,10 +80,12 @@ class LoginForm extends Component {
               disabled={!objForm.isValid}
             />
             <Button label="Registrarte" secondary onPress={this.handleRegister} />
-            <Text>Recuperar Contraseña</Text>
+            <View style={styles.linkContainer}>
+              <LinkComponent text="Recuperar Contraseña" onPress={this.handlePasswordRecovery} />
+            </View>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
     );
   };
 
@@ -95,11 +103,13 @@ class LoginForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...spacers.MA_10,
-    flex: 1,
+    ...spacers.ML_5,
+    ...spacers.MR_5,
+    ...spacers.MB_5,
+    flex: 2,
   },
-  input: {
-    ...spacers.MT_7,
+  inputMail: {
+    ...spacers.MB_3,
   },
   buttonsContainer: {
     ...spacers.MT_6,
@@ -113,17 +123,23 @@ const styles = StyleSheet.create({
   createAccountButton: {
     ...spacers.MB_7,
   },
+  linkContainer: {
+    ...spacers.MT_5,
+    alignItems: 'center',
+  },
 });
 
 LoginForm.defaultProps = {
   onSubmit: () => null,
   onRegister: () => null,
+  onPasswordRecovery: () => null,
   initialsValue: null,
 };
 
 LoginForm.propTypes = {
   onSubmit: PropTypes.func,
   onRegister: PropTypes.func,
+  onPasswordRecovery: PropTypes.func,
   initialsValue: PropTypes.shape({
     email: PropTypes.string,
     password: PropTypes.string,

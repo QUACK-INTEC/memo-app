@@ -9,7 +9,7 @@ import axios from 'axios';
 const API_VERSION = 1;
 const API_HOST = `https://memo-staging.herokuapp.com/v${API_VERSION}`;
 
-const MemoApi = axios.create({
+export const MemoApi = axios.create({
   baseURL: API_HOST,
 });
 
@@ -29,11 +29,31 @@ const Register = objUserRegisterParams => {
   return MemoApi.post(`auth/register`, objUserRegisterParams);
 };
 
+const SyncUniversity = objUserDetailUniversity => {
+  return MemoApi.post(`sync`, objUserDetailUniversity);
+};
+
+const GetMyClasses = () => {
+  return MemoApi.get(`sections`);
+};
+
+const GetSectionInfo = idSection => {
+  return MemoApi.get(`sections/${idSection}`);
+};
+
+const GetSectionStudents = idSection => {
+  return MemoApi.get(`sections/${idSection}/students`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
   Login,
   Register,
+  SyncUniversity,
+  GetMyClasses,
+  GetSectionInfo,
+  GetSectionStudents,
 };
 
 export default Api;

@@ -68,11 +68,16 @@ class Login extends Component {
 
   handleRegister = () => {
     const {
-      navigation: { navigate },
+      navigation: { push },
     } = this.props;
-    this.setLoading(false);
+    push('Register');
+  };
 
-    navigate('Register');
+  handlePasswordRecovery = () => {
+    const {
+      navigation: { push },
+    } = this.props;
+    push('RecoverPassword');
   };
 
   render() {
@@ -85,6 +90,7 @@ class Login extends Component {
         <LoginForm
           onSubmit={this.handleSubmit}
           onRegister={this.handleRegister}
+          onPasswordRecovery={this.handlePasswordRecovery}
           initialsValue={initialsValue}
         />
       </View>

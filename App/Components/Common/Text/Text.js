@@ -101,7 +101,7 @@ BaseText.defaultProps = {
 };
 
 BaseText.propTypes = {
-  text: PropTypes.string,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
 };
 
 export default SimpleBaseText;

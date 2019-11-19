@@ -43,12 +43,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.WHITE,
     width: toBaseDesignPx(151),
+    ...spacers.PA_2,
+    justifyContent: 'center',
   },
   titleStyle: {
     ...fonts.SIZE_XS,
-    ...spacers.MT_4,
-    ...spacers.ML_10,
-    ...spacers.MR_10,
     color: colors.GRAY,
   },
 });

@@ -43,6 +43,9 @@ export default {
   THIN_ITALIC: {
     fontFamily: 'poppins-thin-italic',
   },
+  SIZE_XXS: {
+    fontSize: RFValue(8),
+  },
   SIZE_XS: {
     fontSize: RFValue(12),
   },

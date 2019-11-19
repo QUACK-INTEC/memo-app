@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
-import { colors, fonts } from '../../../Core/Theme';
+import { colors, fonts, toBaseDesignPx } from '../../../Core/Theme';
 
 // Common
 import Text from '../Text';
@@ -23,14 +23,20 @@ class TimePickerWrapper extends React.Component {
     const { time, timeStyle } = this.props;
     return (
       <>
-        {this.renderText()}
-        <TimePicker time={time} style={[styles.timeStyle, timeStyle]} />
+        <View style={styles.mainView}>
+          {this.renderText()}
+          <TimePicker time={time} style={[styles.timeStyle, timeStyle]} />
+        </View>
       </>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  mainView: {
+    borderBottomWidth: toBaseDesignPx(2),
+    borderColor: colors.GRAY_LIGHT,
+  },
   textStyle: { color: colors.GRAY_LIGHT, ...fonts.SIZE_XS },
   timeStyle: { textDecorationLine: 'underline', color: colors.GRAY, ...fonts.SIZE_XS },
 });

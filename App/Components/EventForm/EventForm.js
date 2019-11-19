@@ -11,6 +11,7 @@ import Button from '../Common/Button';
 import Text from '../Common/Text';
 import { toBaseDesignPx, fonts, colors, spacers } from '../../Core/Theme';
 import ToggleButton from '../Common/Toggle';
+import TimePicker from '../Common/TimePickerWrapper';
 
 class EventForm extends React.Component {
   constructor(props) {
@@ -55,7 +56,13 @@ class EventForm extends React.Component {
           }}
         />
         <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
-          <ScrollView contentContainerStyle={{ backgroundColor: 'red', ...spacers.PB_15, flex: 1 }}>
+          <ScrollView
+            contentContainerStyle={{
+              ...spacers.MB_15,
+              flex: 1,
+              backgroundColor: 'red',
+            }}
+          >
             <FormikInput
               type="dropdown"
               options={[{ value: 'inteligencia_artificial', label: 'Inteligencia Artificial' }]}
@@ -116,22 +123,24 @@ class EventForm extends React.Component {
               labelStyle={{ marginLeft: 0, color: colors.GRAY }}
             />
             {hasDate ? (
-              <FormikInput
-                type="dropdown"
-                options={[
-                  { value: 'public', label: 'Publico' },
-                  { value: 'privado', label: 'Privado' },
-                ]}
-                labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
-                label="Tipo de evento"
-                name="type"
-                containerStyle={{ width: toBaseDesignPx(164.5) }}
-                enablesReturnKeyAutomatically
-              />
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between', ...spacers.MT_8 }}
+              >
+                <TimePicker
+                  text="Hora de inicio"
+                  textStyle={{ ...fonts.SIZE_S, color: colors.GRAY }}
+                  containerStyle={{ width: toBaseDesignPx(160.5) }}
+                />
+                <TimePicker
+                  text="Hora final"
+                  textStyle={{ ...fonts.SIZE_S, color: colors.GRAY }}
+                  containerStyle={{ width: toBaseDesignPx(160.5) }}
+                />
+              </View>
             ) : null}
           </ScrollView>
         </KeyboardAwareScrollView>
-        <View
+        {/* <View
           style={{
             backgroundColor: colors.WHITE,
             flex: 1,
@@ -155,7 +164,7 @@ class EventForm extends React.Component {
             // onPress={objForm.handleSubmit}
             // disabled={!objForm.isValid}
           />
-        </View>
+        </View> */}
       </>
     );
   };

@@ -20,10 +20,10 @@ class TimePickerWrapper extends React.Component {
   };
 
   render() {
-    const { time, timeStyle } = this.props;
+    const { time, timeStyle, containerStyle } = this.props;
     return (
       <>
-        <View style={styles.mainView}>
+        <View style={[styles.mainView, containerStyle]}>
           {this.renderText()}
           <TimePicker time={time} style={[styles.timeStyle, timeStyle]} />
         </View>
@@ -46,6 +46,7 @@ TimePickerWrapper.defaultProps = {
   time: null,
   textStyle: null,
   timeStyle: null,
+  containerStyle: null,
 };
 
 TimePickerWrapper.propTypes = {
@@ -53,6 +54,7 @@ TimePickerWrapper.propTypes = {
   time: PropTypes.string,
   textStyle: PropTypes.shape({}),
   timeStyle: PropTypes.shape({}),
+  containerStyle: PropTypes.shape({}),
 };
 
 export default TimePickerWrapper;

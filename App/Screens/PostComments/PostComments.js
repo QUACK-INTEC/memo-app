@@ -1,19 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import Lodash from 'lodash';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 
 import LoadingState from '../../Components/LoadingState';
 import PostCommentsComponent from '../../Components/PostComments';
 import PostComment from '../../Components/PostComment';
 import { spacers } from '../../Core/Theme';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
-import {
-  actions as postCommentActions,
-  selectors as postCommentsSelector,
-} from '../../Redux/Common/PostComments';
 import { PostCommentList } from '../../Models';
 
 class PostComments extends React.Component {
@@ -25,14 +18,13 @@ class PostComments extends React.Component {
   }
 
   componentDidMount() {
-    const { setPostComments, logger } = this.props;
+    const { logger } = this.props;
 
     Promise.all([this.getPostComments()])
       .then(listValues => {
-        this.setState({ isLoading: false });
         const [objCommentResponse] = listValues;
         const listPostComments = Lodash.get(objCommentResponse, 'data', []);
-        setPostComments(listPostComments);
+        this.setState({ postComments: listPostComments, isLoading: false });
         return logger.success({
           key: MessagesKey.LOAD_POST_COMMENTS_SUCCESS,
           data: listValues,
@@ -108,7 +100,7 @@ class PostComments extends React.Component {
   };
 
   renderComments = () => {
-    const { postComments } = this.props;
+    const { postComments } = this.state;
     const postCommentsFormatted = PostCommentList.getPostCommentsData(postComments);
 
     return (
@@ -141,35 +133,4 @@ const styles = StyleSheet.create({
   postCommentContainer: { ...spacers.MA_1 },
 });
 
-PostComments.defaultProps = {
-  postComments: [],
-  setPostComments: () => null,
-};
-
-PostComments.propTypes = {
-  postComments: PropTypes.arrayOf(PropTypes.shape({})),
-  setPostComments: PropTypes.func,
-};
-
-const mapStateToProps = (state, props) => {
-  const { getPostComments } = postCommentsSelector;
-  return {
-    postComments: getPostComments(state, props),
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      setPostComments: postCommentActions.setPostComments,
-    },
-    dispatch
-  );
-};
-
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PostComments)
-);
+export default WithLogger(PostComments);

@@ -20,6 +20,7 @@ class EventForm extends React.Component {
       isVisible: true,
       canAddFile: false,
       hasDate: false,
+      contentInsetBottom: 100,
     };
   }
 
@@ -30,19 +31,25 @@ class EventForm extends React.Component {
   };
 
   handleOnToggleAddFile = isOn => {
-    this.setState({
+    this.setState(prevState => ({
       canAddFile: isOn,
-    });
+      contentInsetBottom: isOn
+        ? prevState.contentInsetBottom + 50
+        : prevState.contentInsetBottom - 50,
+    }));
   };
 
   handleOnToggleHasDate = isOn => {
-    this.setState({
+    this.setState(prevState => ({
       hasDate: isOn,
-    });
+      contentInsetBottom: isOn
+        ? prevState.contentInsetBottom + 50
+        : prevState.contentInsetBottom - 50,
+    }));
   };
 
   renderForm = () => {
-    const { canAddFile, hasDate } = this.state;
+    const { canAddFile, hasDate, contentInsetBottom } = this.state;
     return (
       <>
         <Text.SemiBold
@@ -57,11 +64,10 @@ class EventForm extends React.Component {
         />
         <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
           <ScrollView
-            contentContainerStyle={{
-              ...spacers.MB_15,
-              flex: 1,
-              backgroundColor: 'red',
-            }}
+            bounces={false}
+            alwaysBounceVertical={false}
+            automaticallyAdjustContentInsets={false}
+            contentInset={{ top: 0, bottom: contentInsetBottom }}
           >
             <FormikInput
               type="dropdown"
@@ -98,11 +104,14 @@ class EventForm extends React.Component {
               containerStyle={{ width: toBaseDesignPx(164.5) }}
               enablesReturnKeyAutomatically
             />
-            <ToggleButton.Medium
-              label="Anexar archivo?"
-              onToggle={this.handleOnToggleAddFile}
-              labelStyle={{ marginLeft: 0, color: colors.GRAY }}
-            />
+            <View style={{ ...spacers.MT_14 }}>
+              <ToggleButton.Medium
+                label="Anexar archivo?"
+                onToggle={this.handleOnToggleAddFile}
+                labelStyle={{ marginLeft: 0, color: colors.GRAY }}
+              />
+            </View>
+
             {canAddFile ? (
               <FormikInput
                 type="dropdown"
@@ -117,11 +126,13 @@ class EventForm extends React.Component {
                 enablesReturnKeyAutomatically
               />
             ) : null}
-            <ToggleButton.Medium
-              label="Tiene fecha?"
-              onToggle={this.handleOnToggleHasDate}
-              labelStyle={{ marginLeft: 0, color: colors.GRAY }}
-            />
+            <View style={{ ...spacers.MT_13 }}>
+              <ToggleButton.Medium
+                label="Tiene fecha?"
+                onToggle={this.handleOnToggleHasDate}
+                labelStyle={{ marginLeft: 0, color: colors.GRAY }}
+              />
+            </View>
             {hasDate ? (
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between', ...spacers.MT_8 }}
@@ -140,7 +151,7 @@ class EventForm extends React.Component {
             ) : null}
           </ScrollView>
         </KeyboardAwareScrollView>
-        {/* <View
+        <View
           style={{
             backgroundColor: colors.WHITE,
             flex: 1,
@@ -164,14 +175,13 @@ class EventForm extends React.Component {
             // onPress={objForm.handleSubmit}
             // disabled={!objForm.isValid}
           />
-        </View> */}
+        </View>
       </>
     );
   };
 
   render() {
     const { isVisible, canAddFile } = this.state;
-    console.log({ props: this.props, canAddFile });
     return (
       <ModalForm isVisible={isVisible} onCloseModal={this.handleCloseEventForm}>
         <Formik

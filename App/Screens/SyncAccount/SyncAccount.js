@@ -16,8 +16,46 @@ class SyncAccount extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      universities: [],
     };
   }
+
+  componentDidMount() {
+    const { logger } = this.props;
+    this.setLoading(true);
+
+    this.getSupportedUniversities()
+      .then(objSupportedResponse => {
+        const listSupportedUniversities = Lodash.get(
+          objSupportedResponse,
+          ['data', 'universities'],
+          []
+        );
+        this.setLoading(false);
+        const universitiesFormatted = listSupportedUniversities.map(objUniversity => {
+          return {
+            label: objUniversity.title,
+            value: objUniversity.syncCode,
+          };
+        });
+        this.setState({ universities: universitiesFormatted });
+        return logger.success({
+          key: MessagesKey.LOAD_SUPPORTED_UNIVERSITIES_SUCCESS,
+          data: listSupportedUniversities,
+        });
+      })
+      .catch(objError => {
+        this.setLoading(false);
+        return logger.error({
+          key: MessagesKey.LOAD_SUPPORTED_UNIVERSITIES_FAILED,
+          data: objError,
+        });
+      });
+  }
+
+  getSupportedUniversities = () => {
+    return Api.GetSupportedUniversities();
+  };
 
   setLoading = isLoading => {
     return this.setState({ isLoading });
@@ -57,26 +95,33 @@ class SyncAccount extends Component {
   handleSuccessSync = objUserSyncData => {
     const {
       setUserSync,
-      navigation: { navigate },
+      setUserToken,
+      navigation: { getParam },
     } = this.props;
     this.setLoading(false);
 
+    const userToken = getParam('userToken', null);
     if (objUserSyncData) {
       setUserSync(objUserSyncData);
 
-      return navigate('Home');
+      return setUserToken(userToken);
     }
 
     return null;
   };
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, universities } = this.state;
     const { initialsValue } = this.props;
+
     return (
       <SafeAreaView style={styles.container}>
         <LoadingState.Modal isVisible={isLoading} />
-        <SyncComponent onSubmit={this.handleSubmit} initialsValue={initialsValue} />
+        <SyncComponent
+          onSubmit={this.handleSubmit}
+          initialsValue={initialsValue}
+          universities={universities}
+        />
       </SafeAreaView>
     );
   }
@@ -91,17 +136,20 @@ const styles = StyleSheet.create({
 SyncAccount.defaultProps = {
   initialsValue: null,
   setUserSync: () => null,
+  setUserToken: () => null,
 };
 
 SyncAccount.propTypes = {
   initialsValue: PropTypes.shape({}),
   setUserSync: PropTypes.func,
+  setUserToken: PropTypes.func,
 };
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setUserSync: userActions.setUserSync,
+      setUserToken: userActions.setUserToken,
     },
     dispatch
   );

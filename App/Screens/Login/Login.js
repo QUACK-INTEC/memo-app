@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import Lodash from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Lodash from 'lodash';
 
 import LoginForm from '../../Components/Login';
 import ImageWrapper, { MEMO_ASSETS } from '../../Components/Common/ImageWrapper';
 import LoadingState from '../../Components/LoadingState';
-
-import Api from '../../Core/Api';
+import Api, { MemoApi } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
-
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
 class Login extends Component {
@@ -26,41 +24,37 @@ class Login extends Component {
     return this.setState({ isLoading });
   };
 
-  handleSubmit = objValues => {
-    const { logger } = this.props;
+  handleSubmit = ({ email, password }) => {
+    const {
+      navigation: { navigate },
+      setUserToken,
+      logger,
+      setUserInfo,
+    } = this.props;
     this.setLoading(true);
-
-    return Api.Login(objValues)
+    return Api.Login({ email, password })
       .then(objResponse => {
-        const objUserData = Lodash.get(objResponse, ['data'], null);
+        const strToken = Lodash.get(objResponse, ['data', 'token'], null);
+        const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
+        setUserToken(strToken);
+        setUserInfo(objUserInfo);
+        MemoApi.defaults.headers.common.Authorization = `Bearer ${strToken}`;
         logger.success({
           key: MessagesKey.SIGN_IN_SUCCESS,
           data: objResponse,
         });
 
-        return this.handleSuccessLogin(objUserData);
+        return navigate('Home');
       })
       .catch(objError => {
-        logger.error({
-          key: MessagesKey.SIGN_IN_FAILED,
-          data: objError,
-        });
-        return this.setLoading(false);
+        this.setLoading(false);
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SIGN_IN_FAILED,
+            data: objError,
+          });
+        }, 1050);
       });
-  };
-
-  handleSuccessLogin = objUserData => {
-    const {
-      navigation: { navigate },
-    } = this.props;
-    this.setLoading(false);
-    const { setUserInfo } = this.props;
-
-    if (objUserData) {
-      setUserInfo(objUserData);
-    }
-
-    navigate('Home', objUserData);
   };
 
   handleRegister = () => {
@@ -106,6 +100,7 @@ const styles = StyleSheet.create({
 
 Login.defaultProps = {
   initialsValue: null,
+  setUserToken: () => null,
   setUserInfo: () => null,
 };
 
@@ -114,13 +109,14 @@ Login.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  setUserToken: PropTypes.func,
   setUserInfo: PropTypes.func,
 };
-
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setUserInfo: userActions.setUserInfo,
+      setUserToken: userActions.setUserToken,
     },
     dispatch
   );

@@ -28,8 +28,10 @@ const validation = objValues => {
 
   if (!password) {
     errors.password = 'Campo obligatorio';
-  } else if (password.length < 4) {
-    errors.password = 'Contraseña muy leve';
+  } else if (password.length < 8) {
+    errors.password = 'Debe tener al menos 8 caracteres';
+  } else if (!/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)) {
+    errors.password = 'Contraseña leve';
   }
 
   if (!passwordVerify) {
@@ -37,7 +39,6 @@ const validation = objValues => {
   } else if (passwordVerify !== password) {
     errors.passwordVerify = '*';
   }
-
   if (!email) {
     errors.email = 'Campo obligatorio';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {

@@ -1,13 +1,15 @@
 import React from 'react';
-import { FlatList, Alert, Keyboard } from 'react-native';
+import { FlatList, Alert, Keyboard, View, StyleSheet } from 'react-native';
 import Lodash from 'lodash';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import PropTypes from 'prop-types';
 import LoadingState from '../../Components/LoadingState';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import { PostCommentList } from '../../Models';
 
 import PostCommentsComponent from '../../Components/PostComments';
 import PostComment from '../../Components/PostComment';
+import PopUp from '../../Components/Common/PopUp';
 
 class PostComments extends React.Component {
   constructor(props) {
@@ -15,11 +17,21 @@ class PostComments extends React.Component {
     this.state = {
       isLoading: true,
       postComments: [],
+      selectedCommentId: null,
+      confirmationPopUpVisible: false,
     };
   }
 
   componentDidMount() {
-    const { logger } = this.props;
+    // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
+    const {
+      // navigation: { getParam, pop },
+      logger,
+    } = this.props;
+    // const authorTitle = getParam('authorName', {});
+    // const postTitle = getParam('postTitle', {});
+    // const postId = getParam('postId', {});
+    // const authorId = getParam('authorId', {});
 
     Promise.all([this.getPostComments()])
       .then(listValues => {
@@ -72,7 +84,7 @@ class PostComments extends React.Component {
           authorId: '1',
         },
         {
-          id: '5dcb3a143f84959c924adfa89',
+          id: '5d924adfa89',
           author: 'Emma Paige',
           authorBadgeUri: 'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png',
           authorInitials: 'EP',
@@ -106,14 +118,24 @@ class PostComments extends React.Component {
     return Alert.alert(`remove downVote: ${commentId}`);
   };
 
-  deleteComment = commentId => {
-    // TODO : Send Delete Comment to API
-    Alert.alert(`delete comment: ${commentId}`);
+  deleteItemById = id => {
+    const { postComments } = this.state;
+    const filteredData = postComments.filter(item => item.id !== id);
+    this.setState({ postComments: filteredData });
   };
 
-  showOptions = commentId => {
-    // TODO : Send Delete Comment to API
-    Alert.alert(`options: ${commentId}`);
+  deleteComment = () => {
+    const { selectedCommentId } = this.state;
+    this.setState({ isLoading: true });
+    if (selectedCommentId) {
+      // TODO : Send Delete Comment to API
+      this.deleteItemById(selectedCommentId);
+    }
+    this.setState({
+      selectedCommentId: null,
+      confirmationPopUpVisible: false,
+      isLoading: false,
+    });
   };
 
   handlePostComment = comment => {
@@ -131,7 +153,13 @@ class PostComments extends React.Component {
     };
     this.setState(prevState => ({ postComments: [...prevState.postComments, commentObj] }));
     Keyboard.dismiss();
-    Alert.alert(`Comment: ${comment}`);
+  };
+
+  showConfirmationBox = commentId => {
+    this.setState({
+      selectedCommentId: commentId,
+      confirmationPopUpVisible: true,
+    });
   };
 
   renderComment = ({ item }) => {
@@ -139,7 +167,6 @@ class PostComments extends React.Component {
       <PostComment
         author={item.author}
         onAuthorPress={() => this.handleAuthorPress(item.authorId)}
-        onOptionsPressed={() => this.showOptions(item.id)}
         onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote)}
         onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
         badgeUri={item.authorBadgeUri}
@@ -148,7 +175,7 @@ class PostComments extends React.Component {
         isAuthor={item.isAuthor}
         score={item.score}
         personalScore={item.PersonalScore}
-        onDeleteComment={() => this.deleteComment(item.id)}
+        onDeleteComment={() => this.showConfirmationBox(item.id)}
       />
     );
   };
@@ -166,24 +193,54 @@ class PostComments extends React.Component {
     );
   };
 
-  render() {
-    const { isLoading } = this.state;
+  renderPostCommentsComponent = () => {
+    const { authorName, postTitle, authorId } = this.props;
     return (
-      <>
+      <PostCommentsComponent
+        onBackArrow={this.goBack}
+        onAuthorPress={() => this.handleAuthorPress(authorId)}
+        renderComments={this.renderComments}
+        author={authorName}
+        postTitle={postTitle}
+        onCommentPost={this.handlePostComment}
+      />
+    );
+  };
+
+  render() {
+    const { isLoading, confirmationPopUpVisible } = this.state;
+    return (
+      <View style={styles.container}>
+        <PopUp.Default
+          isVisible={confirmationPopUpVisible}
+          leftButtonText="Cancelar"
+          rightButtonText="Si"
+          title="¿Seguro que quieres eliminar este comentario?"
+          onRightPress={this.deleteComment}
+          onLeftPress={() => this.setState({ confirmationPopUpVisible: false })}
+        />
         <LoadingState.Modal isVisible={isLoading} />
-        <ActionSheetProvider>
-          <PostCommentsComponent
-            onBackArrow={this.goBack}
-            onAuthorPress={() => this.handleAuthorPress('3')}
-            renderComments={this.renderComments}
-            author="Emma Paige"
-            postTitle="Entrega de Informe Final"
-            onCommentPost={this.handlePostComment}
-          />
-        </ActionSheetProvider>
-      </>
+        <ActionSheetProvider>{this.renderPostCommentsComponent()}</ActionSheetProvider>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+});
+
+// DUMMY DATA
+PostComments.defaultProps = {
+  authorName: 'Emma Paige',
+  postTitle: 'Entrega de Informe Final',
+  authorId: '3',
+};
+
+PostComments.propTypes = {
+  authorName: PropTypes.string,
+  postTitle: PropTypes.string,
+  authorId: PropTypes.string,
+};
 
 export default WithLogger(PostComments);

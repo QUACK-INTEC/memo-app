@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import ImagePicker from '../Common/ImagePicker';
+import Link from '../Common/Link';
 
 const validation = objValues => {
   const errors = {};
-  const { email, firstName, lastName, password } = objValues;
+  const { email, firstName, lastName, password, passwordVerify } = objValues;
 
   if (!firstName) {
     errors.firstName = 'Campo obligatorio';
@@ -28,6 +30,12 @@ const validation = objValues => {
     errors.password = 'Campo obligatorio';
   } else if (password.length < 4) {
     errors.password = 'Contraseña muy leve';
+  }
+
+  if (!passwordVerify) {
+    errors.passwordVerify = '*';
+  } else if (passwordVerify !== password) {
+    errors.passwordVerify = '*';
   }
 
   if (!email) {
@@ -65,44 +73,49 @@ class Register extends Component {
 
   renderForm = objForm => {
     return (
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior="padding">
+      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
+        <SafeAreaView style={styles.container}>
           <ImagePicker
             style={styles.imagePicker}
             onChangeImage={strImageUri => {
               objForm.setFieldValue('profileImage', strImageUri);
             }}
           />
-          <View>
-            <FormikInput
-              label="Nombre"
-              name="firstName"
-              containerStyle={styles.input}
-              enablesReturnKeyAutomatically
-              returnKeyType="done"
-            />
-            <FormikInput
-              label="Apellido"
-              name="lastName"
-              containerStyle={styles.input}
-              returnKeyType="done"
-            />
-            <FormikInput
-              label="Email"
-              name="email"
-              containerStyle={styles.input}
-              keyboardType="email-address"
-              returnKeyType="done"
-              autoCapitalize="none"
-            />
-            <FormikInput
-              label="Contraseña"
-              name="password"
-              containerStyle={styles.input}
-              returnKeyType="done"
-              secureTextEntry
-            />
-          </View>
+          <FormikInput
+            label="Nombre"
+            name="firstName"
+            containerStyle={styles.input}
+            enablesReturnKeyAutomatically
+            returnKeyType="done"
+          />
+          <FormikInput
+            label="Apellido"
+            name="lastName"
+            containerStyle={styles.input}
+            returnKeyType="done"
+          />
+          <FormikInput
+            label="Email"
+            name="email"
+            containerStyle={styles.input}
+            keyboardType="email-address"
+            returnKeyType="done"
+            autoCapitalize="none"
+          />
+          <FormikInput
+            label="Contraseña"
+            name="password"
+            containerStyle={styles.input}
+            returnKeyType="done"
+            secureTextEntry
+          />
+          <FormikInput
+            label="Confirmar contraseña"
+            name="passwordVerify"
+            containerStyle={styles.input}
+            returnKeyType="done"
+            secureTextEntry
+          />
 
           <View style={styles.buttonsContainer}>
             <Button
@@ -111,14 +124,12 @@ class Register extends Component {
               onPress={objForm.handleSubmit}
               disabled={!objForm.isValid}
             />
-            <Button
-              label="Ya tengo una cuenta creada!"
-              secondary
-              onPress={this.handleBackToLogin}
-            />
+            <View style={styles.linkContainer}>
+              <Link text="Ya tengo una cuenta!" onPress={this.handleBackToLogin} />
+            </View>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
     );
   };
 
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
     ...spacers.MT_7,
   },
   buttonsContainer: {
-    ...spacers.MT_6,
+    ...spacers.MT_4,
   },
   imagePicker: {
     alignSelf: 'center',
@@ -154,6 +165,9 @@ const styles = StyleSheet.create({
   },
   createAccountButton: {
     ...spacers.MB_7,
+  },
+  linkContainer: {
+    alignItems: 'center',
   },
 });
 

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
@@ -53,33 +54,24 @@ class LoginForm extends Component {
 
   renderForm = objForm => {
     return (
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior="padding">
-          <View>
-            <FormikInput
-              label="Email"
-              name="email"
-              keyboardType="email-address"
-              containerStyle={styles.input}
-              enablesReturnKeyAutomatically
-              returnKeyType="next"
-            />
-            <FormikInput
-              label="Contraseña"
-              name="password"
-              containerStyle={styles.input}
-              returnKeyType="done"
-              secureTextEntry
-            />
-            <FormikInput
-              type="datepicker"
-              label="Fecha Inicial"
-              name="fechainicial"
-              containerStyle={styles.input}
-              returnKeyType="done"
-              secureTextEntry
-            />
-          </View>
+      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
+        <SafeAreaView style={styles.container}>
+          <FormikInput
+            label="Email"
+            name="email"
+            keyboardType="email-address"
+            containerStyle={styles.inputMail}
+            enablesReturnKeyAutomatically
+            returnKeyType="next"
+            autoCapitalize="none"
+          />
+          <FormikInput
+            label="Contraseña"
+            name="password"
+            containerStyle={styles.input}
+            returnKeyType="next"
+            secureTextEntry
+          />
           <View style={styles.buttonsContainer}>
             <Button
               label="Entrar"
@@ -92,8 +84,8 @@ class LoginForm extends Component {
               <LinkComponent text="Recuperar Contraseña" onPress={this.handlePasswordRecovery} />
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
     );
   };
 
@@ -111,11 +103,13 @@ class LoginForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...spacers.MA_5,
-    flex: 1,
+    ...spacers.ML_5,
+    ...spacers.MR_5,
+    ...spacers.MB_5,
+    flex: 2,
   },
-  input: {
-    ...spacers.MT_7,
+  inputMail: {
+    ...spacers.MB_3,
   },
   buttonsContainer: {
     ...spacers.MT_6,

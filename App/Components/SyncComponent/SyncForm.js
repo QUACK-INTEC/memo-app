@@ -7,17 +7,17 @@ import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 
-const UNIVERSITYS = [{ label: 'INTEC', value: '1' }];
+const UNIVERSITYS = [{ label: 'INTEC', value: 'intec' }];
 
 const validation = objValues => {
   const errors = {};
-  const { user, password, university } = objValues;
+  const { user, claveUniversidad, university } = objValues;
 
   if (!university) {
     errors.university = 'Requerido';
   }
-  if (!password) {
-    errors.password = 'Requerido';
+  if (!claveUniversidad) {
+    errors.claveUniversidad = 'Requerido';
   }
 
   if (!user) {
@@ -38,7 +38,7 @@ class SyncForm extends Component {
 
     return {
       user: null,
-      password: null,
+      claveUniversidad: null,
       university: null,
       ...initialsValue,
     };
@@ -69,7 +69,7 @@ class SyncForm extends Component {
             />
             <FormikInput
               label="Contraseña"
-              name="password"
+              name="claveUniversidad"
               containerStyle={styles.input}
               returnKeyType="done"
               secureTextEntry
@@ -132,7 +132,7 @@ SyncForm.propTypes = {
   onSubmit: PropTypes.func,
   initialsValue: PropTypes.shape({
     user: PropTypes.string,
-    password: PropTypes.string,
+    claveUniversidad: PropTypes.string,
     university: PropTypes.string,
   }),
 };

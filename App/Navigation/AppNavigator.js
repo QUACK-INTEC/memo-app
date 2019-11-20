@@ -1,13 +1,32 @@
+import React from 'react';
+
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
+import PropTypes from 'prop-types';
 import AuthNavigator from './AuthNavigator';
 import MainTabNavigator from './MainTabNavigator';
 
-export default createAppContainer(
-  createSwitchNavigator({
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Auth: AuthNavigator,
-    Main: MainTabNavigator,
-  })
-);
+const AppNavigator = ({ loggedIn }) => {
+  const AppContainer = createAppContainer(
+    createSwitchNavigator(
+      {
+        Auth: AuthNavigator,
+        Main: MainTabNavigator,
+      },
+      {
+        initialRouteName: loggedIn ? 'Main' : 'Auth',
+      }
+    )
+  );
+  return <AppContainer />;
+};
+
+export default AppNavigator;
+
+AppNavigator.defaultProps = {
+  loggedIn: false,
+};
+
+AppNavigator.propTypes = {
+  loggedIn: PropTypes.bool,
+};

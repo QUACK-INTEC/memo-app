@@ -1,25 +1,25 @@
+/* eslint-disable no-console */
 import Lodash from 'lodash';
 import { Alert } from 'react-native';
 
 function Logger(objMessages, objInternalOptions) {
   const getMessage = objOption => {
     const objLoggerData = Lodash.get(objOption, ['data'], {});
-    const objAxiosData = Lodash.get(objLoggerData, ['data'], {});
+    const objAxiosData = Lodash.get(objLoggerData, ['response', 'data'], {});
     const varKey = Lodash.get(objOption, ['key'], null);
     const strLoggerMessage = Lodash.get(objLoggerData, ['message'], null);
-    const strAxiosMessage = Lodash.get(objAxiosData, ['message'], null);
-
+    const strAxiosMessage = Lodash.get(objAxiosData, ['msg'], null);
     const varKeyData = Lodash.isFunction(varKey) ? varKey(objOption) : null;
     if (varKeyData) {
       return varKeyData;
     }
 
-    if (strLoggerMessage) {
-      return strLoggerMessage;
-    }
-
     if (strAxiosMessage) {
       return strAxiosMessage;
+    }
+
+    if (strLoggerMessage) {
+      return strLoggerMessage;
     }
 
     return objMessages[varKey];
@@ -46,7 +46,7 @@ function Logger(objMessages, objInternalOptions) {
 
   const error = objOption => {
     const errorMessage = getMessage(objOption);
-
+    console.log({ Error: objOption });
     if (errorMessage && !objOption.skipFeedback) {
       if (objInternalOptions.errorMethod) {
         return objInternalOptions.errorMethod({

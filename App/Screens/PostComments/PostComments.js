@@ -1,11 +1,13 @@
 import React from 'react';
-import { FlatList, Alert } from 'react-native';
+import { FlatList, Alert, Keyboard } from 'react-native';
 import Lodash from 'lodash';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import LoadingState from '../../Components/LoadingState';
-import PostCommentsComponent from '../../Components/PostComments';
-import PostComment from '../../Components/PostComment';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import { PostCommentList } from '../../Models';
+
+import PostCommentsComponent from '../../Components/PostComments';
+import PostComment from '../../Components/PostComment';
 
 class PostComments extends React.Component {
   constructor(props) {
@@ -128,6 +130,7 @@ class PostComments extends React.Component {
       authorId: '2',
     };
     this.setState(prevState => ({ postComments: [...prevState.postComments, commentObj] }));
+    Keyboard.dismiss();
     Alert.alert(`Comment: ${comment}`);
   };
 
@@ -145,6 +148,7 @@ class PostComments extends React.Component {
         isAuthor={item.isAuthor}
         score={item.score}
         personalScore={item.PersonalScore}
+        onDeleteComment={() => this.deleteComment(item.id)}
       />
     );
   };
@@ -167,14 +171,16 @@ class PostComments extends React.Component {
     return (
       <>
         <LoadingState.Modal isVisible={isLoading} />
-        <PostCommentsComponent
-          onBackArrow={this.goBack}
-          onAuthorPress={() => this.handleAuthorPress('3')}
-          renderComments={this.renderComments}
-          author="Emma Paige"
-          postTitle="Entrega de Informe Final"
-          onCommentPost={this.handlePostComment}
-        />
+        <ActionSheetProvider>
+          <PostCommentsComponent
+            onBackArrow={this.goBack}
+            onAuthorPress={() => this.handleAuthorPress('3')}
+            renderComments={this.renderComments}
+            author="Emma Paige"
+            postTitle="Entrega de Informe Final"
+            onCommentPost={this.handlePostComment}
+          />
+        </ActionSheetProvider>
       </>
     );
   }

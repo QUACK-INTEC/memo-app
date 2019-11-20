@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
@@ -71,38 +71,40 @@ class PostComments extends React.Component {
   renderComponent = objForm => {
     const { author, renderComments, onAuthorPress } = this.props;
     return (
-      <View style={styles.container}>
-        <View style={styles.headerInfoContainer}>
-          {this.renderHeader()}
-          <View style={styles.centeredChildren}>
-            <Link
-              text={`Evento creado Por: ${author}`}
-              textStyle={styles.authorStyle}
-              onPress={onAuthorPress}
-            />
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <View style={styles.container}>
+          <View style={styles.headerInfoContainer}>
+            {this.renderHeader()}
+            <View style={styles.centeredChildren}>
+              <Link
+                text={`Evento creado Por: ${author}`}
+                textStyle={styles.authorStyle}
+                onPress={onAuthorPress}
+              />
+            </View>
           </View>
+          <View style={styles.container}>{renderComments()}</View>
+          <InLineComponent viewStyle={styles.createCommentSection}>
+            <FormikInput
+              placeholder=" Escribe algo sobre este post..."
+              name="comment"
+              containerStyle={styles.inputContainer}
+              multiline
+              style={styles.input}
+              blurOnSubmit
+            />
+            <View style={styles.commentIconContainer}>
+              <Icon
+                name="chevron-circle-up"
+                type={ICON_TYPE.FONT_AWESOME}
+                size={ICON_SIZE.SMALL}
+                color={colors.GREEN}
+                onPress={objForm.handleSubmit}
+              />
+            </View>
+          </InLineComponent>
         </View>
-        <View style={styles.container}>{renderComments()}</View>
-        <InLineComponent viewStyle={styles.createCommentSection}>
-          <FormikInput
-            placeholder=" Escribe algo sobre este post..."
-            name="comment"
-            containerStyle={styles.inputContainer}
-            returnKeyType="done"
-            multiline
-            style={styles.input}
-          />
-          <View style={styles.commentIconContainer}>
-            <Icon
-              name="chevron-circle-up"
-              type={ICON_TYPE.FONT_AWESOME}
-              size={ICON_SIZE.SMALL}
-              color={colors.GREEN}
-              onPress={objForm.handleSubmit}
-            />
-          </View>
-        </InLineComponent>
-      </View>
+      </KeyboardAvoidingView>
     );
   };
 

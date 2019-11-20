@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingState from '../../Components/LoadingState';
 
-import RecoverPasswordForm from '../../Components/RecoverPassword';
+import PasswordRecoveryCodeForm from '../../Components/PasswordRecoveryCode';
 
-class RecoverPassWord extends Component {
+class PasswordRecoveryCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,16 +20,16 @@ class RecoverPassWord extends Component {
     const {
       navigation: { navigate },
     } = this.props;
-    return navigate('PasswordRecoveryCode');
+    return navigate('ChangePassword');
 
     // USE THIS WHEN API READY
     // const { logger, navitagion: { navigate } } = this.props;
     // this.setLoading(true);
 
-    // return Api.SendRecoveryEmail(objValues)
+    // return Api.ValidateRecoveryCode(objValues)
     //   .then(objResponse => {
     //     logger.success({
-    //       key: MessagesKey.SEND_EMAIL_SUCCESS,
+    //       key: MessagesKey.RECOVERY_CODE_SUCCESS,
     //       data: objResponse,
     //     });
 
@@ -40,7 +40,7 @@ class RecoverPassWord extends Component {
 
     //     return setTimeout(() => {
     //       logger.error({
-    //         key: MessagesKey.SEND_EMAIL_FAIL,
+    //         key: MessagesKey.RECOVERY_CODE_FAIL,
     //         data: objError,
     //       });
     //     }, 1000);
@@ -59,7 +59,7 @@ class RecoverPassWord extends Component {
     return (
       <>
         <LoadingState.Modal isVisible={isLoading} />
-        <RecoverPasswordForm
+        <PasswordRecoveryCodeForm
           onSubmit={this.handleSubmit}
           initialsValue={initialsValue}
           onBack={this.handleOnPressGoBack}
@@ -69,12 +69,12 @@ class RecoverPassWord extends Component {
   }
 }
 
-RecoverPassWord.defaultProps = {
+PasswordRecoveryCode.defaultProps = {
   initialsValue: null,
 };
 
-RecoverPassWord.propTypes = {
+PasswordRecoveryCode.propTypes = {
   initialsValue: PropTypes.shape({}),
 };
 
-export default RecoverPassWord;
+export default PasswordRecoveryCode;

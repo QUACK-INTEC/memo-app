@@ -30,8 +30,12 @@ const validation = objValues => {
     errors.password = 'Campo obligatorio';
   } else if (password.length < 8) {
     errors.password = 'Debe tener al menos 8 caracteres';
-  } else if (!/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password)) {
-    errors.password = 'Contraseña leve';
+  } else if (!/.*[0-9].*/.test(password)) {
+    errors.password = 'Debe incluir al menos un número.';
+  } else if (!/.*[a-z].*/.test(password)) {
+    errors.password = 'Debe incluir al menos una minúscula.';
+  } else if (!/.*[A-Z].*/.test(password)) {
+    errors.password = 'Debe incluir al menos una mayúscula.';
   }
 
   if (!passwordVerify) {

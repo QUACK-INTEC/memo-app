@@ -1,3 +1,4 @@
-import Store from './RootReducer';
+import { store, persistor } from './RootReducer';
 
-export default Store;
+export { store };
+export { persistor };

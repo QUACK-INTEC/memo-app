@@ -1,36 +1,37 @@
+import { AsyncStorage } from 'react-native';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import reduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { createPromise } from 'redux-promise-middleware';
-import reduxThunk from 'redux-thunk';
-// import Config from 'react-native-config';
-import { persistStore } from 'redux-persist';
-// import AsyncStorage from '@react-native-community/async-storage';
 
 // Reducers
 import userManagerReducer, { actionTypes as actionTypesUserManager } from './Common/UserManager';
 import myClassesManager from './Common/MyClasses';
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: ['userManager'],
+};
 
 const rootReducer = combineReducers({
   userManager: userManagerReducer,
   MyClasses: myClassesManager,
 });
 
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 function fnRootReducerInterceptor(objState, objAction) {
   if (objAction.type === actionTypesUserManager.LOG_OUT) {
-    return rootReducer({}, objAction);
+    return persistedReducer({}, objAction);
   }
-
-  return rootReducer(objState, objAction);
+  return persistedReducer(objState, objAction);
 }
 
-const store = createStore(
+export const store = createStore(
   fnRootReducerInterceptor,
   composeWithDevTools(applyMiddleware(reduxThunk, createPromise()))
 );
 
-const startWithPersistStore = fnCallback => {
-  persistStore(store, null, fnCallback);
-  return store;
-};
-
-export { store as default, startWithPersistStore };
+export const persistor = persistStore(store);

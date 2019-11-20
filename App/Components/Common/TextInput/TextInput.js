@@ -49,7 +49,10 @@ class TextInputWrapper extends React.Component {
     }
 
     return (
-      <Text.ItalicLight text={`${strError}`} style={{ color: colors.ERROR, ...spacers.ML_1 }} />
+      <Text.ItalicLight
+        text={`${strError}*`}
+        style={{ color: colors.ERROR, ...spacers.ML_1, ...fonts.SIZE_XS }}
+      />
     );
   };
 

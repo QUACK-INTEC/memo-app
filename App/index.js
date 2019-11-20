@@ -64,11 +64,11 @@ class App extends Component {
     if (!fontLoaded) {
       return (
         <View style={styles.loaderContainer}>
-          <LoadingState.Medium />
+          <LoadingState.Small />
         </View>
       );
     }
-    console.log(store.getState());
+
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor} loading={<LoadingState.Medium />}>

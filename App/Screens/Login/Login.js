@@ -27,13 +27,11 @@ class Login extends Component {
   };
 
   handleSubmit = objValues => {
-    // console.log("DEBUG OBJ! ",objValues);
     const { logger } = this.props;
     this.setLoading(true);
 
     return Api.Login(objValues)
       .then(objResponse => {
-        // console.log(objResponse);
         const objUserData = Lodash.get(objResponse, ['data'], null);
         logger.success({
           key: MessagesKey.SIGN_IN_SUCCESS,
@@ -43,7 +41,6 @@ class Login extends Component {
         return this.handleSuccessLogin(objUserData);
       })
       .catch(objError => {
-        // console.log(objError);
         logger.error({
           key: MessagesKey.SIGN_IN_FAILED,
           data: objError,

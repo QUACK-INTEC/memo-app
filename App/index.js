@@ -13,7 +13,7 @@ import AppNavigator from './Navigation/AppNavigator';
 import { store, persistor } from './Redux/RootReducer';
 import LoadingState from './Components/LoadingState';
 
-import { selectors as myClassesSelectors } from './Redux/Common/MyClasses';
+import { selectors as userManagerSelectors } from './Redux/Common/UserManager';
 
 import WithLogger from './HOCs/WithLogger';
 
@@ -68,6 +68,7 @@ class App extends Component {
         </View>
       );
     }
+    console.log(store.getState());
     return (
       <Provider store={store}>
         <PersistGate persistor={persistor} loading={<LoadingState.Medium />}>
@@ -79,7 +80,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const { isLogged } = myClassesSelectors;
+  const { isLogged } = userManagerSelectors;
   return {
     loggedIn: isLogged(state, props),
   };

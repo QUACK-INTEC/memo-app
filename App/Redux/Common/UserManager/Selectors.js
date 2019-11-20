@@ -1,41 +1,18 @@
-// import { createSelector } from 'reselect';
-// import { get } from '../../../Utilities';
+import { createSelector } from 'reselect';
+import Lodash from 'lodash';
 
-// const getUserManagerState = objState => get(objState, ['userManager'], {});
+const getMyUserManager = objState => Lodash.get(objState, ['userManager'], {});
 
-// export const getUserToken = createSelector(
-//   getUserManagerState,
-//   objState => {
-//     return get(objState, ['token'], null);
-//   }
-// );
+export const isLogged = createSelector(
+  getMyUserManager,
+  objState => {
+    const value = Lodash.get(objState, ['user', 'token'], null);
 
-// export const isUserLoggedIn = createSelector(
-//   getUserToken,
-//   strToken => {
-//     return !!strToken;
-//   }
-// );
+    console.log('RED', value);
+    return value != null;
+  }
+);
 
-// export const getUserInfo = createSelector(
-//   getUserManagerState,
-//   objState => get(objState, ['user'], null)
-// );
-
-// export const getUserSfId = createSelector(
-//   getUserInfo,
-//   objUser => get(objUser, ['sfId'], null)
-// );
-
-// export const getUserLocationSfId = createSelector(
-//   getUserInfo,
-//   objUser => get(objUser, ['primaryLocationSfId'], null)
-// );
-
-// export default {
-//   getUserInfo,
-//   getUserToken,
-//   getUserSfId,
-//   getUserLocationSfId,
-//   isUserLoggedIn,
-// };
+export default {
+  isLogged,
+};

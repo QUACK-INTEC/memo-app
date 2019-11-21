@@ -12,13 +12,19 @@ import Link from '../../Components/Common/Link';
 import HomeComponent from '../../Components/Home';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 import { colors, fonts, spacers } from '../../Core/Theme';
-import Api from '../../Core/Api';
+import Api, { MemoApi } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import ClassInfoCard from '../../Components/ClassInfoCard';
 import {
   actions as classesActions,
   selectors as myClassesSelectors,
 } from '../../Redux/Common/MyClasses';
+
+import {
+  selectors as userManagerSelectors,
+  actions as userActions,
+} from '../../Redux/Common/UserManager';
+
 import { Classes } from '../../Models';
 
 class Home extends React.Component {
@@ -30,7 +36,11 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const { setMyClasses, logger } = this.props;
+    const { setMyClasses, logger, loggedIn, userToken } = this.props;
+
+    if (loggedIn) {
+      MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+    }
 
     Promise.all([this.getMyClasses()])
       .then(listValues => {
@@ -70,7 +80,7 @@ class Home extends React.Component {
     return (
       <View style={styles.myClassContainer}>
         <ClassInfoCard
-          subject="Falta del api"
+          subject={item.subjectName}
           professor={item.professorName}
           schedule={item.classDays}
           onPress={() => this.handleOnPressClassItem(item.id, item)}
@@ -97,6 +107,7 @@ class Home extends React.Component {
   };
 
   renderEvents = () => {
+    const { logout } = this.props;
     const { isLoading } = this.state;
 
     if (isLoading) return <></>;
@@ -110,7 +121,11 @@ class Home extends React.Component {
           size={ICON_SIZE.EXTRA_LARGE}
         />
         <Text.Medium text="Nada para hoy" style={styles.noEventsText} />
-        <Link text="Ver mi calendario" textStyle={styles.goToCalendarText} />
+        <Link
+          text="Ver mi calendario"
+          textStyle={styles.goToCalendarText}
+          onPress={() => logout()}
+        />
       </View>
     );
   };
@@ -157,9 +172,12 @@ Home.propTypes = {
 
 const mapStateToProps = (state, props) => {
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
+  const { isLogged, getUserToken } = userManagerSelectors;
   return {
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
+    loggedIn: isLogged(state, props),
+    userToken: getUserToken(state, props),
   };
 };
 
@@ -167,6 +185,8 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setMyClasses: classesActions.setClasses,
+      setUserToken: userActions.setUserToken,
+      logout: userActions.logout,
     },
     dispatch
   );

@@ -22,7 +22,7 @@ class ClassRooms extends React.Component {
     return (
       <View style={styles.myClassContainer}>
         <ClassInfoCard
-          subject="Falta del api"
+          subject={item.subjectName}
           professor={item.professorName}
           schedule={item.classDays}
           onPress={() => this.handleOnPressClassItem(item.id, item)}

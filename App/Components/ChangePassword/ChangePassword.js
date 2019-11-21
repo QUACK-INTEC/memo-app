@@ -3,72 +3,72 @@ import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-nati
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 
-import { spacers, toBaseDesignPx } from '../../Core/Theme';
+import { spacers, colors, fonts } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
+import Text from '../Common/Text';
 
 const validation = objValues => {
   const errors = {};
-  const { user, claveUniversidad, university } = objValues;
+  const { password, passwordVerify } = objValues;
 
-  if (!university) {
-    errors.university = 'Requerido';
-  }
-  if (!claveUniversidad) {
-    errors.claveUniversidad = 'Requerido';
+  if (!password) {
+    errors.password = 'Campo obligatorio';
+  } else if (password.length < 8) {
+    errors.password = 'Debe tener al menos 8 caracteres';
+  } else if (!/.*[0-9].*/.test(password)) {
+    errors.password = 'Debe incluir al menos un número.';
+  } else if (!/.*[a-z].*/.test(password)) {
+    errors.password = 'Debe incluir al menos una minúscula.';
+  } else if (!/.*[A-Z].*/.test(password)) {
+    errors.password = 'Debe incluir al menos una mayúscula.';
   }
 
-  if (!user) {
-    errors.user = 'Requerido';
+  if (!passwordVerify) {
+    errors.passwordVerify = '*';
+  } else if (passwordVerify !== password) {
+    errors.passwordVerify = '*';
   }
 
   return errors;
 };
 
-class SyncForm extends Component {
+class ChangePassword extends Component {
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
+  };
+
+  handleGoBackToLogIn = () => {
+    const { onBack } = this.props;
+    onBack();
   };
 
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
     return {
-      user: null,
-      claveUniversidad: null,
-      university: null,
+      recoveryCode: null,
       ...initialsValue,
     };
   };
 
   renderForm = objForm => {
-    const { universities } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView behavior="padding">
           <View>
+            <Text.Medium text="Ingrese su nueva contraseña: " style={styles.title} />
             <FormikInput
-              type="dropdown"
-              options={universities}
-              placeholder="Seleccione su universidad"
-              label="Universidad"
-              name="university"
+              label="Nueva contraseña"
+              name="password"
               containerStyle={styles.input}
-              enablesReturnKeyAutomatically
-              returnKeyType="next"
+              returnKeyType="done"
+              secureTextEntry
             />
             <FormikInput
-              label="Usuario"
-              name="user"
-              keyboardType="email-address"
-              containerStyle={styles.input}
-              enablesReturnKeyAutomatically
-              returnKeyType="next"
-            />
-            <FormikInput
-              label="Contraseña"
-              name="claveUniversidad"
+              label="Repita la contraseña"
+              name="passwordVerify"
               containerStyle={styles.input}
               returnKeyType="done"
               secureTextEntry
@@ -76,11 +76,12 @@ class SyncForm extends Component {
           </View>
           <View style={styles.buttonsContainer}>
             <Button
-              label="Sincronizar mi cuenta"
-              containerStyle={styles.createAccountButton}
+              label="Enviar"
+              containerStyle={styles.continueButton}
               onPress={objForm.handleSubmit}
               disabled={!objForm.isValid}
             />
+            <Button label="Volver a iniciar sesión" secondary onPress={this.handleGoBackToLogIn} />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -103,44 +104,32 @@ const styles = StyleSheet.create({
   container: {
     ...spacers.MA_10,
     flex: 1,
-    justifyContent: 'center',
   },
+  title: { color: colors.GRAY, ...fonts.SIZE_S, ...spacers.MT_15 },
   input: {
     ...spacers.MT_7,
   },
   buttonsContainer: {
     ...spacers.MT_6,
   },
-  imagePicker: {
-    alignSelf: 'center',
-    height: toBaseDesignPx(120),
-    width: toBaseDesignPx(120),
-    borderRadius: toBaseDesignPx(60),
-  },
-  createAccountButton: {
+  continueButton: {
     ...spacers.MB_7,
   },
 });
 
-SyncForm.defaultProps = {
+ChangePassword.defaultProps = {
   onSubmit: () => null,
+  onBack: () => null,
   initialsValue: null,
 };
 
-SyncForm.propTypes = {
+ChangePassword.propTypes = {
   onSubmit: PropTypes.func,
+  onBack: PropTypes.func,
   initialsValue: PropTypes.shape({
-    user: PropTypes.string,
-    claveUniversidad: PropTypes.string,
-    university: PropTypes.string,
+    password: PropTypes.string,
+    passwordVerify: PropTypes.string,
   }),
-  universities: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      syncCode: PropTypes.string,
-    })
-  ).isRequired,
 };
 
-export default SyncForm;
+export default ChangePassword;

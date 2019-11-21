@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, ViewPropTypes, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 // Theme
-import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
+import { colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import Text from '../Text';
@@ -26,7 +27,7 @@ class InfoCard extends React.Component {
         <Text.SemiBold
           text={title}
           style={[styles.titleStyle, titleStyle]}
-          numberOfLines={1}
+          numberOfLines={2}
           ellipzeModde="tail"
         />
         {children}
@@ -43,12 +44,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.WHITE,
     width: toBaseDesignPx(151),
+    ...spacers.PA_2,
+    justifyContent: 'center',
+    height: toBaseDesignPx(80),
   },
   titleStyle: {
-    ...fonts.SIZE_XS,
-    ...spacers.MT_4,
-    ...spacers.ML_10,
-    ...spacers.MR_10,
+    textAlign: 'center',
+    fontSize: RFValue(10),
     color: colors.GRAY,
   },
 });

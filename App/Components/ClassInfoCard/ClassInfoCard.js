@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     fontSize: RFValue(7),
   },
   scheduleStyle: {
-    ...spacers.MB_4,
     ...spacers.MT_9,
     fontSize: RFValue(9),
   },
@@ -50,7 +49,7 @@ ClassInfoCard.defaultProps = {
 ClassInfoCard.propTypes = {
   subject: PropTypes.string,
   professor: PropTypes.string,
-  schedule: PropTypes.string,
+  schedule: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   onPress: PropTypes.func,
   disabled: PropTypes.bool,
   titleStyle: PropTypes.string,

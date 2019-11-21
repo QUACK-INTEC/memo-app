@@ -7,17 +7,15 @@ import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 
-const UNIVERSITYS = [{ label: 'INTEC', value: '1' }];
-
 const validation = objValues => {
   const errors = {};
-  const { user, password, university } = objValues;
+  const { user, claveUniversidad, university } = objValues;
 
   if (!university) {
     errors.university = 'Requerido';
   }
-  if (!password) {
-    errors.password = 'Requerido';
+  if (!claveUniversidad) {
+    errors.claveUniversidad = 'Requerido';
   }
 
   if (!user) {
@@ -38,20 +36,21 @@ class SyncForm extends Component {
 
     return {
       user: null,
-      password: null,
+      claveUniversidad: null,
       university: null,
       ...initialsValue,
     };
   };
 
   renderForm = objForm => {
+    const { universities } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView behavior="padding">
           <View>
             <FormikInput
               type="dropdown"
-              options={UNIVERSITYS}
+              options={universities}
               placeholder="Seleccione su universidad"
               label="Universidad"
               name="university"
@@ -69,7 +68,7 @@ class SyncForm extends Component {
             />
             <FormikInput
               label="Contraseña"
-              name="password"
+              name="claveUniversidad"
               containerStyle={styles.input}
               returnKeyType="done"
               secureTextEntry
@@ -132,9 +131,16 @@ SyncForm.propTypes = {
   onSubmit: PropTypes.func,
   initialsValue: PropTypes.shape({
     user: PropTypes.string,
-    password: PropTypes.string,
+    claveUniversidad: PropTypes.string,
     university: PropTypes.string,
   }),
+  universities: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      syncCode: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default SyncForm;

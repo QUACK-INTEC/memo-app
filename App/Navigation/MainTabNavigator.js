@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarLabel from '../Components/TabBar/TabBarLabel';
@@ -7,11 +7,15 @@ import TabBarIcon from '../Components/TabBar/TabBarIcon';
 import { ICON_SIZE } from '../Components/Common/Icon';
 import { toBaseDesignPx, colors, spacers } from '../Core/Theme';
 
+// Screens root
 import Playground from '../Screens/Playground';
 import HomeScreen from '../Screens/Home';
 import CalendarScreen from '../Screens/Calendar';
 import ClassRoomScreen from '../Screens/ClassRooms';
 import ProfileScreen from '../Screens/Profile';
+
+// Screens
+import ClassHubScreen from '../Screens/ClassHub';
 
 const config = Platform.select({
   web: { headerMode: 'none' },
@@ -80,6 +84,23 @@ AddStack.navigationOptions = {
       color={focused ? colors.GRAY_LIGHT : colors.WHITE}
     />
   ),
+  tabBarOnPress: () => {
+    // TO-DO Open Modal!
+    Alert.alert(
+      'Agregar publicacion',
+      'Desea agregar una nueva publicacion?',
+      [
+        { text: 'Despues', onPress: () => null },
+        {
+          text: 'No',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Si', onPress: null },
+      ],
+      { cancelable: false }
+    );
+  },
 };
 
 AddStack.path = '';
@@ -87,13 +108,24 @@ AddStack.path = '';
 const ClassRoomStack = createStackNavigator(
   {
     Clases: ClassRoomScreen,
+    ClassHub: {
+      screen: ClassHubScreen,
+    },
   },
   config
 );
 
-ClassRoomStack.navigationOptions = {
-  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" />,
+ClassRoomStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+    tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Clases" />,
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="whiteboard" />,
+  };
 };
 
 ClassRoomStack.path = '';

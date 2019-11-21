@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import RegisterComponent from '../../Components/Register';
 import LoadingState from '../../Components/LoadingState';
-import Api from '../../Core/Api';
+import Api, { MemoApi } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 
 import { actions as userActions } from '../../Redux/Common/UserManager';
@@ -29,33 +29,56 @@ class Register extends Component {
 
     return Api.Register(objValues)
       .then(objResponse => {
-        const objUserData = Lodash.get(objResponse, ['data'], null);
         logger.success({
           key: MessagesKey.REGISTER_SUCCESS,
           data: objResponse,
         });
 
-        return this.handleSuccessRegister(objUserData);
+        return this.handleSuccessRegister(objValues);
       })
       .catch(objError => {
-        logger.error({
-          key: MessagesKey.REGISTER_FAILED,
-          data: objError,
-        });
-        return this.setLoading(false);
+        this.setLoading(false);
+
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.REGISTER_FAILED,
+            data: objError,
+          });
+        }, 1000);
       });
   };
 
-  // TODO: Go or change stack to view home
-  handleSuccessRegister = objUserData => {
-    const { setUserInfo } = this.props;
-    this.setLoading(false);
+  handleSuccessRegister = objValues => {
+    const {
+      setUserInfo,
+      navigation: { navigate },
+      logger,
+    } = this.props;
+    const { email, password } = objValues;
+    return Api.Login({ email, password })
+      .then(objResponse => {
+        const strToken = Lodash.get(objResponse, ['data', 'token'], null);
+        const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
+        setUserInfo(objUserInfo);
+        MemoApi.defaults.headers.common.Authorization = `Bearer ${strToken}`;
 
-    if (objUserData) {
-      return setUserInfo(objUserData);
-    }
+        logger.success({
+          key: MessagesKey.SIGN_IN_SUCCESS,
+          data: objResponse,
+        });
 
-    return null;
+        this.setLoading(false);
+        return navigate('Sync', { userToken: strToken });
+      })
+      .catch(objError => {
+        this.setLoading(false);
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SIGN_IN_FAILED,
+            data: objError,
+          });
+        }, 1000);
+      });
   };
 
   handleOnPressHasAnAccount = () => {

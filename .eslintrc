@@ -5,7 +5,7 @@
     "prettier/react"
   ],
   "rules": {
-    "react/prop-types": ["error", { "ignore": ["children","style","predefinedStyle", "logger", "focused", "navigation","logout", "loggedIn","userToken"] }],
+    "react/prop-types": ["error", { "ignore": ["children","style","predefinedStyle", "logger", "focused", "navigation","logout", "loggedIn","userToken","showActionSheetWithOptions"] }],
     "no-fallthrough": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "react/jsx-props-no-spreading": "off",

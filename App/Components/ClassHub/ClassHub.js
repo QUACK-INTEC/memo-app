@@ -15,6 +15,7 @@ class ClassHub extends React.PureComponent {
       subjectName,
       renderSubjectSchedule,
       onPressGoToEvents,
+      onPressGoToParticipants,
       subjectStudents,
       subjectTeacher,
       subjectSection,
@@ -53,9 +54,10 @@ class ClassHub extends React.PureComponent {
                 textStyle={styles.linkGoToEvents}
               />
               {subjectStudents ? (
-                <Text.Medium
+                <Link
                   text={`${subjectStudents} Participantes`}
-                  style={styles.subjectStudentsText}
+                  onPress={onPressGoToParticipants}
+                  textStyle={styles.linkGoToEvents}
                 />
               ) : null}
             </View>
@@ -169,6 +171,7 @@ ClassHub.defaultProps = {
   subjectRoom: '',
   onPressGoToEvents: () => null,
   subjectStudents: '',
+  onPressGoToParticipants: () => null,
 };
 
 ClassHub.propTypes = {
@@ -180,6 +183,7 @@ ClassHub.propTypes = {
   subjectSection: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subjectRoom: PropTypes.string,
   onPressGoToEvents: PropTypes.func,
+  onPressGoToParticipants: PropTypes.func,
   subjectStudents: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 

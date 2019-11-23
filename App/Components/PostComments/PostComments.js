@@ -176,10 +176,12 @@ const styles = StyleSheet.create({
     ...spacers.MT_11,
     alignSelf: 'center',
     color: colors.GRAY,
+    textAlign: 'center',
   },
   authorStyle: {
-    ...fonts.SIZE_XS,
+    ...fonts.SIZE_XXS,
     color: colors.GRAY,
+    ...spacers.MB_6,
   },
   infoStyle: {
     color: colors.GRAY,

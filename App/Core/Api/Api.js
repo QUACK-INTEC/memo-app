@@ -65,6 +65,10 @@ const GetSectionStudents = idSection => {
   return MemoApi.get(`sections/${idSection}/students`);
 };
 
+const DeletePost = idPost => {
+  return MemoApi.delete(`posts/${idPost}`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -75,6 +79,7 @@ const Api = {
   GetMyClasses,
   GetSectionInfo,
   GetSectionStudents,
+  DeletePost,
 };
 
 export default Api;

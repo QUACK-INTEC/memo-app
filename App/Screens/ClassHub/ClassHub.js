@@ -9,7 +9,6 @@ import Text from '../../Components/Common/Text';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { fonts, colors } from '../../Core/Theme';
 
-// TODO: Fix warnings
 class ClassHub extends React.Component {
   constructor(props) {
     super(props);

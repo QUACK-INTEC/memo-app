@@ -5,6 +5,7 @@ import Lodash from 'lodash';
 import { Field, FastField } from 'formik';
 import TextInput from './TextInput';
 import DropDown from './DropDown';
+import TimePicker from './TimePicker';
 import Toggle from './Toggle';
 
 import { colors } from '../../Core/Theme';
@@ -12,6 +13,7 @@ import { colors } from '../../Core/Theme';
 const objInputs = {
   input: TextInput,
   dropdown: DropDown,
+  timepicker: TimePicker,
   toggle: Toggle,
 };
 

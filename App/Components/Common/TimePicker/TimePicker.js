@@ -2,6 +2,8 @@ import React from 'react';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
+// eslint-disable-next-line import/no-unresolved
+import { Appearance } from 'react-native-appearance';
 
 // Common
 import Text from '../Text';
@@ -24,12 +26,21 @@ class TimePicker extends React.Component {
   };
 
   handleDatePicked = date => {
+    const { onChange } = this.props;
+    onChange(date);
     this.setState({ date: `${date.getHours()}:${date.getMinutes()}` }, this.hideDateTimePicker());
   };
 
   render() {
     const { date, isDateTimePickerVisible } = this.state;
     const { style } = this.props;
+    const colorScheme = Appearance.getColorScheme();
+    let darkMode = false;
+
+    if (colorScheme === 'dark') {
+      darkMode = true;
+    }
+
     return (
       <>
         <TouchableOpacity onPress={this.showDateTimePicker}>
@@ -38,6 +49,7 @@ class TimePicker extends React.Component {
             is24Hour
             locale="en_GB"
             isVisible={isDateTimePickerVisible}
+            isDarkModeEnabled={darkMode}
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
           />
@@ -51,11 +63,13 @@ class TimePicker extends React.Component {
 TimePicker.defaultProps = {
   time: null,
   textStyle: null,
+  onChange: () => null,
 };
 
 TimePicker.propTypes = {
   time: PropTypes.string,
   textStyle: PropTypes.shape({}),
+  onChange: PropTypes.func,
 };
 
 export default TimePicker;

@@ -10,6 +10,7 @@ import { PostCommentList } from '../../Models';
 import PostCommentsComponent from '../../Components/PostComments';
 import PostComment from '../../Components/PostComment';
 import PopUp from '../../Components/Common/PopUp';
+import { spacers } from '../../Core/Theme';
 
 class PostComments extends React.Component {
   constructor(props) {
@@ -164,19 +165,21 @@ class PostComments extends React.Component {
 
   renderComment = ({ item }) => {
     return (
-      <PostComment
-        author={item.author}
-        onAuthorPress={() => this.handleAuthorPress(item.authorId)}
-        onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote)}
-        onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
-        badgeUri={item.authorBadgeUri}
-        initialsText={item.authorInitials}
-        comment={item.comment}
-        isAuthor={item.isAuthor}
-        score={item.score}
-        personalScore={item.PersonalScore}
-        onDeleteComment={() => this.showConfirmationBox(item.id)}
-      />
+      <View style={styles.postCommentContainer}>
+        <PostComment
+          author={item.author}
+          onAuthorPress={() => this.handleAuthorPress(item.authorId)}
+          onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote)}
+          onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
+          badgeUri={item.authorBadgeUri}
+          initialsText={item.authorInitials}
+          comment={item.comment}
+          isAuthor={item.isAuthor}
+          score={item.score}
+          personalScore={item.PersonalScore}
+          onDeleteComment={() => this.showConfirmationBox(item.id)}
+        />
+      </View>
     );
   };
 
@@ -228,6 +231,7 @@ class PostComments extends React.Component {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  postCommentContainer: { ...spacers.PB_1 },
 });
 
 // DUMMY DATA

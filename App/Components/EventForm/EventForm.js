@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import PropTypes from 'prop-types';
 
 import { ScrollView } from 'react-native-gesture-handler';
 import ModalForm from '../ModalForm';
@@ -53,18 +54,11 @@ class EventForm extends React.Component {
 
   renderForm = objForm => {
     const { canAddFile, hasDate, contentInsetBottom } = this.state;
+    const { isEditing, optionsClasses } = this.props;
+    const titleText = isEditing ? 'Editar' : 'Crear';
     return (
       <>
-        <Text.SemiBold
-          text="Crear Publicación"
-          style={{
-            ...fonts.SIZE_XL,
-            textAlign: 'center',
-            ...spacers.MT_4,
-            ...spacers.MB_4,
-            color: colors.GRAY,
-          }}
-        />
+        <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
         <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
           <ScrollView
             bounces={false}
@@ -74,25 +68,27 @@ class EventForm extends React.Component {
           >
             <FormikInput
               type="dropdown"
-              options={[{ value: 'inteligencia_artificial', label: 'Inteligencia Artificial' }]}
+              options={optionsClasses}
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
               name="clase"
-              labelStyle={{ ...fonts.SIZE_S }}
+              labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
             />
             <FormikInput
               label="Titulo"
               name="title"
-              labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+              labelStyle={styles.labelStyle}
+              containerStyle={styles.containerTextInput}
               enablesReturnKeyAutomatically
               returnKeyType="done"
             />
             <FormikInput
               label="Descripción"
               name="description"
-              labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+              labelStyle={styles.labelStyle}
+              containerStyle={styles.containerTextInput}
               returnKeyType="done"
             />
             <FormikInput
@@ -101,17 +97,17 @@ class EventForm extends React.Component {
                 { value: 'public', label: 'Publico' },
                 { value: 'private', label: 'Privado' },
               ]}
-              labelStyle={{ ...fonts.SIZE_S }}
+              labelStyle={styles.labelStyle}
               label="Tipo de evento"
               name="type"
               containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
               enablesReturnKeyAutomatically
             />
-            <View style={{ ...spacers.MT_14 }}>
+            <View style={styles.containerToggleInput}>
               <ToggleButton
                 label="Anexar archivo?"
                 onChange={this.handleOnToggleAddFile}
-                labelStyle={{ marginLeft: 0, color: colors.GRAY }}
+                labelStyle={styles.labelToggleInput}
               />
             </View>
 
@@ -122,27 +118,22 @@ class EventForm extends React.Component {
                   { value: 'public', label: 'Publico' },
                   { value: 'privado', label: 'Privado' },
                 ]}
-                labelStyle={{ ...fonts.SIZE_S }}
+                labelStyle={styles.labelStyle}
                 label="Tipo de evento"
                 name="type"
                 containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
             ) : null}
-            <View style={{ ...spacers.MT_13 }}>
+            <View style={styles.containerToggleInput}>
               <ToggleButton
                 label="Tiene fecha?"
                 onChange={this.handleOnToggleHasDate}
-                labelStyle={{ marginLeft: 0, color: colors.GRAY }}
+                labelStyle={styles.labelToggleInput}
               />
             </View>
             {hasDate ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  ...spacers.MT_8,
-                }}
-              >
+              <View style={styles.containerTimePicker}>
                 <FormikInput
                   type="timepicker"
                   label="Hora de inicio"
@@ -161,27 +152,17 @@ class EventForm extends React.Component {
             ) : null}
           </ScrollView>
         </KeyboardAwareScrollView>
-        <View
-          style={{
-            backgroundColor: colors.WHITE,
-            flex: 1,
-            justifyContent: 'center',
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
+        <View style={styles.containerBottom}>
           <Button
-            label="Continuar"
-            containerStyle={{ ...spacers.ML_4, ...spacers.MR_4 }}
+            label={isEditing ? 'Guardar' : 'Crear'}
+            containerStyle={styles.submitButton}
             onPress={objForm.handleSubmit}
             disabled={!objForm.isValid}
           />
           <Button
             label="Cancelar"
             secondary
-            containerStyle={{ ...spacers.MT_8, ...spacers.MB_4, ...spacers.ML_4, ...spacers.MR_4 }}
+            containerStyle={styles.cancelButton}
             onPress={this.handleCloseEventForm}
           />
         </View>
@@ -190,18 +171,61 @@ class EventForm extends React.Component {
   };
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, initialValues, validation } = this.props;
     return (
       <ModalForm isVisible={isVisible} onCloseModal={this.handleCloseEventForm}>
         <Formik
-          // validate={validation}
+          validate={validation}
           onSubmit={this.handleOnSubmit}
-          initialValues={{ clase: null }}
+          initialValues={initialValues}
           component={this.renderForm}
         />
       </ModalForm>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  titleForm: {
+    ...fonts.SIZE_XL,
+    textAlign: 'center',
+    ...spacers.MT_4,
+    ...spacers.MB_4,
+    color: colors.GRAY,
+  },
+  labelStyle: { ...fonts.SIZE_S },
+  containerTextInput: { ...spacers.MT_3 },
+  containerToggleInput: { ...spacers.MT_13 },
+  labelToggleInput: { marginLeft: 0, color: colors.GRAY },
+  containerTimePicker: {
+    flexDirection: 'row',
+    ...spacers.MT_8,
+  },
+  containerBottom: {
+    backgroundColor: colors.WHITE,
+    flex: 1,
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  submitButton: { ...spacers.ML_4, ...spacers.MR_4 },
+  cancelButton: { ...spacers.MT_8, ...spacers.MB_4, ...spacers.ML_4, ...spacers.MR_4 },
+});
+
+EventForm.defaultProps = {
+  optionsClasses: [],
+};
+
+EventForm.propTypes = {
+  optionsClasses: PropTypes.arrayOf(),
+  isVisible: PropTypes.bool.isRequired,
+  initialValues: PropTypes.shape().isRequired,
+  validation: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool.isRequired,
+};
 
 export default EventForm;

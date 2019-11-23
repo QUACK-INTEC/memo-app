@@ -1,16 +1,23 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 
-import Text from '../../Components/Common/Text';
+import CalendarComponent from '../../Components/Calendar';
 
-const Calendar = () => (
-  <View style={styles.container}>
-    <Text.Bold text="CALENDAR" />
-  </View>
-);
+class Calendar extends React.Component {
+  renderEvents = () => {
+    // TODO: Get events for today from API
+    return null;
+  };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
+  render() {
+    return (
+      <CalendarComponent
+        onGlobalPress={() => null}
+        onPrivatePress={() => null}
+        onDateChange={() => null}
+        renderEvents={this.renderEvents}
+      />
+    );
+  }
+}
 
 export default Calendar;

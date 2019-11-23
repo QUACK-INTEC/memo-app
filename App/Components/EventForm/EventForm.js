@@ -11,7 +11,6 @@ import Button from '../Common/Button';
 import Text from '../Common/Text';
 import { toBaseDesignPx, fonts, colors, spacers } from '../../Core/Theme';
 import ToggleButton from '../Common/Toggle';
-import TimePicker from '../Common/TimePickerWrapper';
 
 class EventForm extends React.Component {
   constructor(props) {
@@ -96,7 +95,7 @@ class EventForm extends React.Component {
               type="dropdown"
               options={[
                 { value: 'public', label: 'Publico' },
-                { value: 'privado', label: 'Privado' },
+                { value: 'private', label: 'Privado' },
               ]}
               labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
               label="Tipo de evento"
@@ -135,17 +134,24 @@ class EventForm extends React.Component {
             </View>
             {hasDate ? (
               <View
-                style={{ flexDirection: 'row', justifyContent: 'space-between', ...spacers.MT_8 }}
+                style={{
+                  flexDirection: 'row',
+                  ...spacers.MT_8,
+                }}
               >
-                <TimePicker
-                  text="Hora de inicio"
-                  textStyle={{ ...fonts.SIZE_S, color: colors.GRAY }}
-                  containerStyle={{ width: toBaseDesignPx(160.5) }}
+                <FormikInput
+                  type="timepicker"
+                  label="Hora de inicio"
+                  name="startTime"
+                  labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                  containerStyle={{ flex: 1, width: toBaseDesignPx(10), ...spacers.MR_2 }}
                 />
-                <TimePicker
-                  text="Hora final"
-                  textStyle={{ ...fonts.SIZE_S, color: colors.GRAY }}
-                  containerStyle={{ width: toBaseDesignPx(160.5) }}
+                <FormikInput
+                  type="timepicker"
+                  label="Hora final"
+                  name="endTime"
+                  labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                  containerStyle={{ flex: 1, width: toBaseDesignPx(10) }}
                 />
               </View>
             ) : null}
@@ -181,7 +187,7 @@ class EventForm extends React.Component {
   };
 
   render() {
-    const { isVisible, canAddFile } = this.state;
+    const { isVisible } = this.state;
     return (
       <ModalForm isVisible={isVisible} onCloseModal={this.handleCloseEventForm}>
         <Formik

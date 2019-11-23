@@ -11,21 +11,21 @@ import TimePicker from '../TimePicker';
 
 class TimePickerWrapper extends React.Component {
   renderText = () => {
-    const { text, textStyle } = this.props;
-    if (text) {
-      return <Text.SemiBold text={text} style={[styles.textStyle, textStyle]} />;
+    const { label, textStyle } = this.props;
+    if (label) {
+      return <Text.SemiBold text={label} style={[styles.textStyle, textStyle]} />;
     }
 
     return null;
   };
 
   render() {
-    const { time, timeStyle, containerStyle } = this.props;
+    const { time, timeStyle, containerStyle, onChange } = this.props;
     return (
       <>
         <View style={[styles.mainView, containerStyle]}>
           {this.renderText()}
-          <TimePicker time={time} style={[styles.timeStyle, timeStyle]} />
+          <TimePicker onChange={onChange} time={time} style={[styles.timeStyle, timeStyle]} />
         </View>
       </>
     );
@@ -42,19 +42,21 @@ const styles = StyleSheet.create({
 });
 
 TimePickerWrapper.defaultProps = {
-  text: null,
+  label: null,
   time: null,
   textStyle: null,
   timeStyle: null,
   containerStyle: null,
+  onChange: () => null,
 };
 
 TimePickerWrapper.propTypes = {
-  text: PropTypes.string,
+  label: PropTypes.string,
   time: PropTypes.string,
   textStyle: PropTypes.shape({}),
   timeStyle: PropTypes.shape({}),
   containerStyle: PropTypes.shape({}),
+  onChange: PropTypes.func,
 };
 
 export default TimePickerWrapper;

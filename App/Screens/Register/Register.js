@@ -51,7 +51,6 @@ class Register extends Component {
   handleSuccessRegister = objValues => {
     const {
       setUserInfo,
-      setUserToken,
       navigation: { navigate },
       logger,
     } = this.props;
@@ -60,7 +59,6 @@ class Register extends Component {
       .then(objResponse => {
         const strToken = Lodash.get(objResponse, ['data', 'token'], null);
         const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
-        setUserToken(strToken);
         setUserInfo(objUserInfo);
         MemoApi.defaults.headers.common.Authorization = `Bearer ${strToken}`;
 
@@ -70,7 +68,7 @@ class Register extends Component {
         });
 
         this.setLoading(false);
-        return navigate('Sync');
+        return navigate('Sync', { userToken: strToken });
       })
       .catch(objError => {
         this.setLoading(false);
@@ -108,20 +106,17 @@ class Register extends Component {
 Register.defaultProps = {
   initialsValue: null,
   setUserInfo: () => null,
-  setUserToken: () => null,
 };
 
 Register.propTypes = {
   initialsValue: PropTypes.shape({}),
   setUserInfo: PropTypes.func,
-  setUserToken: PropTypes.func,
 };
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setUserInfo: userActions.setUserInfo,
-      setUserToken: userActions.setUserToken,
     },
     dispatch
   );

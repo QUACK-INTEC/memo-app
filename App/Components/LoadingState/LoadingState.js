@@ -31,8 +31,8 @@ class LoadingState extends React.Component {
         };
       default:
         return {
-          width: toBaseDesignPx(125),
-          height: toBaseDesignPx(125),
+          width: toBaseDesignPx(105),
+          height: toBaseDesignPx(105),
         };
     }
   };
@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    width: toBaseDesignPx(175),
-    height: toBaseDesignPx(175),
+    width: toBaseDesignPx(115),
+    height: toBaseDesignPx(115),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.WHITE,

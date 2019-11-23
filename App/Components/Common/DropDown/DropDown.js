@@ -10,6 +10,7 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import Text from '../Text';
+import InLineComponent from '../InLineComponent';
 
 class DropDownComponent extends React.Component {
   constructor(props) {
@@ -30,13 +31,37 @@ class DropDownComponent extends React.Component {
     onChange(value);
   };
 
+  renderErrorLabel = () => {
+    const { hasError, strError } = this.props;
+
+    if (!hasError) {
+      return null;
+    }
+
+    return (
+      <Text.ItalicLight
+        text={`${strError}*`}
+        style={{ color: colors.ERROR, ...spacers.ML_1, ...fonts.SIZE_XS }}
+      />
+    );
+  };
+
   renderLabel = () => {
     const { label, labelStyle, hasError } = this.props;
     const errorLabelStyle = hasError ? styles.errorLabelStyle : null;
 
     if (label) {
       return (
-        <Text.SemiBold text={label} style={[this.getLabelStyle(), errorLabelStyle, labelStyle]} />
+        <InLineComponent>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text.SemiBold
+              text={label}
+              style={[this.getLabelStyle(), errorLabelStyle, labelStyle]}
+            />
+            <Text.SemiBold text="   ▼" style={[styles.triangle]} />
+          </View>
+          {this.renderErrorLabel()}
+        </InLineComponent>
       );
     }
 
@@ -79,25 +104,22 @@ class DropDownComponent extends React.Component {
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
-        <View style={styles.inputContainer}>
-          <RNPickerSelect
-            placeholder={{
-              label: placeholder,
-              value: null,
-            }}
-            {...rest}
-            onValueChange={this.handleOptionChange}
-            items={options}
-            style={{
-              inputIOS: [this.getDropDownStyle(), style],
-              inputAndroid: [this.getDropDownStyle(), style],
-            }}
-            disabled={disabled}
-            value={valueFromState}
-            useNativeAndroidPickerStyle={false}
-          />
-          <Text.SemiBold text="▼" style={[styles.triangle]} />
-        </View>
+        <RNPickerSelect
+          placeholder={{
+            label: placeholder,
+            value: null,
+          }}
+          disabled={disabled}
+          onValueChange={this.handleOptionChange}
+          items={options}
+          style={{
+            inputIOS: [this.getDropDownStyle(), style],
+            inputAndroid: [this.getDropDownStyle(), style],
+          }}
+          value={valueFromState}
+          useNativeAndroidPickerStyle={false}
+          {...rest}
+        />
       </View>
     );
   }
@@ -108,12 +130,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.GRAY_LIGHT,
   },
-  inputContainer: {
-    ...spacers.PV_2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  inputContainer: {},
   triangle: {
     color: colors.GRAY,
     fontSize: toBaseDesignPx(10),
@@ -153,11 +170,12 @@ DropDownComponent.defaultProps = {
   placeholder: 'Seleccione una opcion',
   label: null,
   labelStyle: null,
-  disabled: null,
+  disabled: false,
   hasError: false,
   style: null,
   containerStyle: null,
-  value: null,
+  value: '1',
+  strError: null,
 };
 
 DropDownComponent.propTypes = {
@@ -177,6 +195,7 @@ DropDownComponent.propTypes = {
   containerStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
   hasError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  strError: PropTypes.string,
 };
 
 export default DropDownComponent;

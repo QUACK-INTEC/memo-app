@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Theme
 import { fonts, colors, spacers, toBaseDesignPx } from '../../Core/Theme';
@@ -14,6 +15,26 @@ import UpDownVoteSimple from '../Common/UpDownVoteSimple';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
 class PostComment extends React.Component {
+  showEditOptions = () => {
+    const { onDeleteComment, showActionSheetWithOptions } = this.props;
+    const options = ['Borrar', 'Cancelar'];
+    const destructiveButtonIndex = 0;
+    const cancelButtonIndex = 1;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      buttonIndex => {
+        if (buttonIndex === destructiveButtonIndex) {
+          onDeleteComment();
+        }
+      }
+    );
+  };
+
   renderUpVotes = () => {
     const { score } = this.props;
     if (score && score > 0) {
@@ -25,7 +46,6 @@ class PostComment extends React.Component {
   renderReactions = () => {
     const {
       isAuthor,
-      onOptionsPressed,
       personalScore,
       onUpVote,
       onRemoveUpVote,
@@ -41,7 +61,7 @@ class PostComment extends React.Component {
             size={ICON_SIZE.TINY}
             name="ellipsis-h"
             color={colors.GRAY_LIGHT}
-            onPress={onOptionsPressed}
+            onPress={this.showEditOptions}
           />
         </View>
       );
@@ -101,6 +121,7 @@ const styles = StyleSheet.create({
   commentStyle: {
     ...spacers.MB_1,
     color: colors.GRAY,
+    ...fonts.SIZE_XS,
   },
   avatarStyle: {
     height: toBaseDesignPx(32),
@@ -110,7 +131,7 @@ const styles = StyleSheet.create({
     ...spacers.ML_4,
   },
   authorStyle: {
-    ...fonts.SIZE_XS,
+    ...fonts.SIZE_XXS,
     color: colors.GRAY_LIGHT,
     ...spacers.MR_1,
   },
@@ -119,7 +140,7 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(8),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XXXL,
+    ...fonts.SIZE_XL,
   },
   divBar: {
     width: toBaseDesignPx(0),
@@ -140,20 +161,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     ...spacers.ML_6,
   },
-  optionIcon: { ...spacers.MR_1 },
+  optionIcon: { ...spacers.MR_1, ...spacers.MB_3, ...spacers.MT_3 },
   upVotesStyle: {
     color: colors.GRAY_LIGHT,
-    ...fonts.SIZE_XS,
+    ...fonts.SIZE_XXS,
   },
 });
 
 PostComment.defaultProps = {
-  onOptionsPressed: () => null,
   onAuthorPress: () => null,
   onUpVote: () => null,
   onRemoveUpVote: () => null,
   onDownVote: () => null,
   onRemoveDownVote: () => null,
+  onDeleteComment: () => null,
   isAuthor: false,
   badgeSrc: null,
   badgeUri: null,
@@ -165,12 +186,12 @@ PostComment.defaultProps = {
 };
 
 PostComment.propTypes = {
-  onOptionsPressed: PropTypes.func,
   onAuthorPress: PropTypes.func,
   onUpVote: PropTypes.func,
   onRemoveUpVote: PropTypes.func,
   onDownVote: PropTypes.func,
   onRemoveDownVote: PropTypes.func,
+  onDeleteComment: PropTypes.func,
   isAuthor: PropTypes.bool,
   badgeSrc: PropTypes.number,
   badgeUri: PropTypes.string,
@@ -183,4 +204,5 @@ PostComment.propTypes = {
   personalScore: PropTypes.number,
 };
 
-export default PostComment;
+const ConnectedPostComment = connectActionSheet(PostComment);
+export default ConnectedPostComment;

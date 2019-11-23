@@ -15,6 +15,7 @@ const DropDownWrapper = objProps => {
       {...objProps}
       onChangeOption={objProps.onChange}
       hasError={hasError}
+      strError={strError}
     />
   );
 };

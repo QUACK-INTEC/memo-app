@@ -22,7 +22,9 @@ class Avatar extends React.Component {
 
     return (
       <View {...this.props} style={[styles.avatarStyle, style]}>
-        <Text.Medium text={initialsText} style={[styles.textStyle, textStyle]} />
+        <View style={[styles.textViewStyle, style]}>
+          <Text.Medium text={initialsText} style={[styles.textStyle, textStyle]} />
+        </View>
       </View>
     );
   };
@@ -38,6 +40,12 @@ const styles = StyleSheet.create({
     width: toBaseDesignPx(94),
     borderRadius: toBaseDesignPx(47),
     backgroundColor: colors.GRAY_LIGHT,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textViewStyle: {
+    width: toBaseDesignPx(94),
+    height: toBaseDesignPx(94),
     alignItems: 'center',
     justifyContent: 'center',
   },

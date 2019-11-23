@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     ...spacers.MR_15,
     ...spacers.MB_7,
     ...spacers.MT_7,
+    textAlign: 'center',
   },
 });
 

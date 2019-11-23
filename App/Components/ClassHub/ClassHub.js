@@ -34,7 +34,7 @@ class ClassHub extends React.PureComponent {
           </View>
 
           <View style={styles.headerSubjectInfo}>
-            <Text.Bold text={subjectName} style={styles.subjetNameText} />
+            <Text.Bold text={subjectName} style={styles.subjectName} />
             {renderSubjectSchedule()}
             {subjectTeacher ? (
               <Text.Medium text={`Profesor: ${subjectTeacher}`} style={styles.subjectBasicInfo} />
@@ -131,12 +131,13 @@ const styles = StyleSheet.create({
   headerBackIconContainer: {
     ...spacers.ML_14,
     ...spacers.MT_3,
-    ...spacers.MB_4,
+    ...spacers.MB_2,
     width: toBaseDesignPx(47),
   },
   headerSubjectInfo: { ...spacers.ML_4, ...spacers.MR_4, flex: 1 },
-  SubjectNameText: { ...fonts.SIZE_XXL, ...spacers.MB_1, color: colors.WHITE },
+  SubjectNameText: { ...fonts.SIZE_XL, ...spacers.MB_1, color: colors.WHITE },
   subjectBasicInfo: { ...fonts.SIZE_XS, ...spacers.MT_1, color: colors.WHITE },
+  subjectName: { ...fonts.SIZE_XXL, ...spacers.MT_1, color: colors.WHITE },
   subjectFooterContainer: {
     justifyContent: 'space-between',
     flexDirection: 'row',

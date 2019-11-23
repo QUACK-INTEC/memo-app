@@ -1,16 +1,80 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import LoadingState from '../../Components/LoadingState';
 
-import Text from '../../Components/Common/Text';
+import RecoverPasswordForm from '../../Components/RecoverPassword';
 
-const RecPass = () => (
-  <View style={styles.container}>
-    <Text.Bold text="RECOVER PASSWORD" />
-  </View>
-);
+class RecoverPassWord extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: false,
+    };
+  }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
+  setLoading = isLoading => {
+    return this.setState({ isLoading });
+  };
 
-export default RecPass;
+  handleSubmit = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    return navigate('PasswordRecoveryCode');
+
+    // USE THIS WHEN API READY
+    // const { logger, navitagion: { navigate } } = this.props;
+    // this.setLoading(true);
+
+    // return Api.SendRecoveryEmail(objValues)
+    //   .then(objResponse => {
+    //     logger.success({
+    //       key: MessagesKey.SEND_EMAIL_SUCCESS,
+    //       data: objResponse,
+    //     });
+
+    //     return navigate('PasswordRecoveryCode');
+    //   })
+    //   .catch(objError => {
+    //     this.setLoading(false);
+
+    //     return setTimeout(() => {
+    //       logger.error({
+    //         key: MessagesKey.SEND_EMAIL_FAIL,
+    //         data: objError,
+    //       });
+    //     }, 1000);
+    //   });
+  };
+
+  handleOnPressGoBack = () => {
+    const { navigation } = this.props;
+    return navigation.goBack();
+  };
+
+  render() {
+    const { isLoading } = this.state;
+    const { initialsValue } = this.props;
+
+    return (
+      <>
+        <LoadingState.Modal isVisible={isLoading} />
+        <RecoverPasswordForm
+          onSubmit={this.handleSubmit}
+          initialsValue={initialsValue}
+          onBack={this.handleOnPressGoBack}
+        />
+      </>
+    );
+  }
+}
+
+RecoverPassWord.defaultProps = {
+  initialsValue: null,
+};
+
+RecoverPassWord.propTypes = {
+  initialsValue: PropTypes.shape({}),
+};
+
+export default RecoverPassWord;

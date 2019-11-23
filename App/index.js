@@ -4,13 +4,18 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Moment from 'moment';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import * as Font from 'expo-font';
 import { enableScreens } from 'react-native-screens';
 
+import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from './Navigation/AppNavigator';
-import store from './Redux';
+import { store, persistor } from './Redux/RootReducer';
 import LoadingState from './Components/LoadingState';
+
+import { selectors as userManagerSelectors } from './Redux/Common/UserManager';
+
+import WithLogger from './HOCs/WithLogger';
 
 const LOCALE = {
   months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Juilio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split(
@@ -59,18 +64,34 @@ class App extends Component {
     if (!fontLoaded) {
       return (
         <View style={styles.loaderContainer}>
-          <LoadingState.Medium />
+          <LoadingState.Small />
         </View>
       );
     }
 
     return (
       <Provider store={store}>
-        <AppNavigator />
+        <PersistGate persistor={persistor} loading={<LoadingState.Medium />}>
+          <NavigatorWithState />
+        </PersistGate>
       </Provider>
     );
   }
 }
+
+const mapStateToProps = (state, props) => {
+  const { isLogged } = userManagerSelectors;
+  return {
+    loggedIn: isLogged(state, props),
+  };
+};
+
+const NavigatorWithState = WithLogger(
+  connect(
+    mapStateToProps,
+    null
+  )(AppNavigator)
+);
 
 const styles = StyleSheet.create({
   loaderContainer: {

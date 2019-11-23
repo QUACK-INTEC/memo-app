@@ -39,12 +39,19 @@ class Icon extends Component {
   };
 
   renderIcon = () => {
-    const { type } = this.props;
+    const { type, isButton } = this.props;
 
     switch (type) {
       case ICON_TYPE.FONT_AWESOME:
-        return (
+        return isButton ? (
           <FontAwesome.Button
+            {...this.props}
+            size={this.getSize()}
+            backgroundColor="transparent"
+            underlayColor="transparent"
+          />
+        ) : (
+          <FontAwesome
             {...this.props}
             size={this.getSize()}
             backgroundColor="transparent"
@@ -92,11 +99,13 @@ class Icon extends Component {
 Icon.defaultProps = {
   type: null,
   size: null,
+  isButton: true,
 };
 
 Icon.propTypes = {
   type: PropTypes.string,
   size: PropTypes.string,
+  isButton: PropTypes.bool,
 };
 
 export default Icon;

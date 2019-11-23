@@ -28,8 +28,14 @@ const validation = objValues => {
 
   if (!password) {
     errors.password = 'Campo obligatorio';
-  } else if (password.length < 4) {
-    errors.password = 'Contraseña muy leve';
+  } else if (password.length < 8) {
+    errors.password = 'Debe tener al menos 8 caracteres';
+  } else if (!/.*[0-9].*/.test(password)) {
+    errors.password = 'Debe incluir al menos un número.';
+  } else if (!/.*[a-z].*/.test(password)) {
+    errors.password = 'Debe incluir al menos una minúscula.';
+  } else if (!/.*[A-Z].*/.test(password)) {
+    errors.password = 'Debe incluir al menos una mayúscula.';
   }
 
   if (!passwordVerify) {
@@ -37,7 +43,6 @@ const validation = objValues => {
   } else if (passwordVerify !== password) {
     errors.passwordVerify = '*';
   }
-
   if (!email) {
     errors.email = 'Campo obligatorio';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {

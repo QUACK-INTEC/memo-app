@@ -25,11 +25,12 @@ const getClassesData = (listId, objLookUp) => {
       delete objScheduleClone[key];
     });
     const classDays = Object.keys(objScheduleClone);
-
+    const subjectName = Lodash.get(objLookUp[strId], ['subject', 'name'], '');
     return {
       ...objLookUp[strId],
       classDays: Lodash.isEmpty(classDays) ? 'VT' : classDays.join(', '),
       schedule: objScheduleClone,
+      subjectName: toUpperCaseFirsLetter(Lodash.replace(subjectName, 'LABORATORIO', 'LAB.')),
       professorName: toUpperCaseFirsLetter(objLookUp[strId].professorName),
     };
   });

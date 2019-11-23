@@ -9,21 +9,42 @@ import { toBaseDesignPx, colors } from '../../../Core/Theme';
 import InLineComponent from '../InLineComponent';
 
 class BiButon extends React.Component {
-  handleLeftPress = () => {
-    const { onLeftPress, disabled, leftDisabled } = this.props;
-
-    if (!(disabled || leftDisabled)) {
-      return onLeftPress();
-    }
-
-    return null;
-  };
+  constructor(props) {
+    super(props);
+    const { isRightPressed, isLeftPressed } = this.props;
+    this.state = {
+      isLeftPressed,
+      isRightPressed,
+    };
+  }
 
   handleRightPress = () => {
     const { onRightPress, disabled, rightDisabled } = this.props;
 
     if (!(disabled || rightDisabled)) {
-      return onRightPress();
+      this.setState(
+        prevState => ({ isRightPressed: !prevState.isRightPressed, isLeftPressed: false }),
+        () => {
+          const { isRightPressed } = this.state;
+          return onRightPress(isRightPressed);
+        }
+      );
+    }
+
+    return null;
+  };
+
+  handleLeftPress = () => {
+    const { onLeftPress, disabled, leftDisabled } = this.props;
+
+    if (!(disabled || leftDisabled)) {
+      this.setState(
+        prevState => ({ isLeftPressed: !prevState.isLeftPressed, isRightPressed: false }),
+        () => {
+          const { isLeftPressed } = this.state;
+          return onLeftPress(isLeftPressed);
+        }
+      );
     }
 
     return null;
@@ -100,6 +121,8 @@ BiButon.defaultProps = {
   rightButtonStyle: null,
   leftButtonStyle: null,
   divisionBarColor: null,
+  isLeftPressed: false,
+  isRightPressed: false,
 };
 
 BiButon.propTypes = {
@@ -113,6 +136,8 @@ BiButon.propTypes = {
   rightButtonStyle: ViewPropTypes.style,
   leftButtonStyle: ViewPropTypes.style,
   divisionBarColor: PropTypes.string,
+  isLeftPressed: PropTypes.bool,
+  isRightPressed: PropTypes.bool,
 };
 
 export default BiButon;

@@ -219,7 +219,7 @@ EventForm.defaultProps = {
 };
 
 EventForm.propTypes = {
-  optionsClasses: PropTypes.arrayOf(),
+  optionsClasses: PropTypes.arrayOf(PropTypes.shape()),
   isVisible: PropTypes.bool.isRequired,
   initialValues: PropTypes.shape().isRequired,
   validation: PropTypes.func.isRequired,

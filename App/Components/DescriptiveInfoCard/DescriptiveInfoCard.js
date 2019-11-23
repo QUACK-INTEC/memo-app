@@ -12,7 +12,16 @@ import InfoCard from '../Common/InfoCard';
 
 class DescriptiveInfoCard extends React.Component {
   renderInfoCard = () => {
-    const { title, subtitle, onPress, disabled, titleStyle, subtitleStyle, style } = this.props;
+    const {
+      title,
+      subtitle,
+      onPress,
+      disabled,
+      titleStyle,
+      subtitleStyle,
+      style,
+      children,
+    } = this.props;
     return (
       <InfoCard
         title={title}
@@ -22,6 +31,7 @@ class DescriptiveInfoCard extends React.Component {
         style={[{ height: toBaseDesignPx(81) }, style]}
       >
         <Text.Light text={subtitle} style={[styles.subtitleStyle, subtitleStyle]} />
+        {children}
       </InfoCard>
     );
   };

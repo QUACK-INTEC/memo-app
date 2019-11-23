@@ -69,7 +69,7 @@ class LoginForm extends Component {
             label="Contraseña"
             name="password"
             containerStyle={styles.input}
-            returnKeyType="done"
+            returnKeyType="next"
             secureTextEntry
           />
           <View style={styles.buttonsContainer}>

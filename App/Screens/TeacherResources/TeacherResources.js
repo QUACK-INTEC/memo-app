@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, Alert } from 'react-native';
-import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
 import TeacherResourcesComponent from '../../Components/TeacherResources';
 import SubjectPost from '../../Components/SubjectPostRecent';
-import { spacers, colors, fonts } from '../../Core/Theme';
+import { spacers } from '../../Core/Theme';
 import { TeacherResources as TeacherResourcesList } from '../../Models';
 
 class TeacherResources extends React.Component {
@@ -20,7 +19,6 @@ class TeacherResources extends React.Component {
   }
 
   componentDidMount() {
-    // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
       navigation: { getParam },
     } = this.props;
@@ -28,9 +26,8 @@ class TeacherResources extends React.Component {
     const subjectName = getParam('subjectName', {});
     const teacherName = getParam('teacherName', {});
 
-    const listTeacherResources = Lodash.get(teacherResources, 'data', []);
     this.setState({
-      teacherResources: listTeacherResources,
+      teacherResources,
       isLoading: false,
       subjectName,
       teacherName,
@@ -39,7 +36,7 @@ class TeacherResources extends React.Component {
 
   handleOnPressResourceItem = objResourceID => {
     // TODO: showResource
-    Alert.alert(`goToTeacher:${objResourceID}`);
+    Alert.alert(`showResource:${objResourceID}`);
   };
 
   handleBackArrow = () => {
@@ -47,14 +44,13 @@ class TeacherResources extends React.Component {
     return navigation.goBack();
   };
 
-  renderTeacherCard = ({ item }) => {
+  renderResource = ({ item }) => {
     return (
       <View style={styles.resourceContainer}>
         <SubjectPost
           postTitle={item.postTitle}
           postUser={item.author}
           onPress={() => this.handleOnPressResourceItem(item.id)}
-          subtitleStyle={styles.subtitle}
         />
       </View>
     );
@@ -66,10 +62,8 @@ class TeacherResources extends React.Component {
 
     return (
       <FlatList
-        columnWrapperStyle={styles.resourceListContainer}
         data={teacherResourcesFormatted}
-        numColumns={2}
-        renderItem={this.renderTeacherCard}
+        renderItem={this.renderResource}
         keyExtractor={item => item.id}
       />
     );
@@ -92,9 +86,7 @@ class TeacherResources extends React.Component {
 }
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  resourceListContainer: { justifyContent: 'space-around' },
-  resourceContainer: { ...spacers.MA_1 },
-  subtitle: { color: colors.GRAY, ...fonts.SIZE_XXS, textAlign: 'center' },
+  resourceContainer: { ...spacers.MA_1, ...spacers.MR_7, ...spacers.ML_7, ...spacers.MB_7 },
 });
 
 export default TeacherResources;

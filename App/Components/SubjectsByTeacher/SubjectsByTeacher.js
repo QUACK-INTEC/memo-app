@@ -94,12 +94,13 @@ const styles = StyleSheet.create({
 SubjectsByTeacher.defaultProps = {
   onBackArrow: () => null,
   renderProfessors: () => null,
+  subjectName: null,
 };
 
 SubjectsByTeacher.propTypes = {
   onBackArrow: PropTypes.func,
   renderProfessors: PropTypes.func,
-  subjectName: PropTypes.string.isRequired,
+  subjectName: PropTypes.string,
 };
 
 export default SubjectsByTeacher;

@@ -28,11 +28,20 @@ class SubjectPostRecent extends React.Component {
     );
   };
 
-  renderSubjectDateInfo = () => {
+  renderTimeSinceText = () => {
     const { createdSince } = this.props;
+
+    if (createdSince) {
+      return <Text.Light style={styles.dateCreatedText} text={`Hace ${createdSince} días`} />;
+    }
+
+    return null;
+  };
+
+  renderSubjectDateInfo = () => {
     return (
       <View style={styles.containerDateInfo}>
-        <Text.Light style={styles.dateCreatedText} text={`Hace ${createdSince} días`} />
+        {this.renderTimeSinceText()}
         <Icon
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.EXTRA_SMALL}

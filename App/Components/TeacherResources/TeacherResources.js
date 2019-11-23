@@ -66,12 +66,14 @@ const styles = StyleSheet.create({
     ...spacers.ML_15,
     alignSelf: 'center',
     color: colors.GRAY,
+    textAlign: 'center',
   },
   teacherStyle: {
     ...fonts.SIZE_XXS,
     ...spacers.MR_15,
     ...spacers.ML_15,
     ...spacers.MT_1,
+    ...spacers.MB_16,
     alignSelf: 'center',
     color: colors.GRAY,
   },
@@ -86,13 +88,15 @@ const styles = StyleSheet.create({
 TeacherResources.defaultProps = {
   onBackArrow: () => null,
   renderResources: () => null,
+  teacherName: null,
+  subjectName: null,
 };
 
 TeacherResources.propTypes = {
   onBackArrow: PropTypes.func,
   renderResources: PropTypes.func,
-  teacherName: PropTypes.string.isRequired,
-  subjectName: PropTypes.string.isRequired,
+  teacherName: PropTypes.string,
+  subjectName: PropTypes.string,
 };
 
 export default TeacherResources;

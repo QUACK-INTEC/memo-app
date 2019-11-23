@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import Lodash from 'lodash';
+import { StyleSheet, SafeAreaView, Alert } from 'react-native';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
-import WithLogger from '../../HOCs/WithLogger';
+import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import PostInfoForm from '../../Components/PostInfo';
 import LoadingState from '../../Components/LoadingState';
+import Api from '../../Core/Api';
+import PopUp from '../../Components/Common/PopUp';
 
 class PostInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
+      confirmationPopUpVisible: false,
+      deleteConfirmationPopUpVisible: false,
+      postId: null,
     };
   }
 
   componentDidMount() {
-    // TODO: Get Post Info From API
+    // TODO: Get Post Info From API and Params from navigation
     this.setState({ isLoading: true });
     setTimeout(() => {
       this.setState({ isLoading: false });
@@ -22,39 +29,78 @@ class PostInfo extends Component {
   }
 
   handleEdit = () => {
-    const {
-      navigation: { push },
-    } = this.props;
-    push('EditPost');
+    // TODO : EDIT POST
+    Alert.alert('Edit Post');
+  };
+
+  deletePost = () => {
+    const { logger } = this.props;
+    const { postId } = this.state;
+    this.setState({ isLoading: true, confirmationPopUpVisible: false });
+    return Api.DeletePost(postId)
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, 'success', false);
+        if (isSuccess) {
+          this.setState({
+            deleteConfirmationPopUpVisible: true,
+          });
+          return logger.success({
+            key: MessagesKey.DELETE_POST_SUCCESS,
+            data: objResponse,
+          });
+        }
+        return logger.error({
+          key: MessagesKey.DELETE_POST_FAILED,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.DELETE_POST_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
+  };
+
+  showConfirmationBox = () => {
+    this.setState({
+      confirmationPopUpVisible: true,
+    });
   };
 
   goToComments = () => {
     const {
-      navigation: { push },
+      navigation: { navigate },
     } = this.props;
-    push('PostComments');
+    return navigate('PostComments');
   };
 
   goToResources = () => {
     const {
-      navigation: { push },
+      navigation: { navigate },
     } = this.props;
-    push('PostResources');
+    return navigate('PostResources');
   };
 
-  handleUpVote = () => {
+  handleUpVote = value => {
     // TODO
+    Alert.alert(`upvote: ${value}`);
   };
 
-  handleDownVote = () => {
+  handleDownVote = value => {
     // TODO
+    Alert.alert(`downvote: ${value}`);
   };
 
   handleAuthorPress = () => {
     const {
-      navigation: { push },
+      navigation: { navigate },
     } = this.props;
-    push('UserProfile');
+    return navigate('UserProfile');
   };
 
   handleBackArrow = () => {
@@ -66,11 +112,22 @@ class PostInfo extends Component {
     return this.setState({ isLoading });
   };
 
+  goBack = () => {
+    const {
+      navigation: { pop },
+    } = this.props;
+    this.setState({
+      deleteConfirmationPopUpVisible: false,
+    });
+    pop();
+  };
+
   renderPostInfo = () => {
     return (
       <PostInfoForm
         onBackArrow={this.handleBackArrow}
         onEdit={this.handleEdit}
+        onDelete={this.showConfirmationBox}
         onUpVote={this.handleUpVote}
         onDownVote={this.handleDownVote}
         onAuthorPress={this.handleAuthorPress}
@@ -86,16 +143,31 @@ class PostInfo extends Component {
         postDate="19 Lunes, Septiembre"
         postTime="22:00"
         author="Emma Paige"
+        personalScore={1}
       />
     );
   };
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, confirmationPopUpVisible, deleteConfirmationPopUpVisible } = this.state;
     return (
       <SafeAreaView style={styles.container}>
+        <PopUp.Info
+          title="Publicación eliminada exitosamente"
+          buttonText="OK"
+          onButtonPress={this.goBack}
+          isVisible={deleteConfirmationPopUpVisible}
+        />
+        <PopUp.Default
+          isVisible={confirmationPopUpVisible}
+          leftButtonText="Cancelar"
+          rightButtonText="Si"
+          title="¿Seguro que quieres eliminar esta publicación?"
+          onRightPress={this.deletePost}
+          onLeftPress={() => this.setState({ confirmationPopUpVisible: false })}
+        />
         <LoadingState.Modal isVisible={isLoading} />
-        {this.renderPostInfo()}
+        <ActionSheetProvider>{this.renderPostInfo()}</ActionSheetProvider>
       </SafeAreaView>
     );
   }

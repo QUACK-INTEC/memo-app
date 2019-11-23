@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React from 'react';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarLabel from '../Components/TabBar/TabBarLabel';
@@ -9,7 +9,7 @@ import { ICON_SIZE } from '../Components/Common/Icon';
 import { toBaseDesignPx, colors, spacers } from '../Core/Theme';
 
 // Screens root
-import Playground from '../Screens/Playground';
+import Playground from '../Screens/PostInfo';
 import HomeScreen from '../Screens/Home';
 import CalendarScreen from '../Screens/Calendar';
 import ClassRoomScreen from '../Screens/ClassRooms';
@@ -18,6 +18,7 @@ import ClassParticipantsScreen from '../Screens/ClassParticipants';
 import ViewProfileScreen from '../Screens/ViewProfile';
 import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
 import TeacherResourcesScreen from '../Screens/TeacherResources';
+import PostCommentsScreen from '../Screens/PostComments';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -108,6 +109,7 @@ const ClassRoomStack = createStackNavigator(
     ViewProfile: ViewProfileScreen,
     SubjectsByTeacher: SubjectsByTeacherScreen,
     TeacherResources: TeacherResourcesScreen,
+    PostComments: PostCommentsScreen,
   },
   config
 );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 import Text from '../Common/Text';
 import Section from '../Common/Section';
@@ -13,9 +14,47 @@ import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import { toBaseDesignPx, spacers, fonts, colors, constants } from '../../Core/Theme';
 
 class PostInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    const { personalScore } = this.props;
+    this.state = {
+      isUpVote: personalScore && personalScore > 0,
+      isDownVote: personalScore && personalScore < 0,
+    };
+  }
+
   handleEdit = () => {
     const { onEdit } = this.props;
     onEdit();
+  };
+
+  handleDelete = () => {
+    const { onDelete } = this.props;
+    onDelete();
+  };
+
+  showEditOptions = () => {
+    const { showActionSheetWithOptions } = this.props;
+    const options = ['Editar', 'Borrar', 'Cancelar'];
+    const editButtonIndex = 0;
+    const destructiveButtonIndex = 1;
+    const cancelButtonIndex = 2;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      buttonIndex => {
+        if (buttonIndex === destructiveButtonIndex) {
+          this.handleDelete();
+        }
+        if (buttonIndex === editButtonIndex) {
+          this.handleEdit();
+        }
+      }
+    );
   };
 
   renderEditIcon = () => {
@@ -28,7 +67,7 @@ class PostInfo extends React.Component {
             name="edit"
             type={ICON_TYPE.MEMO_ICONS}
             size={ICON_SIZE.TINY}
-            onPress={this.handleEdit}
+            onPress={this.showEditOptions}
             color={colors.GRAY}
           />
         </View>
@@ -78,13 +117,15 @@ class PostInfo extends React.Component {
             </InLineComponent>
           </View>
         </TouchableOpacity>
-        <Avatar
-          src={avatarSrc}
-          uri={avatarUri}
-          initialsText={initialsText}
-          style={styles.avatarStyle}
-          textStyle={styles.avatarTextStyle}
-        />
+        <View style={styles.avatarContainer}>
+          <Avatar
+            src={avatarSrc}
+            uri={avatarUri}
+            initialsText={initialsText}
+            style={styles.avatarStyle}
+            textStyle={styles.avatarTextStyle}
+          />
+        </View>
       </InLineComponent>
     );
   };
@@ -123,51 +164,68 @@ class PostInfo extends React.Component {
     // TODO: Implement SubTask Component
   };
 
-  leftArrow = () => {
+  downVoteArrow = () => {
+    const { isDownVote } = this.state;
     return (
       <Icon
         type={ICON_TYPE.FONT_AWESOME}
         size={ICON_SIZE.TINY}
         name="chevron-down"
-        color={colors.WHITE}
-        onPress={this.handleDownVote}
+        color={isDownVote ? colors.GRAY : colors.WHITE}
+        isButton={false}
       />
     );
   };
 
-  rightArrow = () => {
+  upVoteArrow = () => {
+    const { isUpVote } = this.state;
     return (
       <Icon
         type={ICON_TYPE.FONT_AWESOME}
         size={ICON_SIZE.TINY}
         name="chevron-up"
-        color={colors.WHITE}
-        onPress={this.handleUpVote}
+        color={isUpVote ? colors.GRAY : colors.WHITE}
+        isButton={false}
       />
     );
   };
 
-  handleDownVote = () => {
+  handleDownVote = value => {
     const { onDownVote } = this.props;
-    onDownVote();
+    if (value) {
+      this.setState({ isDownVote: true, isUpVote: false });
+    } else {
+      this.setState({ isDownVote: false, isUpVote: false });
+    }
+    onDownVote(value);
   };
 
-  handleUpVote = () => {
+  handleUpVote = value => {
     const { onUpVote } = this.props;
-    onUpVote();
+    if (value) {
+      this.setState({ isDownVote: false, isUpVote: true });
+    } else {
+      this.setState({ isDownVote: false, isUpVote: false });
+    }
+    onUpVote(value);
   };
 
   renderUpVoteSection = () => {
     const { isAuthor } = this.props;
+    const { isUpVote, isDownVote } = this.state;
 
     if (isAuthor) {
       return (
         <View style={styles.arrowButtonsContainer}>
           <BiButton
-            leftChild={this.leftArrow}
-            rightChild={this.rightArrow}
+            leftChild={this.downVoteArrow}
+            rightChild={this.upVoteArrow}
             leftButtonStyle={styles.arrowButtonStyle}
             rightButtonStyle={styles.arrowButtonStyle}
+            onRightPress={this.handleUpVote}
+            onLeftPress={this.handleDownVote}
+            isRightPressed={isUpVote}
+            isLeftPressed={isDownVote}
           />
         </View>
       );
@@ -214,14 +272,12 @@ const styles = StyleSheet.create({
   },
   headerBackIconContainer: {
     ...spacers.ML_14,
-    ...spacers.MT_3,
     ...spacers.MB_4,
     width: toBaseDesignPx(47),
     justifyContent: 'flex-start',
   },
   editIconContainer: {
     ...spacers.MR_14,
-    ...spacers.MT_3,
     ...spacers.MB_4,
     width: toBaseDesignPx(47),
     justifyContent: 'flex-end',
@@ -234,13 +290,13 @@ const styles = StyleSheet.create({
     ...spacers.MB_20,
     alignSelf: 'center',
     color: colors.GRAY,
+    textAlign: 'center',
   },
+  avatarContainer: { ...spacers.MR_1, ...spacers.ML_8 },
   avatarStyle: {
     height: toBaseDesignPx(32),
     width: toBaseDesignPx(32),
     borderRadius: toBaseDesignPx(16),
-    ...spacers.MR_1,
-    ...spacers.ML_8,
   },
   authorStyle: {
     ...fonts.SIZE_XS,
@@ -252,7 +308,7 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(8),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XXXL,
+    ...fonts.SIZE_XL,
   },
   upVotesStyle: {
     color: colors.GRAY_LIGHT,
@@ -294,6 +350,7 @@ const styles = StyleSheet.create({
 PostInfo.defaultProps = {
   onBackArrow: () => null,
   onEdit: () => null,
+  onDelete: () => null,
   onDownVote: () => null,
   onUpVote: () => null,
   onAuthorPress: () => null,
@@ -309,11 +366,13 @@ PostInfo.defaultProps = {
   postDate: null,
   postTime: null,
   postDescription: null,
+  personalScore: null,
 };
 
 PostInfo.propTypes = {
   onBackArrow: PropTypes.func,
   onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
   onDownVote: PropTypes.func,
   onUpVote: PropTypes.func,
   onAuthorPress: PropTypes.func,
@@ -332,6 +391,8 @@ PostInfo.propTypes = {
   postDescription: PropTypes.string,
   className: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
+  personalScore: PropTypes.number,
 };
 
-export default PostInfo;
+const ConnectedPostInfo = connectActionSheet(PostInfo);
+export default ConnectedPostInfo;

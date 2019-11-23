@@ -15,6 +15,7 @@ class ClassHub extends React.PureComponent {
       subjectName,
       renderSubjectSchedule,
       onPressGoToEvents,
+      onPressGoToParticipants,
       subjectStudents,
       subjectTeacher,
       subjectSection,
@@ -53,9 +54,10 @@ class ClassHub extends React.PureComponent {
                 textStyle={styles.linkGoToEvents}
               />
               {subjectStudents ? (
-                <Text.Medium
+                <Link
                   text={`${subjectStudents} Participantes`}
-                  style={styles.subjectStudentsText}
+                  onPress={onPressGoToParticipants}
+                  textStyle={styles.linkGoToEvents}
                 />
               ) : null}
             </View>
@@ -66,12 +68,14 @@ class ClassHub extends React.PureComponent {
   };
 
   renderSubjectActions = () => {
+    const { onPressGoToResources } = this.props;
     return (
       <View style={styles.containerSubjectActions}>
         <DescriptiveInfoCard
           title="Recursos"
           subtitle="Todos los recursos de esta clase"
           subtitleStyle={styles.actionsSubtitleText}
+          onPress={onPressGoToResources}
         />
 
         <DescriptiveInfoCard
@@ -169,6 +173,8 @@ ClassHub.defaultProps = {
   subjectRoom: '',
   onPressGoToEvents: () => null,
   subjectStudents: '',
+  onPressGoToParticipants: () => null,
+  onPressGoToResources: () => null,
 };
 
 ClassHub.propTypes = {
@@ -180,7 +186,9 @@ ClassHub.propTypes = {
   subjectSection: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subjectRoom: PropTypes.string,
   onPressGoToEvents: PropTypes.func,
+  onPressGoToParticipants: PropTypes.func,
   subjectStudents: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onPressGoToResources: PropTypes.func,
 };
 
 export default ClassHub;

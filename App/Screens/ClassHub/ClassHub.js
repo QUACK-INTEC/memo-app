@@ -17,6 +17,8 @@ class ClassHub extends React.Component {
       classRoom: null,
       code: null,
       subjectName: null,
+      participants: [],
+      idSection: null,
     };
   }
 
@@ -36,6 +38,7 @@ class ClassHub extends React.Component {
       classRoom,
       code,
       subjectName,
+      idSection,
     });
     Promise.all([this.getSectionStudents(idSection)])
       .then(listValues => {
@@ -43,6 +46,7 @@ class ClassHub extends React.Component {
         const listStudents = Lodash.get(objSectionStudentsResponse, ['data', 'data'], []);
         this.setState({
           students: listStudents.length,
+          participants: listStudents,
         });
         return logger.success({
           key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
@@ -78,6 +82,22 @@ class ClassHub extends React.Component {
     navigate('Calendar');
   };
 
+  handleOnPressGoToParticipants = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { participants } = this.state;
+    navigate('Participants', { participants });
+  };
+
+  handleOnPressGoToResources = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { subjectName, idSection } = this.state;
+    navigate('SubjectsByTeacher', { subjectName, idSection });
+  };
+
   renderScheduleClass = () => {
     const {
       navigation: { getParam },
@@ -108,6 +128,8 @@ class ClassHub extends React.Component {
         renderSubjectSchedule={this.renderScheduleClass}
         subjectStudents={students}
         onPressGoToEvents={this.handleOnPressGoToEvents}
+        onPressGoToParticipants={this.handleOnPressGoToParticipants}
+        onPressGoToResources={this.handleOnPressGoToResources}
         onBackArrowPress={this.handleOnPressBackArrow}
       />
     );

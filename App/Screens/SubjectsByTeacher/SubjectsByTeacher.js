@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import Lodash from 'lodash';
-import PropTypes from 'prop-types';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import LoadingState from '../../Components/LoadingState';
 
@@ -16,25 +15,29 @@ class SubjectsByTeacher extends React.Component {
     this.state = {
       isLoading: true,
       teacherResources: [],
+      subjectName: null,
     };
   }
 
   componentDidMount() {
     // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
-      // navigation: { getParam, pop },
+      navigation: { getParam },
       logger,
     } = this.props;
-    // const authorTitle = getParam('authorName', {});
-    // const postTitle = getParam('postTitle', {});
-    // const postId = getParam('postId', {});
-    // const authorId = getParam('authorId', {});
+    // const sectionId = getParam('sectionId', {}); <- will use when connect to api
+    const subjectName = getParam('subjectName', {});
 
     Promise.all([this.getTeacherResources()])
       .then(listValues => {
         const [objCommentResponse] = listValues;
         const listTeacherResources = Lodash.get(objCommentResponse, 'data', []);
-        this.setState({ teacherResources: listTeacherResources, isLoading: false });
+        this.setState({
+          teacherResources: listTeacherResources,
+          isLoading: false,
+          subjectName,
+          //  sectionId, <- will use when connect to api
+        });
         return logger.success({
           key: MessagesKey.LOAD_TEACHER_RESOURCES_SUCCESS,
           data: listValues,
@@ -59,14 +62,80 @@ class SubjectsByTeacher extends React.Component {
         {
           id: '1',
           teacherName: 'Renato Gonzalez',
+          resources: [
+            {
+              id: '1',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '2',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '3',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '4',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '5',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '6',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '7',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '8',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '9',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+            {
+              id: '10',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+          ],
         },
         {
           id: '2',
           teacherName: 'Renato Gonzalez Disla de la Mora Morales',
+          resources: [
+            {
+              id: '1',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+          ],
         },
         {
           id: '3',
           teacherName: 'Renato Gonzalez',
+          resources: [
+            {
+              id: '1',
+              postTitle: 'AI For Humans',
+              author: 'Emma Paige',
+            },
+          ],
         },
         {
           id: '4',
@@ -125,14 +194,16 @@ class SubjectsByTeacher extends React.Component {
   };
 
   handleOnPressProfessorItem = objTeacherResource => {
-    // TODO : PuSH to ProfessorResources
-    // const {
-    //   navigation: { navigate },
-    // } = this.props;
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { subjectName } = this.state;
 
-    // return navigate('ResourcesByTeacher', { id: idSection, sectionInfo: objSection });
-
-    Alert.alert(`goToTeacher:${objTeacherResource.id}`);
+    return navigate('TeacherResources', {
+      subjectName,
+      teacherResources: objTeacherResource.resources,
+      teacherName: objTeacherResource.teacherName,
+    });
   };
 
   handleBackArrow = () => {
@@ -155,7 +226,7 @@ class SubjectsByTeacher extends React.Component {
 
   renderProfessors = () => {
     const { teacherResources } = this.state;
-    const teacherResourcesFormatted = TeacherResources.getResourcesData(teacherResources);
+    const teacherResourcesFormatted = TeacherResources.getTeachersData(teacherResources);
 
     return (
       <FlatList
@@ -169,8 +240,7 @@ class SubjectsByTeacher extends React.Component {
   };
 
   render() {
-    const { isLoading } = this.state;
-    const { subjectName } = this.props;
+    const { isLoading, subjectName } = this.state;
     return (
       <View style={styles.container}>
         <SubjectsByTeacherComponent
@@ -189,14 +259,5 @@ const styles = StyleSheet.create({
   professorContainer: { ...spacers.MA_1 },
   subtitle: { color: colors.GRAY, ...fonts.SIZE_XXS, textAlign: 'center' },
 });
-
-// DUMMY DATA
-SubjectsByTeacher.defaultProps = {
-  subjectName: 'Inteligencia Artificial',
-};
-
-SubjectsByTeacher.propTypes = {
-  subjectName: PropTypes.string,
-};
 
 export default WithLogger(SubjectsByTeacher);

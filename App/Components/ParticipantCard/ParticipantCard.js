@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     borderRadius: toBaseDesignPx(4),
-    borderColor: colors.GRAY_LIGHT,
+    borderColor: colors.GRAY,
     borderWidth: toBaseDesignPx(1),
     backgroundColor: colors.WHITE,
     ...spacers.PA_2,

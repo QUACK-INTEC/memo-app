@@ -13,8 +13,6 @@ import ImagePicker from '../../Components/Common/ImagePicker';
 // For test, to know how to use redux
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
-import EventForm from '../../Components/EventForm';
-
 class Playground extends Component {
   constructor(props) {
     super(props);
@@ -33,11 +31,10 @@ class Playground extends Component {
 
   render() {
     return (
-      <EventForm />
-      // <View style={styles.container}>
-      //   <Button title="Press me" onPress={this.onPressButton} />
-      //   <ImagePicker />
-      // </View>
+      <View style={styles.container}>
+        <Button title="Press me" onPress={this.onPressButton} />
+        <ImagePicker />
+      </View>
     );
   }
 }

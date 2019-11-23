@@ -1,8 +1,8 @@
 import React from 'react';
 import Lodash from 'lodash';
-import DropDown from '../Common/DropDown';
+import Toggle from '../Common/Toggle';
 
-const DropDownWrapper = objProps => {
+const ToggleWrapper = objProps => {
   const listFieldName = Lodash.get(objProps, ['field', 'name'], '').split('.');
   const skipTouched = Lodash.get(objProps, ['skipTouched'], false);
   const hasBeenTouched = Lodash.get(objProps, ['form', 'touched', ...listFieldName], false);
@@ -10,14 +10,14 @@ const DropDownWrapper = objProps => {
   const hasError = skipTouched ? strError : hasBeenTouched && strError;
 
   return (
-    <DropDown
+    <Toggle
       {...objProps.field}
       {...objProps}
-      onChangeOption={objProps.onChange}
+      onToggle={objProps.onChange}
       hasError={hasError}
       strError={strError}
     />
   );
 };
 
-export default DropDownWrapper;
+export default ToggleWrapper;

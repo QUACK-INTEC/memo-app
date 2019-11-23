@@ -16,7 +16,6 @@ class EventForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isVisible: true,
       canAddFile: false,
       hasDate: false,
       contentInsetBottom: 100,
@@ -24,9 +23,8 @@ class EventForm extends React.Component {
   }
 
   handleCloseEventForm = () => {
-    this.setState({
-      isVisible: false,
-    });
+    const { onCloseModal } = this.props;
+    onCloseModal();
   };
 
   handleOnToggleAddFile = isOn => {
@@ -38,6 +36,12 @@ class EventForm extends React.Component {
     }));
   };
 
+  // TODO:  Handle on submit form
+  handleOnSubmit = objValues => {
+    const { onSubmit } = this.props;
+    onSubmit(objValues);
+  };
+
   handleOnToggleHasDate = isOn => {
     this.setState(prevState => ({
       hasDate: isOn,
@@ -47,7 +51,7 @@ class EventForm extends React.Component {
     }));
   };
 
-  renderForm = () => {
+  renderForm = objForm => {
     const { canAddFile, hasDate, contentInsetBottom } = this.state;
     return (
       <>
@@ -97,16 +101,16 @@ class EventForm extends React.Component {
                 { value: 'public', label: 'Publico' },
                 { value: 'private', label: 'Privado' },
               ]}
-              labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+              labelStyle={{ ...fonts.SIZE_S }}
               label="Tipo de evento"
               name="type"
-              containerStyle={{ width: toBaseDesignPx(164.5) }}
+              containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
               enablesReturnKeyAutomatically
             />
             <View style={{ ...spacers.MT_14 }}>
-              <ToggleButton.Medium
+              <ToggleButton
                 label="Anexar archivo?"
-                onToggle={this.handleOnToggleAddFile}
+                onChange={this.handleOnToggleAddFile}
                 labelStyle={{ marginLeft: 0, color: colors.GRAY }}
               />
             </View>
@@ -118,17 +122,17 @@ class EventForm extends React.Component {
                   { value: 'public', label: 'Publico' },
                   { value: 'privado', label: 'Privado' },
                 ]}
-                labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                labelStyle={{ ...fonts.SIZE_S }}
                 label="Tipo de evento"
                 name="type"
-                containerStyle={{ width: toBaseDesignPx(164.5) }}
+                containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
             ) : null}
             <View style={{ ...spacers.MT_13 }}>
-              <ToggleButton.Medium
+              <ToggleButton
                 label="Tiene fecha?"
-                onToggle={this.handleOnToggleHasDate}
+                onChange={this.handleOnToggleHasDate}
                 labelStyle={{ marginLeft: 0, color: colors.GRAY }}
               />
             </View>
@@ -171,15 +175,14 @@ class EventForm extends React.Component {
           <Button
             label="Continuar"
             containerStyle={{ ...spacers.ML_4, ...spacers.MR_4 }}
-            // onPress={objForm.handleSubmit}
-            // disabled={!objForm.isValid}
+            onPress={objForm.handleSubmit}
+            disabled={!objForm.isValid}
           />
           <Button
             label="Cancelar"
             secondary
             containerStyle={{ ...spacers.MT_8, ...spacers.MB_4, ...spacers.ML_4, ...spacers.MR_4 }}
-            // onPress={objForm.handleSubmit}
-            // disabled={!objForm.isValid}
+            onPress={this.handleCloseEventForm}
           />
         </View>
       </>
@@ -187,7 +190,7 @@ class EventForm extends React.Component {
   };
 
   render() {
-    const { isVisible } = this.state;
+    const { isVisible } = this.props;
     return (
       <ModalForm isVisible={isVisible} onCloseModal={this.handleCloseEventForm}>
         <Formik

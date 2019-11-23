@@ -8,6 +8,7 @@ import { createPromise } from 'redux-promise-middleware';
 // Reducers
 import userManagerReducer, { actionTypes as actionTypesUserManager } from './Common/UserManager';
 import myClassesManager from './Common/MyClasses';
+import eventFormManagerReducer from '../Screens/EventForm/Redux';
 
 const persistConfig = {
   key: 'root',
@@ -18,6 +19,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   userManager: userManagerReducer,
   MyClasses: myClassesManager,
+  EventForm: eventFormManagerReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

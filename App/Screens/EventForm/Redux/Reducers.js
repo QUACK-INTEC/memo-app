@@ -4,12 +4,14 @@ import * as types from './ActionTypes';
 
 const initialState = {
   isModalVisible: false,
-  clase: null,
-  title: null,
-  description: null,
-  type: 'public',
-  startTime: null,
-  endTime: null,
+  values: {
+    clase: null,
+    title: null,
+    description: null,
+    type: 'public',
+    startTime: null,
+    endTime: null,
+  },
 };
 
 // TODO: Set modal visible in hoc to display the modal, dispatch action from the tab bar
@@ -19,7 +21,9 @@ const onSetInitialValues = (state, action) => {
   const objInitialValues = Lodash.get(action, ['payload'], '');
   return {
     ...state,
-    ...objInitialValues,
+    values: {
+      ...objInitialValues,
+    },
   };
 };
 

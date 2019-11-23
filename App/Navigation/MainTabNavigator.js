@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import { Platform, Alert } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -89,21 +90,9 @@ AddStack.navigationOptions = {
     />
   ),
   tabBarOnPress: () => {
-    // TO-DO Open Modal!
-    Alert.alert(
-      'Agregar publicacion',
-      'Desea agregar una nueva publicacion?',
-      [
-        { text: 'Despues', onPress: () => null },
-        {
-          text: 'No',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        { text: 'Si', onPress: null },
-      ],
-      { cancelable: false }
-    );
+    const EventForm = require('../Screens/EventForm/Redux');
+    const StoreRedux = require('../Redux');
+    return StoreRedux.store.dispatch(EventForm.actions.setModalVisible(true));
   },
 };
 
@@ -162,4 +151,4 @@ const tabNavigator = createBottomTabNavigator({
 
 tabNavigator.path = '';
 
-export default Playground;
+export default tabNavigator;

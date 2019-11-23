@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   commentStyle: {
     ...spacers.MB_1,
     color: colors.GRAY,
+    ...fonts.SIZE_XS,
   },
   avatarStyle: {
     height: toBaseDesignPx(32),
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     ...spacers.ML_4,
   },
   authorStyle: {
-    ...fonts.SIZE_XS,
+    ...fonts.SIZE_XXS,
     color: colors.GRAY_LIGHT,
     ...spacers.MR_1,
   },
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(8),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XXXL,
+    ...fonts.SIZE_XL,
   },
   divBar: {
     width: toBaseDesignPx(0),
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
   optionIcon: { ...spacers.MR_1, ...spacers.MB_3, ...spacers.MT_3 },
   upVotesStyle: {
     color: colors.GRAY_LIGHT,
-    ...fonts.SIZE_XS,
+    ...fonts.SIZE_XXS,
   },
 });
 

@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(12),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XXL,
+    ...fonts.SIZE_XL,
   },
   buttonStyle: {
     borderRadius: toBaseDesignPx(4),

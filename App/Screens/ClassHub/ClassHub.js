@@ -9,7 +9,6 @@ import Text from '../../Components/Common/Text';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { fonts, colors } from '../../Core/Theme';
 
-// TODO: Fix warnings
 class ClassHub extends React.Component {
   constructor(props) {
     super(props);
@@ -19,6 +18,7 @@ class ClassHub extends React.Component {
       code: null,
       subjectName: null,
       participants: [],
+      idSection: null,
     };
   }
 
@@ -38,6 +38,7 @@ class ClassHub extends React.Component {
       classRoom,
       code,
       subjectName,
+      idSection,
     });
     Promise.all([this.getSectionStudents(idSection)])
       .then(listValues => {
@@ -89,6 +90,14 @@ class ClassHub extends React.Component {
     navigate('Participants', { participants });
   };
 
+  handleOnPressGoToResources = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { subjectName, idSection } = this.state;
+    navigate('SubjectsByTeacher', { subjectName, idSection });
+  };
+
   renderScheduleClass = () => {
     const {
       navigation: { getParam },
@@ -120,6 +129,7 @@ class ClassHub extends React.Component {
         subjectStudents={students}
         onPressGoToEvents={this.handleOnPressGoToEvents}
         onPressGoToParticipants={this.handleOnPressGoToParticipants}
+        onPressGoToResources={this.handleOnPressGoToResources}
         onBackArrowPress={this.handleOnPressBackArrow}
       />
     );

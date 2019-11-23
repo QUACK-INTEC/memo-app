@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import { Platform, Alert } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -15,6 +16,8 @@ import ClassRoomScreen from '../Screens/ClassRooms';
 import ProfileScreen from '../Screens/Profile';
 import ClassParticipantsScreen from '../Screens/ClassParticipants';
 import ViewProfileScreen from '../Screens/ViewProfile';
+import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
+import TeacherResourcesScreen from '../Screens/TeacherResources';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -87,21 +90,9 @@ AddStack.navigationOptions = {
     />
   ),
   tabBarOnPress: () => {
-    // TO-DO Open Modal!
-    Alert.alert(
-      'Agregar publicacion',
-      'Desea agregar una nueva publicacion?',
-      [
-        { text: 'Despues', onPress: () => null },
-        {
-          text: 'No',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        { text: 'Si', onPress: null },
-      ],
-      { cancelable: false }
-    );
+    const EventForm = require('../Screens/EventForm/Redux');
+    const StoreRedux = require('../Redux');
+    return StoreRedux.store.dispatch(EventForm.actions.setModalVisible(true));
   },
 };
 
@@ -115,6 +106,8 @@ const ClassRoomStack = createStackNavigator(
     },
     Participants: ClassParticipantsScreen,
     ViewProfile: ViewProfileScreen,
+    SubjectsByTeacher: SubjectsByTeacherScreen,
+    TeacherResources: TeacherResourcesScreen,
   },
   config
 );

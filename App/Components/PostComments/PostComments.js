@@ -23,6 +23,11 @@ const validation = objValues => {
 };
 
 class PostComments extends React.Component {
+  constructor(props) {
+    super(props);
+    this.textInput = React.createRef();
+  }
+
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
@@ -62,10 +67,12 @@ class PostComments extends React.Component {
     onAuthorPress();
   };
 
-  postComment = objValues => {
+  postComment = (objValues, { resetForm }) => {
     const { onCommentPost } = this.props;
     const comment = Lodash.get(objValues, 'comment', null);
     onCommentPost(comment);
+    this.textInput.clear();
+    resetForm();
   };
 
   renderComponent = objForm => {
@@ -92,6 +99,9 @@ class PostComments extends React.Component {
               multiline
               style={styles.input}
               blurOnSubmit
+              inputRef={input => {
+                this.textInput = input;
+              }}
             />
             <View style={styles.commentIconContainer}>
               <Icon

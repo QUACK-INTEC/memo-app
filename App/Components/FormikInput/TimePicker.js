@@ -1,8 +1,8 @@
 import React from 'react';
 import Lodash from 'lodash';
-import DropDown from '../Common/DropDown';
+import TimePicker from '../Common/TimePickerWrapper';
 
-const DropDownWrapper = objProps => {
+const TimePickerWrapper = objProps => {
   const listFieldName = Lodash.get(objProps, ['field', 'name'], '').split('.');
   const skipTouched = Lodash.get(objProps, ['skipTouched'], false);
   const hasBeenTouched = Lodash.get(objProps, ['form', 'touched', ...listFieldName], false);
@@ -10,14 +10,14 @@ const DropDownWrapper = objProps => {
   const hasError = skipTouched ? strError : hasBeenTouched && strError;
 
   return (
-    <DropDown
+    <TimePicker
       {...objProps.field}
       {...objProps}
-      onChangeOption={objProps.onChange}
+      onChangeText={objProps.onChange}
       hasError={hasError}
       strError={strError}
     />
   );
 };
 
-export default DropDownWrapper;
+export default TimePickerWrapper;

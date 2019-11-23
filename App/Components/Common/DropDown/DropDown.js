@@ -10,6 +10,7 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import Text from '../Text';
+import InLineComponent from '../InLineComponent';
 
 class DropDownComponent extends React.Component {
   constructor(props) {
@@ -30,16 +31,37 @@ class DropDownComponent extends React.Component {
     onChange(value);
   };
 
+  renderErrorLabel = () => {
+    const { hasError, strError } = this.props;
+
+    if (!hasError) {
+      return null;
+    }
+
+    return (
+      <Text.ItalicLight
+        text={`${strError}*`}
+        style={{ color: colors.ERROR, ...spacers.ML_1, ...fonts.SIZE_XS }}
+      />
+    );
+  };
+
   renderLabel = () => {
     const { label, labelStyle, hasError } = this.props;
     const errorLabelStyle = hasError ? styles.errorLabelStyle : null;
 
     if (label) {
       return (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text.SemiBold text={label} style={[this.getLabelStyle(), errorLabelStyle, labelStyle]} />
-          <Text.SemiBold text="   ▼" style={[styles.triangle]} />
-        </View>
+        <InLineComponent>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text.SemiBold
+              text={label}
+              style={[this.getLabelStyle(), errorLabelStyle, labelStyle]}
+            />
+            <Text.SemiBold text="   ▼" style={[styles.triangle]} />
+          </View>
+          {this.renderErrorLabel()}
+        </InLineComponent>
       );
     }
 
@@ -153,6 +175,7 @@ DropDownComponent.defaultProps = {
   style: null,
   containerStyle: null,
   value: '1',
+  strError: null,
 };
 
 DropDownComponent.propTypes = {
@@ -172,6 +195,7 @@ DropDownComponent.propTypes = {
   containerStyle: ViewPropTypes.style,
   disabled: PropTypes.bool,
   hasError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  strError: PropTypes.string,
 };
 
 export default DropDownComponent;

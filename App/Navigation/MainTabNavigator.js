@@ -9,7 +9,7 @@ import { ICON_SIZE } from '../Components/Common/Icon';
 import { toBaseDesignPx, colors, spacers } from '../Core/Theme';
 
 // Screens root
-import Playground from '../Screens/PostInfo';
+import Playground from '../Screens/Playground';
 import HomeScreen from '../Screens/Home';
 import CalendarScreen from '../Screens/Calendar';
 import ClassRoomScreen from '../Screens/ClassRooms';

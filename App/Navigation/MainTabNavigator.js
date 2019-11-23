@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarLabel from '../Components/TabBar/TabBarLabel';
@@ -13,6 +13,8 @@ import HomeScreen from '../Screens/Home';
 import CalendarScreen from '../Screens/Calendar';
 import ClassRoomScreen from '../Screens/ClassRooms';
 import ProfileScreen from '../Screens/Profile';
+import ClassParticipantsScreen from '../Screens/ClassParticipants';
+import ViewProfileScreen from '../Screens/ViewProfile';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -84,6 +86,23 @@ AddStack.navigationOptions = {
       color={focused ? colors.GRAY_LIGHT : colors.WHITE}
     />
   ),
+  tabBarOnPress: () => {
+    // TO-DO Open Modal!
+    Alert.alert(
+      'Agregar publicacion',
+      'Desea agregar una nueva publicacion?',
+      [
+        { text: 'Despues', onPress: () => null },
+        {
+          text: 'No',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Si', onPress: null },
+      ],
+      { cancelable: false }
+    );
+  },
 };
 
 AddStack.path = '';
@@ -94,6 +113,8 @@ const ClassRoomStack = createStackNavigator(
     ClassHub: {
       screen: ClassHubScreen,
     },
+    Participants: ClassParticipantsScreen,
+    ViewProfile: ViewProfileScreen,
   },
   config
 );

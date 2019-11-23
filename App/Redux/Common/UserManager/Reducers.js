@@ -34,12 +34,21 @@ const onSetUserUniversity = (state, action) => {
     university: objPayloadUserUniversity,
   };
 };
+// LOG_OUT
+const onSetLogout = () => {
+  return {
+    token: null,
+    user: null,
+    university: null,
+  };
+};
 
 const contentReducer = typeToReducer(
   {
     [types.SET_USER_TOKEN]: onSetUserToken,
     [types.SET_USER_INFO]: onSetUserInfo,
     [types.SET_USER_UNIVERSITY_SYNC]: onSetUserUniversity,
+    [types.LOG_OUT]: onSetLogout,
   },
   initialState
 );

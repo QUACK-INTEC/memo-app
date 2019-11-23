@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 // Theme
-import { colors, toBaseDesignPx } from '../../../Core/Theme';
+import { colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import ImageWrapper from '../ImageWrapper';
@@ -44,6 +44,13 @@ const styles = StyleSheet.create({
   textStyle: {
     color: colors.GRAY,
     fontSize: RFValue(48),
+    textAlign: 'center',
+    ...spacers.ML_1,
+    ...spacers.MT_1,
+    ...spacers.MB_1,
+    ...spacers.MR_1,
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
 });
 

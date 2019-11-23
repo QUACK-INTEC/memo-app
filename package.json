@@ -14,6 +14,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^3.4.0",
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
     "@react-navigation/web": "^1.0.0-alpha.9",
@@ -42,6 +43,7 @@
     "react-native-iphone-x-helper": "^1.2.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-modal": "^11.5.3",
+    "react-native-modal-datetime-picker": "^7.6.0",
     "react-native-picker-select": "^6.3.3",
     "react-native-radio-button": "^2.0.1",
     "react-native-responsive-fontsize": "^0.3.0",

@@ -7,8 +7,6 @@ import { spacers, toBaseDesignPx } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 
-const UNIVERSITYS = [{ label: 'INTEC', value: 'intec' }];
-
 const validation = objValues => {
   const errors = {};
   const { user, claveUniversidad, university } = objValues;
@@ -45,13 +43,14 @@ class SyncForm extends Component {
   };
 
   renderForm = objForm => {
+    const { universities } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView behavior="padding">
           <View>
             <FormikInput
               type="dropdown"
-              options={UNIVERSITYS}
+              options={universities}
               placeholder="Seleccione su universidad"
               label="Universidad"
               name="university"
@@ -135,6 +134,13 @@ SyncForm.propTypes = {
     claveUniversidad: PropTypes.string,
     university: PropTypes.string,
   }),
+  universities: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      syncCode: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default SyncForm;

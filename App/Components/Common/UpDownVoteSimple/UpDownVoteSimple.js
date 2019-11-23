@@ -19,26 +19,26 @@ class UpDownVoteSimple extends React.Component {
   }
 
   handleUpVote = () => {
-    const { onUpVote, onRemoveUpVote } = this.props;
-    const { isUpVote } = this.state;
-    this.setState({ isUpVote: !isUpVote, isDownVote: false });
-
-    if (!isUpVote) {
-      return onUpVote();
-    }
-
-    return onRemoveUpVote();
+    const { onUpVote } = this.props;
+    this.setState(
+      prevState => ({ isUpVote: !prevState.isUpVote, isDownVote: false }),
+      () => {
+        const { isUpVote } = this.state;
+        return onUpVote(isUpVote);
+      }
+    );
   };
 
   handleDownVote = () => {
-    const { onDownVote, onRemoveDownVote } = this.props;
-    const { isDownVote } = this.state;
-    this.setState({ isUpVote: false, isDownVote: !isDownVote });
-    if (!isDownVote) {
-      return onDownVote();
-    }
+    const { onDownVote } = this.props;
 
-    return onRemoveDownVote();
+    this.setState(
+      prevState => ({ isUpVote: false, isDownVote: !prevState.isDownVote }),
+      () => {
+        const { isDownVote } = this.state;
+        return onDownVote(isDownVote);
+      }
+    );
   };
 
   render() {
@@ -49,14 +49,14 @@ class UpDownVoteSimple extends React.Component {
           name="chevron-up"
           type={ICON_TYPE.FONT_AWESOME}
           size={ICON_SIZE.TINY}
-          color={isUpVote ? colors.GREEN : colors.GRAY}
+          color={isUpVote ? colors.GREEN : colors.GRAY_LIGHT}
           onPress={this.handleUpVote}
         />
         <Icon
           name="chevron-down"
           type={ICON_TYPE.FONT_AWESOME}
           size={ICON_SIZE.TINY}
-          color={isDownVote ? 'red' : colors.GRAY}
+          color={isDownVote ? 'red' : colors.GRAY_LIGHT}
           onPress={this.handleDownVote}
         />
       </View>
@@ -66,17 +66,13 @@ class UpDownVoteSimple extends React.Component {
 
 UpDownVoteSimple.defaultProps = {
   onUpVote: () => null,
-  onRemoveUpVote: () => null,
   onDownVote: () => null,
-  onRemoveDownVote: () => null,
   score: null,
 };
 
 UpDownVoteSimple.propTypes = {
   onUpVote: PropTypes.func,
-  onRemoveUpVote: PropTypes.func,
   onDownVote: PropTypes.func,
-  onRemoveDownVote: PropTypes.func,
   score: PropTypes.number,
 };
 

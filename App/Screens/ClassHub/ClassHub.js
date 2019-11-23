@@ -17,7 +17,8 @@ class ClassHub extends React.Component {
       professorName: null,
       classRoom: null,
       code: null,
-      className: null,
+      subjectName: null,
+      participants: [],
     };
   }
 
@@ -30,13 +31,13 @@ class ClassHub extends React.Component {
     const idSection = getParam('id', {});
     const professorName = Lodash.get(objSectionInfo, ['professorName'], '');
     const classRoom = Lodash.get(objSectionInfo, ['classRoom'], '');
-    const className = Lodash.get(objSectionInfo, ['className'], '');
     const code = Lodash.get(objSectionInfo, ['code'], '');
+    const subjectName = Lodash.get(objSectionInfo, ['subjectName'], '');
     this.setState({
       professorName,
       classRoom,
       code,
-      className,
+      subjectName,
     });
     Promise.all([this.getSectionStudents(idSection)])
       .then(listValues => {
@@ -44,6 +45,7 @@ class ClassHub extends React.Component {
         const listStudents = Lodash.get(objSectionStudentsResponse, ['data', 'data'], []);
         this.setState({
           students: listStudents.length,
+          participants: listStudents,
         });
         return logger.success({
           key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
@@ -79,6 +81,14 @@ class ClassHub extends React.Component {
     navigate('Calendar');
   };
 
+  handleOnPressGoToParticipants = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { participants } = this.state;
+    navigate('Participants', { participants });
+  };
+
   renderScheduleClass = () => {
     const {
       navigation: { getParam },
@@ -99,16 +109,17 @@ class ClassHub extends React.Component {
   };
 
   renderClassHubComponent = () => {
-    const { professorName, students, classRoom, code, className } = this.state;
+    const { professorName, students, classRoom, code, subjectName } = this.state;
     return (
       <ClassHubComponent
-        subjectName={className}
+        subjectName={subjectName}
         subjectTeacher={professorName}
         subjectRoom={classRoom}
         subjectSection={code}
         renderSubjectSchedule={this.renderScheduleClass}
         subjectStudents={students}
         onPressGoToEvents={this.handleOnPressGoToEvents}
+        onPressGoToParticipants={this.handleOnPressGoToParticipants}
         onBackArrowPress={this.handleOnPressBackArrow}
       />
     );

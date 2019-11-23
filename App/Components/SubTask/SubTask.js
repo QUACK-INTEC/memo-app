@@ -53,7 +53,16 @@ class SubTaskComponent extends React.Component {
   };
 
   render() {
-    const { error, title, placeholder, data, maxHeight, inverted, containerStyle } = this.props;
+    const {
+      error,
+      title,
+      placeholder,
+      data,
+      maxHeight,
+      inverted,
+      containerStyle,
+      onMoreIconPress,
+    } = this.props;
     const { inputValue } = this.state;
     return (
       <View style={containerStyle}>
@@ -68,10 +77,19 @@ class SubTaskComponent extends React.Component {
             data={data}
             inverted={inverted}
             renderItem={({ item }) => (
-              <RadioButton
-                onPress={isPressed => this.handleRadioButtonPress(isPressed, item.value)}
-                text={item.label}
-              />
+              <View style={styles.itemContainer}>
+                <RadioButton
+                  onPress={isPressed => this.handleRadioButtonPress(isPressed, item.value)}
+                  text={item.label}
+                />
+                <Icon
+                  onPress={() => onMoreIconPress(item.value)}
+                  name="ios-more"
+                  type={ICON_TYPE.ION_ICONS}
+                  size={ICON_SIZE.TINY}
+                  color={colors.GRAY}
+                />
+              </View>
             )}
             keyExtractor={item => item.value}
             extraData={this.props}
@@ -85,7 +103,7 @@ class SubTaskComponent extends React.Component {
               name="add"
               type={ICON_TYPE.MEMO_ICONS}
               size={ICON_SIZE.TINY}
-              color={colors.BLACK}
+              color={colors.GRAY}
             />
           </TouchableOpacity>
           <TextInput
@@ -120,11 +138,16 @@ const styles = StyleSheet.create({
     color: colors.ERROR,
     ...fonts.SIZE_XS,
   },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
 
 SubTaskComponent.defaultProps = {
   onSubTaskAdd: () => null,
   onSubTaskPress: () => null,
+  onMoreIconPress: () => null,
   data: [],
   title: 'Subtareas para este evento',
   placeholder: 'Añadir una sub tarea',
@@ -137,6 +160,7 @@ SubTaskComponent.defaultProps = {
 SubTaskComponent.propTypes = {
   onSubTaskAdd: PropTypes.func,
   onSubTaskPress: PropTypes.func,
+  onMoreIconPress: PropTypes.func,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,

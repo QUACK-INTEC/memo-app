@@ -11,7 +11,6 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 import Text from '../Text';
 
 // Common
-
 const DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 const MONTHS = [
   'Enero',
@@ -115,10 +114,7 @@ class DatePickerComponent extends React.Component {
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
-        <TouchableOpacity
-          style={[this.getDatePickerStyle(), style]}
-          onPress={this.showDateTimePicker}
-        >
+        <TouchableOpacity onPress={this.showDateTimePicker}>
           <DateTimePicker
             locale="es-DO"
             date={new Date()}
@@ -126,10 +122,10 @@ class DatePickerComponent extends React.Component {
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
             isDarkModeEnabled
-            titleIOS="Selecciona una fecha"
+            titleIOS={placeholder}
             {...rest}
           />
-          <Text.SemiBold text={date || placeholder} style={[]} />
+          <Text.SemiBold text={date || placeholder} style={[this.getDatePickerStyle(), style]} />
         </TouchableOpacity>
       </View>
     );
@@ -138,7 +134,6 @@ class DatePickerComponent extends React.Component {
 
 const styles = StyleSheet.create({
   mainView: {
-    ...spacers.PT_3,
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.GRAY_LIGHT,
   },

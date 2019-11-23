@@ -39,7 +39,7 @@ class PostInfo extends Component {
     const {
       navigation: { push },
     } = this.props;
-    push('ClassResources');
+    push('PostResources');
   };
 
   handleUpVote = () => {

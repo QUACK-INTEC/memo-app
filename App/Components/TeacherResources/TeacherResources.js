@@ -1,13 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 import Text from '../Common/Text';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import { toBaseDesignPx, spacers, fonts, colors, constants } from '../../Core/Theme';
 
-class SubjectsByTeacher extends React.Component {
+class TeacherResources extends React.Component {
   handleBackArrow = () => {
     const { onBackArrow } = this.props;
     onBackArrow();
@@ -28,18 +27,20 @@ class SubjectsByTeacher extends React.Component {
   };
 
   render() {
-    const { subjectName, renderProfessors } = this.props;
+    const { subjectName, renderResources, teacherName } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.headerInfoContainer}>
           {this.renderHeader()}
           <View style={styles.centeredChildren}>
-            <Text.SemiBold text="Todos los recursos" style={styles.titleStyle} />
-            <Text.Medium text={subjectName} style={styles.subjectStyle} />
-            <Text.Medium text="Recursos por: Profesores" style={styles.subtitleStyle} />
+            <Text.Medium text={subjectName} style={styles.titleStyle} />
+            <Text.Medium
+              text={`Recursos del profesor: ${teacherName}`}
+              style={styles.teacherStyle}
+            />
           </View>
         </View>
-        <View style={styles.container}>{renderProfessors()}</View>
+        <View style={styles.container}>{renderResources()}</View>
       </View>
     );
   }
@@ -65,21 +66,14 @@ const styles = StyleSheet.create({
     ...spacers.ML_15,
     alignSelf: 'center',
     color: colors.GRAY,
+    textAlign: 'center',
   },
-  subjectStyle: {
+  teacherStyle: {
     ...fonts.SIZE_XXS,
     ...spacers.MR_15,
     ...spacers.ML_15,
     ...spacers.MT_1,
-    alignSelf: 'center',
-    color: colors.GRAY,
-  },
-  subtitleStyle: {
-    fontSize: RFValue(6),
-    ...spacers.MR_15,
-    ...spacers.ML_15,
-    ...spacers.MT_1,
-    ...spacers.MB_5,
+    ...spacers.MB_16,
     alignSelf: 'center',
     color: colors.GRAY,
   },
@@ -91,16 +85,18 @@ const styles = StyleSheet.create({
   },
 });
 
-SubjectsByTeacher.defaultProps = {
+TeacherResources.defaultProps = {
   onBackArrow: () => null,
-  renderProfessors: () => null,
+  renderResources: () => null,
+  teacherName: null,
   subjectName: null,
 };
 
-SubjectsByTeacher.propTypes = {
+TeacherResources.propTypes = {
   onBackArrow: PropTypes.func,
-  renderProfessors: PropTypes.func,
+  renderResources: PropTypes.func,
+  teacherName: PropTypes.string,
   subjectName: PropTypes.string,
 };
 
-export default SubjectsByTeacher;
+export default TeacherResources;

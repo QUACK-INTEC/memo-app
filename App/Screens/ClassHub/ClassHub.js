@@ -18,6 +18,7 @@ class ClassHub extends React.Component {
       classRoom: null,
       code: null,
       subjectName: null,
+      participants: [],
     };
   }
 
@@ -44,6 +45,7 @@ class ClassHub extends React.Component {
         const listStudents = Lodash.get(objSectionStudentsResponse, ['data', 'data'], []);
         this.setState({
           students: listStudents.length,
+          participants: listStudents,
         });
         return logger.success({
           key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
@@ -79,6 +81,14 @@ class ClassHub extends React.Component {
     navigate('Calendar');
   };
 
+  handleOnPressGoToParticipants = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { participants } = this.state;
+    navigate('Participants', { participants });
+  };
+
   renderScheduleClass = () => {
     const {
       navigation: { getParam },
@@ -109,6 +119,7 @@ class ClassHub extends React.Component {
         renderSubjectSchedule={this.renderScheduleClass}
         subjectStudents={students}
         onPressGoToEvents={this.handleOnPressGoToEvents}
+        onPressGoToParticipants={this.handleOnPressGoToParticipants}
         onBackArrowPress={this.handleOnPressBackArrow}
       />
     );

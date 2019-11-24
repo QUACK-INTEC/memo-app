@@ -8,6 +8,8 @@ import SubjectsByTeacherComponent from '../../Components/SubjectsByTeacher';
 import DescriptiveInfoCard from '../../Components/DescriptiveInfoCard';
 import { spacers, colors, fonts } from '../../Core/Theme';
 import { TeacherResources } from '../../Models';
+import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
+import Text from '../../Components/Common/Text';
 
 class SubjectsByTeacher extends React.Component {
   constructor(props) {
@@ -228,6 +230,23 @@ class SubjectsByTeacher extends React.Component {
     const { teacherResources } = this.state;
     const teacherResourcesFormatted = TeacherResources.getTeachersData(teacherResources);
 
+    if (Lodash.isEmpty(teacherResources)) {
+      return (
+        <View style={styles.noResourcesContainer}>
+          <Icon
+            type={ICON_TYPE.MEMO_ICONS}
+            name="moon"
+            color={colors.GRAY}
+            size={ICON_SIZE.EXTRA_LARGE}
+          />
+          <Text.Medium
+            text="No hay recursos disponibles para esta materia"
+            style={styles.noResourcesText}
+          />
+        </View>
+      );
+    }
+
     return (
       <FlatList
         columnWrapperStyle={styles.professorListContainer}
@@ -254,6 +273,19 @@ class SubjectsByTeacher extends React.Component {
   }
 }
 const styles = StyleSheet.create({
+  noResourcesContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...spacers.MB_15,
+  },
+  noResourcesText: {
+    color: colors.GRAY,
+    ...spacers.MT_16,
+    ...spacers.MB_2,
+    ...spacers.ML_8,
+    ...spacers.MR_8,
+    textAlign: 'center',
+  },
   container: { flex: 1 },
   professorListContainer: { justifyContent: 'space-around' },
   professorContainer: { ...spacers.MA_1 },

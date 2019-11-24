@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, FlatList, TextInput, Alert } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 
@@ -27,26 +27,11 @@ class SubTaskComponent extends React.Component {
   };
 
   showEditOptions = id => {
-    const { onDeleteSubTask /* showActionSheetWithOptions */ } = this.props;
-    // const options = ['Borrar', 'Cancelar'];
-    // const destructiveButtonIndex = 0;
-    // const cancelButtonIndex = 1;
+    const { onDeleteSubTask, showActionSheetWithOptions } = this.props;
+    const options = ['Borrar', 'Cancelar'];
+    const destructiveButtonIndex = 0;
+    const cancelButtonIndex = 1;
 
-    Alert.alert(
-      'Borrar Subtarea',
-      'Seguro que quiere borrar esta Subtarea?',
-      [
-        {
-          text: 'Cancelar',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        { text: 'Borrar', onPress: () => onDeleteSubTask(id) },
-      ],
-      { cancelable: false }
-    );
-
-    /*
     showActionSheetWithOptions(
       {
         options,
@@ -59,7 +44,6 @@ class SubTaskComponent extends React.Component {
         }
       }
     );
-    */
   };
 
   // Hay un bug ahora mismo dejame eso comentado.
@@ -160,8 +144,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   textTitle: {
-    color: colors.GRAY,
-    ...fonts.SIZE_L,
+    color: colors.GRAY_LIGHT,
   },
   error: {
     color: colors.ERROR,

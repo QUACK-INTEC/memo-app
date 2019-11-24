@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
-import Lodash from 'lodash';
-import { StyleSheet, SafeAreaView, Alert } from 'react-native';
+import React from 'react';
+import { StyleSheet, SafeAreaView, Alert, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import Lodash from 'lodash';
 
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import PostInfoForm from '../../Components/PostInfo';
 import LoadingState from '../../Components/LoadingState';
 import Api from '../../Core/Api';
 import PopUp from '../../Components/Common/PopUp';
+import SubTask from '../../Components/SubTask';
+import { SubTasks } from '../../Models';
+import { spacers } from '../../Core/Theme';
 
-class PostInfo extends Component {
+class PostInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,16 +20,59 @@ class PostInfo extends Component {
       confirmationPopUpVisible: false,
       deleteConfirmationPopUpVisible: false,
       postId: null,
+      userSubTasks: [],
     };
   }
 
   componentDidMount() {
-    // TODO: Get Post Info From API and Params from navigation
-    this.setState({ isLoading: true });
-    setTimeout(() => {
-      this.setState({ isLoading: false });
-    }, 2000);
+    // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
+    const {
+      // navigation: { getParam, pop },
+      logger,
+    } = this.props;
+    // const authorTitle = getParam('authorName', {});
+    // const postTitle = getParam('postTitle', {});
+    // const postId = getParam('postId', {});
+    // const authorId = getParam('authorId', {});
+
+    Promise.all([this.getSubTasks()])
+      .then(listValues => {
+        const [objSubTasks] = listValues;
+        const listSubTasks = Lodash.get(objSubTasks, 'data', []);
+        this.setState({ userSubTasks: listSubTasks, isLoading: false });
+        return logger.success({
+          key: MessagesKey.LOAD_SUBTASKS_SUCCESS,
+          data: listValues,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.LOAD_SUBTASKS_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
   }
+
+  getSubTasks = () => {
+    return {
+      success: true,
+      data: [
+        {
+          id: '5dcb3a143f84959c924adfa8',
+          label: 'Hacer esta cosa',
+          done: false,
+        },
+        {
+          id: '5d924adfa89',
+          label: 'Hacer aquella cosa',
+          done: true,
+        },
+      ],
+    };
+  };
 
   handleEdit = () => {
     // TODO : EDIT POST
@@ -122,6 +168,44 @@ class PostInfo extends Component {
     pop();
   };
 
+  handleSubTaskPress = (isPressed, subTaskId) => {
+    // TODO: send request to api to mark as done/undone
+    Alert.alert(`Press SubTask id: ${subTaskId}, checked: ${isPressed}`);
+  };
+
+  deleteSubTask = subTaskIdd => {
+    // TODO: send request to api to delete SubTask
+    Alert.alert(`delete SubTask id: ${subTaskIdd}`);
+  };
+
+  addSubTask = subTaskLabel => {
+    // TODO: send request to api to add SubTask
+    const subTaskObj = {
+      id: '5d924adfa8934',
+      label: subTaskLabel,
+      done: false,
+    };
+    this.setState(prevState => ({ userSubTasks: [...prevState.userSubTasks, subTaskObj] }));
+  };
+
+  renderSubTasks = () => {
+    const { userSubTasks } = this.state;
+    const subtasksFormatted = SubTasks.getSubTasksData(userSubTasks);
+    if (Lodash.isEmpty(subtasksFormatted)) {
+      return null;
+    }
+    return (
+      <View style={{ ...spacers.ML_3, ...spacers.MR_3 }}>
+        <SubTask
+          data={subtasksFormatted}
+          onDeleteSubTask={this.deleteSubTask}
+          onSubTaskAdd={this.addSubTask}
+          onSubTaskPress={this.handleSubTaskPress}
+        />
+      </View>
+    );
+  };
+
   renderPostInfo = () => {
     return (
       <PostInfoForm
@@ -133,6 +217,7 @@ class PostInfo extends Component {
         onAuthorPress={this.handleAuthorPress}
         goToComments={this.goToComments}
         goToResources={this.goToResources}
+        renderSubTasks={this.renderSubTasks}
         isAuthor
         badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
         initialsText="EP"

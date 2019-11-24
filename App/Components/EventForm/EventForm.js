@@ -37,7 +37,6 @@ class EventForm extends React.Component {
     }));
   };
 
-  // TODO:  Handle on submit form
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -47,8 +46,8 @@ class EventForm extends React.Component {
     this.setState(prevState => ({
       hasDate: isOn,
       contentInsetBottom: isOn
-        ? prevState.contentInsetBottom + 50
-        : prevState.contentInsetBottom - 50,
+        ? prevState.contentInsetBottom + 120
+        : prevState.contentInsetBottom - 120,
     }));
   };
 
@@ -71,7 +70,7 @@ class EventForm extends React.Component {
               options={optionsClasses}
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
-              name="clase"
+              name="subject"
               labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
@@ -135,19 +134,28 @@ class EventForm extends React.Component {
             {hasDate ? (
               <View style={styles.containerTimePicker}>
                 <FormikInput
-                  type="timepicker"
-                  label="Hora de inicio"
-                  name="startTime"
+                  type="datepicker"
+                  label="Fecha del evento"
+                  name="datetime"
                   labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
-                  containerStyle={{ flex: 1, width: toBaseDesignPx(10), ...spacers.MR_2 }}
+                  containerStyle={{ flex: 1, ...spacers.MR_2 }}
                 />
-                <FormikInput
-                  type="timepicker"
-                  label="Hora final"
-                  name="endTime"
-                  labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
-                  containerStyle={{ flex: 1, width: toBaseDesignPx(10) }}
-                />
+                <View style={{ flexDirection: 'row', ...spacers.MT_8 }}>
+                  <FormikInput
+                    type="timepicker"
+                    label="Hora de inicio"
+                    name="startTime"
+                    labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                    containerStyle={{ flex: 1, width: toBaseDesignPx(10), ...spacers.MR_2 }}
+                  />
+                  <FormikInput
+                    type="timepicker"
+                    label="Hora final"
+                    name="endTime"
+                    labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                    containerStyle={{ flex: 1, width: toBaseDesignPx(10) }}
+                  />
+                </View>
               </View>
             ) : null}
           </ScrollView>
@@ -198,7 +206,6 @@ const styles = StyleSheet.create({
   containerToggleInput: { ...spacers.MT_13 },
   labelToggleInput: { marginLeft: 0, color: colors.GRAY },
   containerTimePicker: {
-    flexDirection: 'row',
     ...spacers.MT_8,
   },
   containerBottom: {

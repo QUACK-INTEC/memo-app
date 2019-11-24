@@ -10,7 +10,7 @@ import { Classes } from '../../Models';
 
 const validation = objValues => {
   const errors = {};
-  const { clase, description, title } = objValues;
+  const { subject, description, title } = objValues;
 
   if (!title) {
     errors.title = 'Campo obligatorio';
@@ -20,8 +20,8 @@ const validation = objValues => {
     errors.description = 'Campo obligatorio';
   }
 
-  if (!clase) {
-    errors.clase = 'Campo obligatorio';
+  if (!subject) {
+    errors.subject = 'Campo obligatorio';
   }
 
   return errors;
@@ -39,9 +39,10 @@ class EventForm extends React.Component {
     const { initialsValue } = this.state;
 
     return {
-      clase: null,
+      subject: null,
       description: null,
       endTime: null,
+      dateTime: new Date(),
       startTime: null,
       title: null,
       type: 'public',
@@ -65,8 +66,10 @@ class EventForm extends React.Component {
     setModalVisible(false);
   };
 
-  handleOnSubmitForm = () => {
-    // TODO: Send to API values (create or edit)
+  handleOnSubmitForm = objValues => {
+    const { subject, description, endTime, dateTime, startTime, title, type } = objValues;
+    // TODO: set start time and end time with date time in unix formatter with moment
+    console.log({ subject, description, endTime, dateTime, startTime, title, type });
   };
 
   renderEventForm = () => {

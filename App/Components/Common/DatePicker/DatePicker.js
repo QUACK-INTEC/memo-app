@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ViewPropTypes, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
-
+import Moment from 'moment';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Theme
@@ -100,15 +100,14 @@ class DatePickerComponent extends React.Component {
   };
 
   handleDatePicked = date => {
-    const dateValue = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const dateString = `${DAYS[date.getDay()]} ${date.getDate()}, ${MONTHS[date.getMonth()]}`;
-    this.handleOptionChange(dateValue);
+    this.handleOptionChange(date);
     this.setState({ date: dateString });
     this.hideDateTimePicker();
   };
 
   render() {
-    const { style, placeholder, disabled, containerStyle, hasError, ...rest } = this.props;
+    const { style, placeholder, containerStyle, hasError, value } = this.props;
     const { visible, date } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
     return (
@@ -117,13 +116,12 @@ class DatePickerComponent extends React.Component {
         <TouchableOpacity onPress={this.showDateTimePicker}>
           <DateTimePicker
             locale="es-DO"
-            date={new Date()}
+            date={value instanceof Date ? value : new Date()}
             isVisible={visible}
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
             isDarkModeEnabled
             titleIOS={placeholder}
-            {...rest}
           />
           <Text.SemiBold text={date || placeholder} style={[this.getDatePickerStyle(), style]} />
         </TouchableOpacity>
@@ -184,7 +182,7 @@ DatePickerComponent.propTypes = {
   inputRef: PropTypes.func,
   placeholder: PropTypes.string,
   label: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.shape(),
   labelStyle: PropTypes.shape({}),
   style: ViewPropTypes.style,
   containerStyle: ViewPropTypes.style,

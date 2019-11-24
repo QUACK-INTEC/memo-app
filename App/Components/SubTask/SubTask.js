@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, FlatList, TextInput } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, FlatList, TextInput, Alert } from 'react-native';
 import PropTypes from 'prop-types';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 // Theme
 import { colors, spacers, fonts } from '../../Core/Theme';
@@ -23,6 +24,42 @@ class SubTaskComponent extends React.Component {
   handleRadioButtonPress = (isPressed, id) => {
     const { onSubTaskPress } = this.props;
     return onSubTaskPress(isPressed, id);
+  };
+
+  showEditOptions = id => {
+    const { onDeleteSubTask /* showActionSheetWithOptions */ } = this.props;
+    // const options = ['Borrar', 'Cancelar'];
+    // const destructiveButtonIndex = 0;
+    // const cancelButtonIndex = 1;
+
+    Alert.alert(
+      'Borrar Subtarea',
+      'Seguro que quiere borrar esta Subtarea?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Borrar', onPress: () => onDeleteSubTask(id) },
+      ],
+      { cancelable: false }
+    );
+
+    /*
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      buttonIndex => {
+        if (buttonIndex === destructiveButtonIndex) {
+          onDeleteSubTask(id);
+        }
+      }
+    );
+    */
   };
 
   // Hay un bug ahora mismo dejame eso comentado.
@@ -53,16 +90,7 @@ class SubTaskComponent extends React.Component {
   };
 
   render() {
-    const {
-      error,
-      title,
-      placeholder,
-      data,
-      maxHeight,
-      inverted,
-      containerStyle,
-      onMoreIconPress,
-    } = this.props;
+    const { error, title, placeholder, data, maxHeight, inverted, containerStyle } = this.props;
     const { inputValue } = this.state;
     return (
       <View style={containerStyle}>
@@ -81,9 +109,10 @@ class SubTaskComponent extends React.Component {
                 <RadioButton
                   onPress={isPressed => this.handleRadioButtonPress(isPressed, item.value)}
                   text={item.label}
+                  isPressed={item.done}
                 />
                 <Icon
-                  onPress={() => onMoreIconPress(item.value)}
+                  onPress={() => this.showEditOptions(item.value)}
                   name="ios-more"
                   type={ICON_TYPE.ION_ICONS}
                   size={ICON_SIZE.TINY}
@@ -147,7 +176,7 @@ const styles = StyleSheet.create({
 SubTaskComponent.defaultProps = {
   onSubTaskAdd: () => null,
   onSubTaskPress: () => null,
-  onMoreIconPress: () => null,
+  onDeleteSubTask: () => null,
   data: [],
   title: 'Subtareas para este evento',
   placeholder: 'Añadir una sub tarea',
@@ -160,11 +189,12 @@ SubTaskComponent.defaultProps = {
 SubTaskComponent.propTypes = {
   onSubTaskAdd: PropTypes.func,
   onSubTaskPress: PropTypes.func,
-  onMoreIconPress: PropTypes.func,
+  onDeleteSubTask: PropTypes.func,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
+      done: PropTypes.bool.isRequired,
     })
   ),
   title: PropTypes.string,
@@ -175,4 +205,6 @@ SubTaskComponent.propTypes = {
   error: PropTypes.string,
 };
 
-export default SubTaskComponent;
+const ConnectedSubTask = connectActionSheet(SubTaskComponent);
+
+export default ConnectedSubTask;

@@ -6,7 +6,7 @@ const getTeachersData = listData => {
   }
   return listData.map(objTeacher => {
     const teacherFirstName = Lodash.get(objTeacher, ['teacherName'], ' ');
-    const resources = Lodash.get(objTeacher, ['resources'], ' ');
+    const resources = Lodash.get(objTeacher, ['resources'], []);
     return {
       ...objTeacher,
       teacherFirstName: teacherFirstName.split(' ')[0],

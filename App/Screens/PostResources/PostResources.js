@@ -4,7 +4,7 @@ import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
 import PostResourcesComponent from '../../Components/PostResources';
-import SubjectPost from '../../Components/SubjectPostRecent';
+import PostResource from '../../Components/PostResourceRecent';
 import { spacers, colors } from '../../Core/Theme';
 import { TeacherResources as PostResourcesList } from '../../Models';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
@@ -15,7 +15,7 @@ class PostResources extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
-      postResources: [],
+      postResources: ['Recurso 1', 'Recurso 2'],
       studentName: 'Victor Diaz',
       postName: 'Entrega Asignacion',
     };
@@ -50,9 +50,8 @@ class PostResources extends React.Component {
   renderResource = ({ item }) => {
     return (
       <View style={styles.resourceContainer}>
-        <SubjectPost
+        <PostResource
           postTitle={item.postTitle}
-          postUser={item.author}
           onPress={() => this.handleOnPressResourceItem(item.id)}
         />
       </View>
@@ -92,8 +91,8 @@ class PostResources extends React.Component {
     return (
       <View style={styles.container}>
         <PostResourcesComponent
-          subjectName={postName}
-          teacherName={studentName}
+          postName={postName}
+          studentName={studentName}
           renderResources={this.renderResources}
           onBackArrow={this.handleBackArrow}
         />

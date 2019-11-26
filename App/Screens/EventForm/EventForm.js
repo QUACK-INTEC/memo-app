@@ -73,7 +73,16 @@ class EventForm extends React.Component {
   };
 
   handleOnCloseModal = () => {
-    const { setModalVisible } = this.props;
+    const { setModalVisible, setInitialFormValues } = this.props;
+    setInitialFormValues({
+      section: null,
+      description: null,
+      endDate: null,
+      dateTime: new Date(),
+      startDate: null,
+      title: null,
+      type: 'public',
+    });
     setModalVisible(false);
   };
 
@@ -203,6 +212,7 @@ class EventForm extends React.Component {
 
 EventForm.propTypes = {
   setModalVisible: PropTypes.func.isRequired,
+  setInitialFormValues: PropTypes.func.isRequired,
   isModalVisible: PropTypes.bool.isRequired,
   myClasses: PropTypes.arrayOf(PropTypes.string).isRequired,
   myClassesLookup: PropTypes.shape({}).isRequired,
@@ -224,6 +234,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setModalVisible: EventFormActions.setModalVisible,
+      setInitialFormValues: EventFormActions.setInitialFormValues,
     },
     dispatch
   );

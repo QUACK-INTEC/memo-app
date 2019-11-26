@@ -10,6 +10,14 @@ export const getIsModalVisible = createSelector(
   }
 );
 
+export const getInitialsValue = createSelector(
+  getEventForm,
+  objState => {
+    return Lodash.get(objState, ['values'], {});
+  }
+);
+
 export default {
   getIsModalVisible,
+  getInitialsValue,
 };

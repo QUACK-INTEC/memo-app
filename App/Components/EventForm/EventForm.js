@@ -37,7 +37,6 @@ class EventForm extends React.Component {
     }));
   };
 
-  // TODO:  Handle on submit form
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -47,15 +46,19 @@ class EventForm extends React.Component {
     this.setState(prevState => ({
       hasDate: isOn,
       contentInsetBottom: isOn
-        ? prevState.contentInsetBottom + 50
-        : prevState.contentInsetBottom - 50,
+        ? prevState.contentInsetBottom + 120
+        : prevState.contentInsetBottom - 120,
     }));
   };
 
   renderForm = objForm => {
     const { canAddFile, hasDate, contentInsetBottom } = this.state;
-    const { isEditing, optionsClasses } = this.props;
+    const { optionsClasses } = this.props;
+    const { values } = objForm;
+    const { startDate, endDate, title } = values;
+    const isEditing = !!title;
     const titleText = isEditing ? 'Editar' : 'Crear';
+
     return (
       <>
         <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
@@ -71,7 +74,7 @@ class EventForm extends React.Component {
               options={optionsClasses}
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
-              name="clase"
+              name="section"
               labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
@@ -105,6 +108,42 @@ class EventForm extends React.Component {
             />
             <View style={styles.containerToggleInput}>
               <ToggleButton
+                label="Tiene fecha?"
+                onChange={this.handleOnToggleHasDate}
+                labelStyle={styles.labelToggleInput}
+              />
+            </View>
+            {hasDate ? (
+              <View style={styles.containerTimePicker}>
+                <FormikInput
+                  type="datepicker"
+                  label="Fecha del evento"
+                  name="dateTime"
+                  labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                  containerStyle={{ flex: 1, ...spacers.MR_2 }}
+                />
+                <View style={{ flexDirection: 'row', ...spacers.MT_8 }}>
+                  <FormikInput
+                    type="timepicker"
+                    label="Hora de inicio"
+                    name="startDate"
+                    time={startDate}
+                    labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                    containerStyle={{ flex: 1, width: toBaseDesignPx(10), ...spacers.MR_2 }}
+                  />
+                  <FormikInput
+                    type="timepicker"
+                    label="Hora final"
+                    name="endDate"
+                    time={endDate}
+                    labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
+                    containerStyle={{ flex: 1, width: toBaseDesignPx(10) }}
+                  />
+                </View>
+              </View>
+            ) : null}
+            <View style={styles.containerToggleInput}>
+              <ToggleButton
                 label="Anexar archivo?"
                 onChange={this.handleOnToggleAddFile}
                 labelStyle={styles.labelToggleInput}
@@ -124,31 +163,6 @@ class EventForm extends React.Component {
                 containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
-            ) : null}
-            <View style={styles.containerToggleInput}>
-              <ToggleButton
-                label="Tiene fecha?"
-                onChange={this.handleOnToggleHasDate}
-                labelStyle={styles.labelToggleInput}
-              />
-            </View>
-            {hasDate ? (
-              <View style={styles.containerTimePicker}>
-                <FormikInput
-                  type="timepicker"
-                  label="Hora de inicio"
-                  name="startTime"
-                  labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
-                  containerStyle={{ flex: 1, width: toBaseDesignPx(10), ...spacers.MR_2 }}
-                />
-                <FormikInput
-                  type="timepicker"
-                  label="Hora final"
-                  name="endTime"
-                  labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
-                  containerStyle={{ flex: 1, width: toBaseDesignPx(10) }}
-                />
-              </View>
             ) : null}
           </ScrollView>
         </KeyboardAwareScrollView>
@@ -198,7 +212,6 @@ const styles = StyleSheet.create({
   containerToggleInput: { ...spacers.MT_13 },
   labelToggleInput: { marginLeft: 0, color: colors.GRAY },
   containerTimePicker: {
-    flexDirection: 'row',
     ...spacers.MT_8,
   },
   containerBottom: {
@@ -225,7 +238,6 @@ EventForm.propTypes = {
   validation: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  isEditing: PropTypes.bool.isRequired,
 };
 
 export default EventForm;

@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Lodash from 'lodash';
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
 import ClassHubComponent from '../../Components/ClassHub';
 import Api from '../../Core/Api';
@@ -8,6 +10,7 @@ import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import Text from '../../Components/Common/Text';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { fonts, colors } from '../../Core/Theme';
+import { actions as EventFormActions } from '../EventForm/Redux';
 
 class ClassHub extends React.Component {
   constructor(props) {
@@ -98,6 +101,13 @@ class ClassHub extends React.Component {
     navigate('SubjectsByTeacher', { subjectName, idSection });
   };
 
+  handleAddPublication = () => {
+    const { idSection } = this.state;
+    const { setModalVisible, setInitialFormValues } = this.props;
+    setInitialFormValues({ section: idSection });
+    setModalVisible(true);
+  };
+
   renderScheduleClass = () => {
     const {
       navigation: { getParam },
@@ -131,6 +141,7 @@ class ClassHub extends React.Component {
         onPressGoToParticipants={this.handleOnPressGoToParticipants}
         onPressGoToResources={this.handleOnPressGoToResources}
         onBackArrowPress={this.handleOnPressBackArrow}
+        onPressAddPublication={this.handleAddPublication}
       />
     );
   };
@@ -140,6 +151,10 @@ class ClassHub extends React.Component {
   }
 }
 
+ClassHub.propTypes = {
+  setModalVisible: PropTypes.func.isRequired,
+  setInitialFormValues: PropTypes.func.isRequired,
+};
 const mapStateToProps = (state, props) => {
   const { getMyClassesLookup } = myClassesSelectors;
   return {
@@ -147,9 +162,19 @@ const mapStateToProps = (state, props) => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setModalVisible: EventFormActions.setModalVisible,
+      setInitialFormValues: EventFormActions.setInitialFormValues,
+    },
+    dispatch
+  );
+};
+
 export default WithLogger(
   connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
   )(ClassHub)
 );

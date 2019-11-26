@@ -69,6 +69,14 @@ const DeletePost = idPost => {
   return MemoApi.delete(`posts/${idPost}`);
 };
 
+const CreatePost = objForm => {
+  return MemoApi.post(`posts`, objForm);
+};
+
+const EditPost = (idPost, objForm) => {
+  return MemoApi.put(`posts/${idPost}`, objForm);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -80,6 +88,8 @@ const Api = {
   GetSectionInfo,
   GetSectionStudents,
   DeletePost,
+  CreatePost,
+  EditPost,
 };
 
 export default Api;

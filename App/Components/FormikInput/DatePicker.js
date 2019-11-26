@@ -2,7 +2,7 @@ import React from 'react';
 import Lodash from 'lodash';
 import DatePicker from '../Common/DatePicker';
 
-const DropDownWrapper = objProps => {
+const DatePickerWrapper = objProps => {
   const listFieldName = Lodash.get(objProps, ['field', 'name'], '').split('.');
   const skipTouched = Lodash.get(objProps, ['skipTouched'], false);
   const hasBeenTouched = Lodash.get(objProps, ['form', 'touched', ...listFieldName], false);
@@ -13,10 +13,10 @@ const DropDownWrapper = objProps => {
     <DatePicker
       {...objProps.field}
       {...objProps}
-      onChangeOption={objProps.onChange}
+      onChange={objProps.onChange}
       hasError={hasError}
     />
   );
 };
 
-export default DropDownWrapper;
+export default DatePickerWrapper;

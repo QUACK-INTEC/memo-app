@@ -68,7 +68,7 @@ class ClassHub extends React.PureComponent {
   };
 
   renderSubjectActions = () => {
-    const { onPressGoToResources } = this.props;
+    const { onPressGoToResources, onPressAddPublication } = this.props;
     return (
       <View style={styles.containerSubjectActions}>
         <DescriptiveInfoCard
@@ -82,6 +82,7 @@ class ClassHub extends React.PureComponent {
           title="Publicar"
           subtitle="Sube una publicacion para esta materia"
           subtitleStyle={styles.actionsSubtitleText}
+          onPress={onPressAddPublication}
         />
       </View>
     );
@@ -175,6 +176,7 @@ ClassHub.defaultProps = {
   subjectStudents: '',
   onPressGoToParticipants: () => null,
   onPressGoToResources: () => null,
+  onPressAddPublication: () => null,
 };
 
 ClassHub.propTypes = {
@@ -189,6 +191,7 @@ ClassHub.propTypes = {
   onPressGoToParticipants: PropTypes.func,
   subjectStudents: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onPressGoToResources: PropTypes.func,
+  onPressAddPublication: PropTypes.func,
 };
 
 export default ClassHub;

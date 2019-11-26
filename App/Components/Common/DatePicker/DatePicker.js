@@ -2,7 +2,6 @@ import React from 'react';
 import { View, ViewPropTypes, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
-import Moment from 'moment';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Theme
@@ -11,7 +10,7 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 import Text from '../Text';
 
 // Common
-const DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
 const MONTHS = [
   'Enero',
   'Febrero',
@@ -28,11 +27,19 @@ const MONTHS = [
 ];
 
 class DatePickerComponent extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if (props.value !== state.value) {
+      return {
+        value: props.value,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       value: null,
-      date: '',
       visible: false,
     };
   }
@@ -100,30 +107,33 @@ class DatePickerComponent extends React.Component {
   };
 
   handleDatePicked = date => {
-    const dateString = `${DAYS[date.getDay()]} ${date.getDate()}, ${MONTHS[date.getMonth()]}`;
     this.handleOptionChange(date);
-    this.setState({ date: dateString });
     this.hideDateTimePicker();
   };
 
   render() {
     const { style, placeholder, containerStyle, hasError, value } = this.props;
-    const { visible, date } = this.state;
+    const { visible } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
+    const today = new Date();
+    const dateSelected = value instanceof Date ? value : today;
+    const labelDate = `${DAYS[dateSelected.getDay()]} ${dateSelected.getDate()}, ${
+      MONTHS[dateSelected.getMonth()]
+    }`;
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
         <TouchableOpacity onPress={this.showDateTimePicker}>
           <DateTimePicker
             locale="es-DO"
-            date={value instanceof Date ? value : new Date()}
+            date={dateSelected}
             isVisible={visible}
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
             isDarkModeEnabled
             titleIOS={placeholder}
           />
-          <Text.SemiBold text={date || placeholder} style={[this.getDatePickerStyle(), style]} />
+          <Text.SemiBold text={labelDate} style={[this.getDatePickerStyle(), style]} />
         </TouchableOpacity>
       </View>
     );

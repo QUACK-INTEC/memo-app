@@ -11,6 +11,7 @@ const initialState = {
     type: 'public',
     startTime: null,
     endTime: null,
+    section: null,
   },
 };
 

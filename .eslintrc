@@ -1,11 +1,11 @@
-.eslintrc{
+{
   "extends": [
     "airbnb",
     "prettier",
     "prettier/react"
   ],
   "rules": {
-    "react/prop-types": ["error", { "ignore": ["children","style","predefinedStyle", "logger", "focused", "navigation","logout", "value","loggedIn","userToken","showActionSheetWithOptions"] }],
+    "react/prop-types": ["error", { "ignore": ["children","style","predefinedStyle", "logger", "focused", "navigation","logout", "value","loggedIn","userToken","showActionSheetWithOptions", "MessagesKey", "initialsValue"] }],
     "no-fallthrough": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "react/jsx-props-no-spreading": "off",

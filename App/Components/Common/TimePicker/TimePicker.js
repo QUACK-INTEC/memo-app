@@ -9,11 +9,21 @@ import { Appearance } from 'react-native-appearance';
 import Text from '../Text';
 
 class TimePicker extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if (props.time !== state.date && props.time) {
+      const strDate = `${props.time.getHours()}:${props.time.getMinutes()}`;
+      return {
+        date: strDate,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       isDateTimePickerVisible: false,
-      date: props.time || '--:--',
+      date: '--:--',
     };
   }
 

@@ -9,6 +9,8 @@ import { toBaseDesignPx, colors } from '../../Core/Theme';
 import { LOADER_SIZE } from './Constants';
 
 const SOURCE_ANIMATION_LOADER = require('../../Core/Assets/Animations/loading.json');
+const SOURCE_ANIMATION_EMPTY_FOR_TODAY = require('../../Core/Assets/Animations/emptyForToday.json');
+const SOURCE_ANIMATION_EMPTY_BOX = require('../../Core/Assets/Animations/emptyBox.json');
 
 class LoadingState extends React.Component {
   componentDidMount() {
@@ -41,12 +43,24 @@ class LoadingState extends React.Component {
     this.animation = ref;
   };
 
+  getAnimationSource = () => {
+    const { noEventToday, isEmpty } = this.props;
+
+    if (noEventToday) {
+      return SOURCE_ANIMATION_EMPTY_FOR_TODAY;
+    }
+
+    if (isEmpty) {
+      return SOURCE_ANIMATION_EMPTY_BOX;
+    }
+
+    return SOURCE_ANIMATION_LOADER;
+  };
+
   render() {
     const loaderStyle = this.getSize();
-
-    return (
-      <LottieView ref={this.setRefAnimation} style={loaderStyle} source={SOURCE_ANIMATION_LOADER} />
-    );
+    const animationSrc = this.getAnimationSource();
+    return <LottieView ref={this.setRefAnimation} style={loaderStyle} source={animationSrc} />;
   }
 }
 
@@ -71,6 +85,8 @@ const BaseLoadingState = {
   Medium: objProps => <LoadingState {...objProps} size={LOADER_SIZE.MEDIUM} />,
   Large: objProps => <LoadingState {...objProps} size={LOADER_SIZE.LARGE} />,
   Modal: objProps => <LoadingStateModal {...objProps} />,
+  NoEvents: objProps => <LoadingState {...objProps} noEventToday size={LOADER_SIZE.MEDIUM} />,
+  Empty: objProps => <LoadingState {...objProps} isEmpty size={LOADER_SIZE.MEDIUM} />,
 };
 
 const styles = StyleSheet.create({
@@ -95,10 +111,14 @@ const styles = StyleSheet.create({
 
 LoadingState.defaultProps = {
   size: null,
+  noEventToday: false,
+  isEmpty: false,
 };
 
 LoadingState.propTypes = {
   size: PropTypes.string,
+  noEventToday: PropTypes.bool,
+  isEmpty: PropTypes.bool,
 };
 
 LoadingStateModal.defaultProps = {

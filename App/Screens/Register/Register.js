@@ -49,17 +49,11 @@ class Register extends Component {
   };
 
   handleSuccessRegister = objValues => {
-    const {
-      setUserInfo,
-      navigation: { navigate },
-      logger,
-    } = this.props;
-    const { email, password } = objValues;
+    const { logger } = this.props;
+    const { email, password, profileImage } = objValues;
     return Api.Login({ email, password })
       .then(objResponse => {
         const strToken = Lodash.get(objResponse, ['data', 'token'], null);
-        const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
-        setUserInfo(objUserInfo);
         MemoApi.defaults.headers.common.Authorization = `Bearer ${strToken}`;
 
         logger.success({
@@ -68,7 +62,39 @@ class Register extends Component {
         });
 
         this.setLoading(false);
-        return navigate('Sync', { userToken: strToken });
+        return this.handleSetProfileImage(profileImage, strToken);
+      })
+      .catch(objError => {
+        this.setLoading(false);
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SIGN_IN_FAILED,
+            data: objError,
+          });
+        }, 1000);
+      });
+  };
+
+  handleSetProfileImage = (strImageUri, strToken) => {
+    const {
+      navigation: { navigate },
+      logger,
+      setUserInfo,
+    } = this.props;
+    return Api.UploadProfilePicture(strImageUri)
+      .then(objResponse => {
+        const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], null);
+        if (isSuccess) {
+          setUserInfo(objUserInfo);
+          this.setLoading(false);
+          logger.success({
+            key: MessagesKey.SIGN_IN_SUCCESS,
+            data: objResponse,
+          });
+          return navigate('Sync', { userToken: strToken });
+        }
+        return null;
       })
       .catch(objError => {
         this.setLoading(false);

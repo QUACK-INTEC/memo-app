@@ -18,7 +18,31 @@ export const getUserToken = createSelector(
   }
 );
 
+export const getUser = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user'], null);
+  }
+);
+
+export const getUserFirstName = createSelector(
+  getUser,
+  objState => {
+    return Lodash.get(objState, ['firstName'], null);
+  }
+);
+
+export const getUserLastName = createSelector(
+  getUser,
+  objState => {
+    return Lodash.get(objState, ['lastName'], null);
+  }
+);
+
 export default {
+  getUser,
+  getUserFirstName,
+  getUserLastName,
   isLogged,
   getUserToken,
 };

@@ -19,6 +19,7 @@ import ViewProfileScreen from '../Screens/ViewProfile';
 import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
 import TeacherResourcesScreen from '../Screens/TeacherResources';
 import PostCommentsScreen from '../Screens/PostComments';
+import SettingsScreen from '../Screens/Settings';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -56,7 +57,6 @@ CalendarStack.navigationOptions = {
 
 CalendarStack.path = '';
 
-// TODO: Open a modal when is add is pressed
 const AddStack = createStackNavigator(
   {
     Add: Playground,
@@ -132,6 +132,7 @@ ClassRoomStack.path = '';
 const ProfileStack = createStackNavigator(
   {
     Profile: ProfileScreen,
+    Settings: SettingsScreen,
   },
   config
 );

@@ -7,7 +7,6 @@ import TeacherResourcesComponent from '../../Components/TeacherResources';
 import SubjectPost from '../../Components/SubjectPostRecent';
 import { spacers, colors } from '../../Core/Theme';
 import { TeacherResources as TeacherResourcesList } from '../../Models';
-import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 import Text from '../../Components/Common/Text';
 
 class TeacherResources extends React.Component {
@@ -65,12 +64,8 @@ class TeacherResources extends React.Component {
     if (Lodash.isEmpty(teacherResources)) {
       return (
         <View style={styles.noResourcesContainer}>
-          <Icon
-            type={ICON_TYPE.MEMO_ICONS}
-            name="moon"
-            color={colors.GRAY}
-            size={ICON_SIZE.EXTRA_LARGE}
-          />
+          <LoadingState.Empty />
+
           <Text.Medium
             text="No hay recursos disponibles para este profesor"
             style={styles.noResourcesText}

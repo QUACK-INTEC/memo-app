@@ -1,5 +1,6 @@
 // TODO: Api
 import axios from 'axios';
+import { createFormDataPhoto } from '../../Utils';
 // import Lodash from 'lodash';
 
 // const HTTP_STATUS = {
@@ -77,11 +78,21 @@ const EditPost = (idPost, objForm) => {
   return MemoApi.put(`posts/${idPost}`, objForm);
 };
 
+const UploadProfilePicture = photo => {
+  const formData = createFormDataPhoto(photo);
+  return MemoApi.post('/upload/profile', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
   Login,
   Register,
+  UploadProfilePicture,
   SyncUniversity,
   GetSupportedUniversities,
   GetMyClasses,

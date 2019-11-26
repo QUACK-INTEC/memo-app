@@ -7,7 +7,6 @@ import PostResourcesComponent from '../../Components/PostResources';
 import PostResource from '../../Components/PostResourceRecent';
 import { spacers, colors } from '../../Core/Theme';
 import { TeacherResources as PostResourcesList } from '../../Models';
-import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 import Text from '../../Components/Common/Text';
 
 class PostResources extends React.Component {
@@ -64,12 +63,8 @@ class PostResources extends React.Component {
     if (Lodash.isEmpty(postResources)) {
       return (
         <View style={styles.noResourcesContainer}>
-          <Icon
-            type={ICON_TYPE.MEMO_ICONS}
-            name="moon"
-            color={colors.GRAY}
-            size={ICON_SIZE.EXTRA_LARGE}
-          />
+          <LoadingState.Empty />
+
           <Text.Medium
             text="No hay recursos disponibles para esta publicación"
             style={styles.noResourcesText}

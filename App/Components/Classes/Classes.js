@@ -14,7 +14,7 @@ class Classes extends React.Component {
 
   render() {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <Section
           title="Clases"
           viewStyle={styles.classesContainer}
@@ -28,7 +28,7 @@ class Classes extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  classesContainer: { ...spacers.MT_10 },
+  classesContainer: { ...spacers.MT_10, flex: 1 },
   classesTitle: { ...fonts.SIZE_XXL, color: colors.GRAY },
 });
 

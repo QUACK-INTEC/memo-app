@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import Text from '../Common/Text';
 import Section from '../Common/Section';
@@ -160,10 +161,6 @@ class PostInfo extends React.Component {
     return null;
   };
 
-  renderSubTasks = () => {
-    // TODO: Implement SubTask Component
-  };
-
   downVoteArrow = () => {
     const { isDownVote } = this.state;
     return (
@@ -235,30 +232,39 @@ class PostInfo extends React.Component {
   };
 
   render() {
-    const { postTitle, postDescription, className, goToComments, goToResources } = this.props;
+    const {
+      postTitle,
+      postDescription,
+      className,
+      goToComments,
+      goToResources,
+      renderSubTasks,
+    } = this.props;
     return (
       <View style={styles.container}>
-        <View style={styles.headerInfoContainer}>
-          {this.renderHeader()}
+        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+          <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>
           <Text.SemiBold text={postTitle} style={styles.titleStyle} />
           {this.renderAuthorSection()}
           {this.renderUpVotes()}
-          <Section title="Clase" viewStyle={styles.sectionViewStyle}>
-            <Text.SemiBold text={className} style={styles.infoStyle} />
-          </Section>
-          {this.renderEventTime()}
-          <Section title="Descripción" viewStyle={styles.sectionViewStyle}>
-            <Text.SemiBold text={postDescription} style={styles.infoStyle} />
-          </Section>
-          <Section title="Comentarios" viewStyle={styles.sectionViewStyle}>
-            <Link text="Ver Comentarios" style={styles.linkStyle} onPress={goToComments} />
-          </Section>
-          <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
-            <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
-          </Section>
-          {this.renderSubTasks()}
+          <ScrollView>
+            <Section title="Clase" viewStyle={styles.sectionViewStyle}>
+              <Text.SemiBold text={className} style={styles.infoStyle} />
+            </Section>
+            {this.renderEventTime()}
+            <Section title="Descripción" viewStyle={styles.sectionViewStyle}>
+              <Text.SemiBold text={postDescription} style={styles.infoStyle} />
+            </Section>
+            <Section title="Comentarios" viewStyle={styles.sectionViewStyle}>
+              <Link text="Ver Comentarios" style={styles.linkStyle} onPress={goToComments} />
+            </Section>
+            <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
+              <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
+            </Section>
+            {renderSubTasks()}
+          </ScrollView>
           {this.renderUpVoteSection()}
-        </View>
+        </KeyboardAvoidingView>
       </View>
     );
   }
@@ -324,9 +330,9 @@ const styles = StyleSheet.create({
   arrowButtonsContainer: {
     alignSelf: 'flex-end',
     justifyContent: 'flex-end',
-    flex: 1,
-    ...spacers.MB_10,
+    ...spacers.MB_7,
     ...spacers.MR_8,
+    ...spacers.MT_2,
   },
   arrowButtonStyle: {
     backgroundColor: colors.GREEN,
@@ -356,6 +362,7 @@ PostInfo.defaultProps = {
   onAuthorPress: () => null,
   goToComments: () => null,
   goToResources: () => null,
+  renderSubTasks: () => null,
   isAuthor: false,
   badgeSrc: null,
   badgeUri: null,
@@ -378,6 +385,7 @@ PostInfo.propTypes = {
   onAuthorPress: PropTypes.func,
   goToComments: PropTypes.func,
   goToResources: PropTypes.func,
+  renderSubTasks: PropTypes.func,
   isAuthor: PropTypes.bool,
   badgeSrc: PropTypes.number,
   badgeUri: PropTypes.string,

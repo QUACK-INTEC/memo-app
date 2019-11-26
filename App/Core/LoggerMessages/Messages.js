@@ -16,6 +16,8 @@ export const DELETE_POST_SUCCESS = 'DELETE_POST_SUCCESS';
 export const DELTE_POST_FAILED = 'DELETE_POST_FAILED';
 export const CREATE_POST_SUCCESS = 'CREATE_POST_SUCCESS';
 export const CREATE_POST_FAILED = 'CREATE_POST_FAILED';
+export const LOAD_SUBTASKS_SUCCESS = 'LOAD_SUBTASKS_SUCCESS';
+export const LOAD_SUBTASKS_FAILED = 'LOAD_SUBTASKS_FAILED';
 
 const getLoggerMessages = () => {
   return {
@@ -37,6 +39,8 @@ const getLoggerMessages = () => {
     [DELTE_POST_FAILED]: null,
     [CREATE_POST_SUCCESS]: null,
     [CREATE_POST_FAILED]: null,
+    [LOAD_SUBTASKS_SUCCESS]: null,
+    [LOAD_SUBTASKS_FAILED]: null,
   };
 };
 

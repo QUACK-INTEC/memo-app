@@ -32,6 +32,7 @@ class PostInfo extends React.Component {
       formattedDate: null,
       formattedStartDate: null,
       formattedEndDate: null,
+      authorInitials: '',
     };
   }
 
@@ -47,12 +48,22 @@ class PostInfo extends React.Component {
     // const id = getParam('id', {});
     // const authorId = getParam('authorId', {});
     const authorPoints = getParam('authorPoints', {});
+    const authorInitials = getParam('authorInitials', {});
     const subjectName = getParam('subjectName', {});
     const startDate = getParam('startDate', {});
     const endDate = getParam('endDate', {});
-    const formattedDate = Moment(startDate).format('DD dddd, MM');
-    const formattedStartDate = Moment(startDate).format('HH:MM');
-    const formattedEndDate = Moment(endDate).format('HH:MM');
+    const formattedDate = Moment(startDate)
+      .utc()
+      .format('DD dddd, MM');
+    const formattedStartDate = Moment(startDate)
+      .utc()
+      .format('HH:mm');
+    const formattedEndDate = Moment(endDate)
+      .utc()
+      .format('HH:mm');
+
+    console.log(startDate);
+    console.log(formattedStartDate);
 
     this.setState({
       postedBy,
@@ -65,6 +76,7 @@ class PostInfo extends React.Component {
       formattedDate,
       formattedStartDate,
       formattedEndDate,
+      authorInitials,
     });
 
     Promise.all([this.getSubTasks()])
@@ -248,6 +260,7 @@ class PostInfo extends React.Component {
       formattedDate,
       formattedStartDate,
       formattedEndDate,
+      authorInitials,
     } = this.state;
     return (
       <PostInfoForm
@@ -262,7 +275,7 @@ class PostInfo extends React.Component {
         renderSubTasks={this.renderSubTasks}
         isAuthor
         badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
-        initialsText="EP"
+        initialsText={authorInitials}
         score={12}
         className={subjectName}
         postTitle={title}

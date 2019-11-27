@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, SafeAreaView, Alert, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import Lodash from 'lodash';
+import Moment from 'moment';
 
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import PostInfoForm from '../../Components/PostInfo';
@@ -21,19 +22,50 @@ class PostInfo extends React.Component {
       deleteConfirmationPopUpVisible: false,
       postId: null,
       userSubTasks: [],
+      postedBy: '',
+      title: '',
+      description: '',
+      // id: null,
+      // authorId: null,
+      authorPoints: 0,
+      subjectName: '',
+      formattedDate: null,
+      formattedStartDate: null,
+      formattedEndDate: null,
     };
   }
 
   componentDidMount() {
     // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
-      // navigation: { getParam, pop },
+      navigation: { getParam },
       logger,
     } = this.props;
-    // const authorTitle = getParam('authorName', {});
-    // const postTitle = getParam('postTitle', {});
-    // const postId = getParam('postId', {});
+    const postedBy = getParam('postedBy', {});
+    const title = getParam('title', '');
+    const description = getParam('description', '');
+    // const id = getParam('id', {});
     // const authorId = getParam('authorId', {});
+    const authorPoints = getParam('authorPoints', {});
+    const subjectName = getParam('subjectName', {});
+    const startDate = getParam('startDate', {});
+    const endDate = getParam('endDate', {});
+    const formattedDate = Moment(startDate).format('DD dddd, MM');
+    const formattedStartDate = Moment(startDate).format('HH:MM');
+    const formattedEndDate = Moment(endDate).format('HH:MM');
+
+    this.setState({
+      postedBy,
+      title,
+      description,
+      // id,
+      // authorId,
+      authorPoints,
+      subjectName,
+      formattedDate,
+      formattedStartDate,
+      formattedEndDate,
+    });
 
     Promise.all([this.getSubTasks()])
       .then(listValues => {
@@ -207,6 +239,16 @@ class PostInfo extends React.Component {
   };
 
   renderPostInfo = () => {
+    const {
+      title,
+      description,
+      postedBy,
+      authorPoints,
+      subjectName,
+      formattedDate,
+      formattedStartDate,
+      formattedEndDate,
+    } = this.state;
     return (
       <PostInfoForm
         onBackArrow={this.handleBackArrow}
@@ -222,13 +264,13 @@ class PostInfo extends React.Component {
         badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
         initialsText="EP"
         score={12}
-        className="Proyecto Final I"
-        postTitle="Entrega de Informe Final"
-        postDescription="Entregar project charter y un powerpoint para presentarlo en clase"
-        postDate="19 Lunes, Septiembre"
-        postTime="22:00"
-        author="Emma Paige"
-        personalScore={1}
+        className={subjectName}
+        postTitle={title}
+        postDescription={description}
+        postDate={formattedDate}
+        postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
+        author={postedBy}
+        personalScore={authorPoints}
       />
     );
   };

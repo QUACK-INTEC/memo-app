@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Text from '../Common/Text';
@@ -7,6 +7,8 @@ import DescriptiveInfoCard from '../DescriptiveInfoCard';
 import Link from '../Common/Link';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import { toBaseDesignPx, spacers, fonts, colors, constants } from '../../Core/Theme';
+import SubjectPostRecent from '../SubjectPostRecent';
+import LoadingState from '../LoadingState';
 
 class ClassHub extends React.PureComponent {
   renderHeaderHub = () => {
@@ -88,20 +90,61 @@ class ClassHub extends React.PureComponent {
     );
   };
 
+  renderPostsEmpty = () => {
+    const { isFetchingPost, isLoadingPosts } = this.props;
+
+    if (isLoadingPosts || isFetchingPost) {
+      return (
+        <View style={styles.centerEmptyContainer}>
+          <LoadingState.Small />
+        </View>
+      );
+    }
+    return (
+      <View style={styles.centerEmptyContainer}>
+        <Text.ItalicLight
+          text="No hay ningun post en creado para esta materia"
+          style={{ color: colors.GRAY }}
+        />
+      </View>
+    );
+  };
+
+  renderPosts = ({ item }) => {
+    const { onPressPost } = this.props;
+    return (
+      <SubjectPostRecent
+        onPress={() => onPressPost(item)}
+        postTitle={item.title}
+        postUser={item.postedBy}
+        createdSince={3}
+      />
+    );
+  };
+
+  renderRecentPosts = () => {
+    const { posts, isFetchingPost, onRefreshPosts } = this.props;
+
+    return (
+      <FlatList
+        refreshing={isFetchingPost}
+        onRefresh={onRefreshPosts}
+        data={posts}
+        style={{ flex: 1 }}
+        extraData={posts}
+        renderItem={this.renderPosts}
+        keyExtractor={item => item.id}
+        ListEmptyComponent={this.renderPostsEmpty}
+        ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
+      />
+    );
+  };
+
   renderSubjectPostsRecents = () => {
-    const { renderRecentsPosts } = this.props;
     return (
       <View style={styles.recentPostContainer}>
         <Text.Medium text="Publicaciones recientes" style={styles.recentPostTitle} />
-        <View style={styles.subjectPostRecents}>
-          {/* <SubjectPostRecent
-            postTitle="Informe de gobernabilidad"
-            postUser="Jonathan Taveras"
-            createdSince={3}
-          /> */}
-          {/* TODO: Render from parent {renderRecentsPosts()} */}
-          {renderRecentsPosts()}
-        </View>
+        <View style={styles.subjectPostRecents}>{this.renderRecentPosts()}</View>
       </View>
     );
   };
@@ -118,6 +161,7 @@ class ClassHub extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  centerEmptyContainer: { justifyContent: 'center', alignItems: 'center' },
   container: { flex: 1 },
   recentPostTitle: {
     ...fonts.SIZE_XXL,
@@ -162,13 +206,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionsSubtitleText: { textAlign: 'center' },
+  subjectPostRecents: { ...spacers.ML_2, ...spacers.MR_2, flex: 1 },
 });
 
 ClassHub.defaultProps = {
   onBackArrowPress: () => null,
   subjectName: '',
   renderSubjectSchedule: () => null,
-  renderRecentsPosts: () => null,
   subjectTeacher: '',
   subjectSection: '',
   subjectRoom: '',
@@ -177,13 +221,17 @@ ClassHub.defaultProps = {
   onPressGoToParticipants: () => null,
   onPressGoToResources: () => null,
   onPressAddPublication: () => null,
+  posts: [],
+  isFetchingPost: false,
+  isLoadingPosts: false,
+  onRefreshPosts: () => null,
+  onPressPost: () => null,
 };
 
 ClassHub.propTypes = {
   onBackArrowPress: PropTypes.func,
   subjectName: PropTypes.string,
   renderSubjectSchedule: PropTypes.func,
-  renderRecentsPosts: PropTypes.func,
   subjectTeacher: PropTypes.string,
   subjectSection: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subjectRoom: PropTypes.string,
@@ -192,6 +240,11 @@ ClassHub.propTypes = {
   subjectStudents: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onPressGoToResources: PropTypes.func,
   onPressAddPublication: PropTypes.func,
+  posts: PropTypes.arrayOf(PropTypes.shape()),
+  isFetchingPost: PropTypes.bool,
+  isLoadingPosts: PropTypes.bool,
+  onRefreshPosts: PropTypes.func,
+  onPressPost: PropTypes.func,
 };
 
 export default ClassHub;

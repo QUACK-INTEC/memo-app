@@ -19,6 +19,7 @@ import ViewProfileScreen from '../Screens/ViewProfile';
 import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
 import TeacherResourcesScreen from '../Screens/TeacherResources';
 import PostCommentsScreen from '../Screens/PostComments';
+import PostInfo from '../Screens/PostInfo';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -105,6 +106,7 @@ const ClassRoomStack = createStackNavigator(
     ClassHub: {
       screen: ClassHubScreen,
     },
+    PostInfo,
     Participants: ClassParticipantsScreen,
     ViewProfile: ViewProfileScreen,
     SubjectsByTeacher: SubjectsByTeacherScreen,

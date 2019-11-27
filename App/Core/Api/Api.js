@@ -87,6 +87,10 @@ const UploadProfilePicture = photo => {
   });
 };
 
+const GetSectionPosts = idSection => {
+  return MemoApi.get(`/sections/${idSection}/posts`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -101,6 +105,7 @@ const Api = {
   DeletePost,
   CreatePost,
   EditPost,
+  GetSectionPosts,
 };
 
 export default Api;

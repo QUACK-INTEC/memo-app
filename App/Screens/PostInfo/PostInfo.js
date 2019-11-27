@@ -52,9 +52,18 @@ class PostInfo extends React.Component {
     const subjectName = getParam('subjectName', {});
     const startDate = getParam('startDate', {});
     const endDate = getParam('endDate', {});
-    const formattedDate = Moment(startDate).format('DD dddd, MM');
-    const formattedStartDate = Moment(startDate).format('HH:MM');
-    const formattedEndDate = Moment(endDate).format('HH:MM');
+    const formattedDate = Moment(startDate)
+      .utc()
+      .format('DD dddd, MM');
+    const formattedStartDate = Moment(startDate)
+      .utc()
+      .format('HH:mm');
+    const formattedEndDate = Moment(endDate)
+      .utc()
+      .format('HH:mm');
+
+    console.log(startDate);
+    console.log(formattedStartDate);
 
     this.setState({
       postedBy,

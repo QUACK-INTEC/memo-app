@@ -19,8 +19,13 @@ class FileInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      value: [],
     };
+  }
+
+  componentDidMount() {
+    const { data } = this.props;
+    this.setState({ value: data });
   }
 
   handleAlert = id => {
@@ -40,8 +45,10 @@ class FileInput extends React.Component {
   };
 
   pickDocument = async () => {
-    const { data } = this.state;
-    const newData = data;
+    const { value } = this.state;
+
+    const { onChange } = this.props;
+    const newData = value;
     const result = await DocumentPicker.getDocumentAsync({});
 
     const { uri, name } = result;
@@ -51,24 +58,27 @@ class FileInput extends React.Component {
     const index = newData.findIndex(x => x.name === resultName);
     if (index < 0) {
       const item = {};
-      item.id = uri;
       item.name = resultName;
       item.type = resultType;
       item.uri = uri;
       newData.push(item);
-      this.setState({ data: newData });
+      this.setState({ value: newData });
+      onChange(newData);
     } else {
       // TO-DO documento repetido
     }
   };
 
   deleteItem = id => {
-    const { data } = this.state;
-    const newData = data;
-    const index = newData.findIndex(x => x.id === id);
-    newData.splice(index, 1);
+    const { value } = this.state;
 
-    this.setState({ data: newData });
+    const { onChange } = this.props;
+    const newData = value;
+    const index = newData.findIndex(x => x.uri === id);
+    newData.splice(index, 1);
+    this.setState({ value: newData });
+
+    onChange(newData);
   };
 
   addItem = () => {
@@ -123,7 +133,7 @@ class FileInput extends React.Component {
 
   render() {
     const { style, disabled, containerStyle, hasError } = this.props;
-    const { data } = this.state;
+    const { value } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
     if (disabled) return null;
     return (
@@ -136,17 +146,17 @@ class FileInput extends React.Component {
               this.flatListRef = ref;
             }}
             style={style}
-            data={data}
+            data={value}
             renderItem={({ item }) => (
               <FilePile
-                id={item.id}
+                id={item.uri}
                 documentText={item.name}
                 documentType={item.type}
                 onPress={this.handleAlert}
               />
             )}
             horizontal
-            keyExtractor={item => `${item.id}`}
+            keyExtractor={item => `${item.uri}`}
             extraData={this.state}
             showsHorizontalScrollIndicator={false}
           />
@@ -168,28 +178,11 @@ const styles = StyleSheet.create({
   mainView: {
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.GRAY_LIGHT,
-    margin: 30,
   },
   inputContainer: {},
-  triangle: {
-    color: colors.GRAY,
-    fontSize: toBaseDesignPx(10),
-  },
   errorStyle: {
     borderBottomWidth: toBaseDesignPx(2),
     borderColor: colors.ERROR,
-  },
-  dropDown: {
-    ...fonts.SEMI_BOLD,
-    color: colors.BLACK,
-    ...spacers.MT_9,
-    ...spacers.MB_14,
-  },
-  dropDownDisabled: {
-    ...fonts.SEMI_BOLD,
-    color: colors.DISABLED,
-    ...spacers.MT_9,
-    ...spacers.MB_14,
   },
   errorLabelStyle: {
     color: colors.ERROR,
@@ -205,6 +198,7 @@ const styles = StyleSheet.create({
 });
 
 FileInput.defaultProps = {
+  onChange: () => [],
   label: null,
   labelStyle: null,
   disabled: false,
@@ -212,9 +206,11 @@ FileInput.defaultProps = {
   style: null,
   containerStyle: null,
   strError: null,
+  data: [],
 };
 
 FileInput.propTypes = {
+  onChange: PropTypes.func,
   label: PropTypes.string,
   labelStyle: PropTypes.shape({}),
   style: ViewPropTypes.style,
@@ -222,6 +218,13 @@ FileInput.propTypes = {
   disabled: PropTypes.bool,
   hasError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   strError: PropTypes.string,
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      uri: PropTypes.string.isRequired,
+    })
+  ),
 };
 
 export default FileInput;

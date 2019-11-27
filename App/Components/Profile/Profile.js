@@ -14,12 +14,12 @@ import { fonts, spacers, constants, colors, toBaseDesignPx } from '../../Core/Th
 class Profile extends React.Component {
   renderEmail = () => {
     const { studentMail } = this.props;
-    return <Text.SemiBold text={studentMail} />;
+    return <Text.SemiBold text={studentMail} style={styles.studentMail} />;
   };
 
   renderSubjects = () => {
     const { studentSubjects } = this.props;
-    return <Text.SemiBold text={studentSubjects} />;
+    return <Text.SemiBold text={studentSubjects} style={styles.studentSubjects} />;
   };
 
   renderEditIcon = () => {
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   studentName: {
     ...fonts.SIZE_XL,
     textAlign: 'center',
+    color: colors.GRAY,
   },
   memoPointsRow: {
     alignSelf: 'center',
@@ -155,6 +156,12 @@ const styles = StyleSheet.create({
   studentSection: {
     ...spacers.MT_3,
     alignSelf: 'center',
+  },
+  studentMail: {
+    color: colors.GRAY,
+  },
+  studentSubjects: {
+    color: colors.GRAY,
   },
   badgeStyle: {
     width: toBaseDesignPx(12),

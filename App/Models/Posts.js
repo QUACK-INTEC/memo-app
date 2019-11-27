@@ -6,11 +6,12 @@ const getPostData = listData => {
   }
   return listData.map(objPost => {
     const firstName = Lodash.get(objPost, ['author', 'firstName'], '');
-    const lastName = Lodash.get(objPost, ['author', 'firstName'], '');
+    const lastName = Lodash.get(objPost, ['author', 'lastName'], '');
 
     return {
       ...objPost,
       postedBy: `${firstName} ${lastName}`,
+      authorInitials: `${firstName[0]}${lastName[0]}`,
     };
   });
 };

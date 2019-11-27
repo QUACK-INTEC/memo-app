@@ -154,7 +154,16 @@ class ClassHub extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
-    const { id, title, description, author, postedBy, startDate, endDate } = objPost;
+    const {
+      id,
+      title,
+      description,
+      author,
+      postedBy,
+      startDate,
+      endDate,
+      authorInitials,
+    } = objPost;
     const { id: authorId, points: authorPoints } = author;
     navigate('PostInfo', {
       id,
@@ -166,6 +175,7 @@ class ClassHub extends React.Component {
       startDate,
       endDate,
       subjectName,
+      authorInitials,
     });
   };
 

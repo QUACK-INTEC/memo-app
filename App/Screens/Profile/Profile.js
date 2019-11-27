@@ -13,10 +13,8 @@ class Profile extends Component {
       studentMail: null,
       studentSubjects: null,
       avatarUri: null,
-      avatarSrc: null,
       avatarInitialsText: null,
       badgeUri: null,
-      badgeSrc: null,
       memoPoints: null,
       rank: null,
     };
@@ -26,16 +24,21 @@ class Profile extends Component {
     const {
       navigation: { getParam },
     } = this.props;
-    const studentName = getParam('studentName', {});
-    const studentMail = getParam('studentMail', {});
-    const studentSubjects = getParam('studentSubjects', {});
-    const avatarUri = getParam('avatarUri', {});
-    const avatarSrc = getParam('avatarSrc', {});
-    const avatarInitialsText = getParam('avatarInitialsText', {});
-    const badgeUri = getParam('badgeUri', {});
-    const badgeSrc = getParam('badgeSrc', {});
-    const memoPoints = getParam('memoPoints', {});
-    const rank = getParam('rank', {});
+    // MOCK DATA PARA FINES DE PRUEBA
+    const studentName = getParam('studentName', 'Emma Paige');
+    const studentMail = getParam('studentMail', 'emma.paige@edu.do');
+    const studentSubjects = getParam(
+      'studentSubjects',
+      'Proyecto Final, Inteligencia Artificil, Big Data'
+    );
+    const avatarUri = getParam('avatarUri', null);
+    const avatarInitialsText = getParam('avatarInitialsText', 'EP');
+    const badgeUri = getParam(
+      'badgeUri',
+      'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png'
+    );
+    const memoPoints = getParam('memoPoints', 12);
+    const rank = getParam('rank', 'Master');
 
     this.setState({
       isLoading: false,
@@ -43,10 +46,8 @@ class Profile extends Component {
       studentMail,
       studentSubjects,
       avatarUri,
-      avatarSrc,
       avatarInitialsText,
       badgeUri,
-      badgeSrc,
       memoPoints,
       rank,
     });

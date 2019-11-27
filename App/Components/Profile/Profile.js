@@ -101,19 +101,23 @@ Profile.defaultProps = {
   avatarInitialsText: null,
   badgeSrc: null,
   badgeUri: null,
+  studentName: null,
+  studentMail: null,
+  memoPoints: null,
+  rank: null,
 };
 
 Profile.propTypes = {
-  studentName: PropTypes.string.isRequired,
-  studentMail: PropTypes.string.isRequired,
+  studentName: PropTypes.string,
+  studentMail: PropTypes.string,
   studentSubjects: PropTypes.string,
   avatarSrc: PropTypes.string,
   avatarUri: PropTypes.string,
   avatarInitialsText: PropTypes.string,
   badgeSrc: PropTypes.string,
   badgeUri: PropTypes.string,
-  memoPoints: PropTypes.string.isRequired,
-  rank: PropTypes.string.isRequired,
+  memoPoints: PropTypes.number,
+  rank: PropTypes.string,
 };
 
 const styles = StyleSheet.create({

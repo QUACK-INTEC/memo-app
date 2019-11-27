@@ -30,7 +30,7 @@ class Profile extends React.Component {
           name="edit"
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.TINY}
-          onPress={onEditUSer}
+          onPress={onEditUser}
           color={colors.GRAY}
         />
       </View>

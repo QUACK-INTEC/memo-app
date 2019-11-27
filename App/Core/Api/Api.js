@@ -91,6 +91,10 @@ const GetSectionPosts = idSection => {
   return MemoApi.get(`/sections/${idSection}/posts`);
 };
 
+const GetPostInfo = idPost => {
+  return MemoApi.get(`posts/${idPost}`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -106,6 +110,7 @@ const Api = {
   CreatePost,
   EditPost,
   GetSectionPosts,
+  GetPostInfo,
 };
 
 export default Api;

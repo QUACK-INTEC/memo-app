@@ -142,7 +142,7 @@ class EventForm extends React.Component {
       startDate,
       endDate,
       section,
-      type: 'Event',
+      type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
 

@@ -23,13 +23,14 @@ class Profile extends React.Component {
   };
 
   renderEditIcon = () => {
+    const { onEditUser } = this.props;
     return (
       <View style={styles.editIconContainer}>
         <Icon
           name="edit"
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.TINY}
-          onPress={this.showEditOptions}
+          onPress={onEditUSer}
           color={colors.GRAY}
         />
       </View>

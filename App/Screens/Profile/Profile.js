@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import LoadingState from '../../Components/LoadingState';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import LoadingState from '../../Components/LoadingState';
 import ProfileComponent from '../../Components/Profile';
+import WithLogger from '../../HOCs/WithLogger';
+import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 
 class Profile extends Component {
   constructor(props) {
@@ -53,6 +57,13 @@ class Profile extends Component {
     });
   }
 
+  handleGoToSettings = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    navigate('Settings');
+  };
+
   render() {
     const {
       isLoading,
@@ -67,20 +78,22 @@ class Profile extends Component {
       memoPoints,
       rank,
     } = this.state;
+    const { userFirstName, userLastName, userAvatarURI, userEmail } = this.props;
     return (
       <View style={styles.container}>
         <LoadingState.Modal isLoading={isLoading} />
         <ProfileComponent
-          studentName={studentName}
-          studentMail={studentMail}
+          studentName={`${userFirstName} ${userLastName}`}
+          studentMail={userEmail}
           studentSubjects={studentSubjects}
-          avatarUri={avatarUri}
+          avatarUri={userAvatarURI}
           avatarSrc={avatarSrc}
           avatarInitialsText={avatarInitialsText}
           badgeUri={badgeUri}
           badgeSrc={badgeSrc}
           memoPoints={memoPoints}
           rank={rank}
+          onEditUser={this.handleGoToSettings}
         />
       </View>
     );
@@ -91,4 +104,19 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
 });
 
-export default Profile;
+const mapStateToProps = (state, props) => {
+  const { getFirstName, getLastName, getAvatarUser, getEmail } = userManagerSelectors;
+  return {
+    userFirstName: getFirstName(state, props),
+    userLastName: getLastName(state, props),
+    userAvatarURI: getAvatarUser(state, props),
+    userEmail: getEmail(state, props),
+  };
+};
+
+export default WithLogger(
+  connect(
+    mapStateToProps,
+    null
+  )(Profile)
+);

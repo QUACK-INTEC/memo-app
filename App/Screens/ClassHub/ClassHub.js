@@ -33,7 +33,7 @@ class ClassHub extends React.Component {
 
   componentDidMount() {
     const {
-      navigation: { getParam, pop },
+      navigation: { getParam, pop, addListener },
       logger,
     } = this.props;
     const objSectionInfo = getParam('sectionInfo', {});
@@ -49,6 +49,9 @@ class ClassHub extends React.Component {
       subjectName,
       idSection,
       isLoadingPosts: true,
+    });
+    this.focusListener = addListener('didFocus', () => {
+      return this.fetchPosts();
     });
     Promise.all([this.getSectionStudents(idSection), this.getSectionPosts(idSection)])
       .then(listValues => {

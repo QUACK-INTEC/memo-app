@@ -212,23 +212,22 @@ class PostInfo extends React.Component {
     const { isUpVote, isDownVote } = this.state;
 
     if (isAuthor) {
-      return (
-        <View style={styles.arrowButtonsContainer}>
-          <BiButton
-            leftChild={this.downVoteArrow}
-            rightChild={this.upVoteArrow}
-            leftButtonStyle={styles.arrowButtonStyle}
-            rightButtonStyle={styles.arrowButtonStyle}
-            onRightPress={this.handleUpVote}
-            onLeftPress={this.handleDownVote}
-            isRightPressed={isUpVote}
-            isLeftPressed={isDownVote}
-          />
-        </View>
-      );
+      return null;
     }
-
-    return null;
+    return (
+      <View style={styles.arrowButtonsContainer}>
+        <BiButton
+          leftChild={this.downVoteArrow}
+          rightChild={this.upVoteArrow}
+          leftButtonStyle={styles.arrowButtonStyle}
+          rightButtonStyle={styles.arrowButtonStyle}
+          onRightPress={this.handleUpVote}
+          onLeftPress={this.handleDownVote}
+          isRightPressed={isUpVote}
+          isLeftPressed={isDownVote}
+        />
+      </View>
+    );
   };
 
   render() {
@@ -275,18 +274,15 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: 'space-between',
     alignItems: 'center',
+    flex: 1,
   },
   headerBackIconContainer: {
     ...spacers.ML_14,
     ...spacers.MB_4,
-    width: toBaseDesignPx(47),
-    justifyContent: 'flex-start',
   },
   editIconContainer: {
     ...spacers.MR_14,
     ...spacers.MB_4,
-    width: toBaseDesignPx(47),
-    justifyContent: 'flex-end',
   },
   headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT, flex: 1 },
   titleStyle: {
@@ -328,11 +324,11 @@ const styles = StyleSheet.create({
     color: colors.GRAY,
   },
   arrowButtonsContainer: {
-    alignSelf: 'flex-end',
-    justifyContent: 'flex-end',
     ...spacers.MB_7,
     ...spacers.MR_8,
-    ...spacers.MT_2,
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
   },
   arrowButtonStyle: {
     backgroundColor: colors.GREEN,

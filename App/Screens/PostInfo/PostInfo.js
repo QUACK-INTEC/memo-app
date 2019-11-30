@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, SafeAreaView, Alert, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import Lodash from 'lodash';
+import Moment from 'moment';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import PostInfoForm from '../../Components/PostInfo';
@@ -11,6 +14,7 @@ import PopUp from '../../Components/Common/PopUp';
 import SubTask from '../../Components/SubTask';
 import { SubTasks } from '../../Models';
 import { spacers } from '../../Core/Theme';
+import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 
 class PostInfo extends React.Component {
   constructor(props) {
@@ -21,25 +25,82 @@ class PostInfo extends React.Component {
       deleteConfirmationPopUpVisible: false,
       postId: null,
       userSubTasks: [],
+      postedBy: '',
+      title: '',
+      description: '',
+      // id: null,
+      // authorId: null,
+      authorPoints: 0,
+      subjectName: '',
+      formattedDate: null,
+      formattedStartDate: null,
+      formattedEndDate: null,
+      authorInitials: '',
+      comments: [],
+      attachments: [],
     };
   }
 
   componentDidMount() {
     // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
-      // navigation: { getParam, pop },
+      navigation: { getParam },
       logger,
     } = this.props;
-    // const authorTitle = getParam('authorName', {});
-    // const postTitle = getParam('postTitle', {});
-    // const postId = getParam('postId', {});
+    const postedBy = getParam('postedBy', {});
+    const title = getParam('title', '');
+    const id = getParam('id', {});
     // const authorId = getParam('authorId', {});
+    const authorPoints = getParam('authorPoints', {});
+    const authorInitials = getParam('authorInitials', {});
+    const subjectName = getParam('subjectName', {});
+    const startDate = getParam('startDate', {});
+    const endDate = getParam('endDate', {});
+    const formattedDate = Moment(startDate)
+      .locale('es')
+      .format('DD dddd, MM');
+    const formattedStartDate = Moment(startDate)
+      .utc()
+      .format('HH:mm');
+    const formattedEndDate = Moment(endDate)
+      .utc()
+      .format('HH:mm');
 
-    Promise.all([this.getSubTasks()])
+    this.setState({
+      postedBy,
+      title,
+      authorPoints,
+      subjectName,
+      formattedDate,
+      formattedStartDate,
+      formattedEndDate,
+      authorInitials,
+      postId: id,
+    });
+
+    Promise.all([this.getSubTasks(), this.getPostInfo(id)])
       .then(listValues => {
-        const [objSubTasks] = listValues;
+        const [objSubTasks, objPostInfoResponse] = listValues;
         const listSubTasks = Lodash.get(objSubTasks, 'data', []);
-        this.setState({ userSubTasks: listSubTasks, isLoading: false });
+        const objPostInfo = Lodash.get(objPostInfoResponse, ['data', 'data'], {});
+        const postComments = Lodash.get(objPostInfo, ['comments'], []);
+        const postDescription = Lodash.get(objPostInfo, ['description'], '');
+        const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
+        const postAuthor = Lodash.get(objPostInfo, ['author'], {});
+        const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+        // TODO: render subtasks from API
+        // const postSubtask = Lodash.get(objPostInfo, ['subtask']);
+        console.log({ objPostInfo });
+        this.setState({
+          userSubTasks: listSubTasks,
+          isLoading: false,
+          description: postDescription,
+          comments: postComments,
+          attachments: postAttachments,
+          postAuthorId,
+        });
+
+        // TODO: CHANGE MESSAGE KEY TO LOAD_POST_INFO...
         return logger.success({
           key: MessagesKey.LOAD_SUBTASKS_SUCCESS,
           data: listValues,
@@ -55,6 +116,10 @@ class PostInfo extends React.Component {
         }, 800);
       });
   }
+
+  getPostInfo = idPost => {
+    return Api.GetPostInfo(idPost);
+  };
 
   getSubTasks = () => {
     return {
@@ -86,15 +151,17 @@ class PostInfo extends React.Component {
     return Api.DeletePost(postId)
       .then(objResponse => {
         this.setState({ isLoading: false });
-        const isSuccess = Lodash.get(objResponse, 'success', false);
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
         if (isSuccess) {
           this.setState({
-            deleteConfirmationPopUpVisible: true,
+            deleteConfirmationPopUpVisible: false,
           });
-          return logger.success({
+          logger.success({
             key: MessagesKey.DELETE_POST_SUCCESS,
             data: objResponse,
           });
+
+          return this.goBack();
         }
         return logger.error({
           key: MessagesKey.DELETE_POST_FAILED,
@@ -207,6 +274,19 @@ class PostInfo extends React.Component {
   };
 
   renderPostInfo = () => {
+    const { userId } = this.props;
+    const {
+      title,
+      description,
+      postedBy,
+      authorPoints,
+      subjectName,
+      formattedDate,
+      formattedStartDate,
+      formattedEndDate,
+      authorInitials,
+      postAuthorId,
+    } = this.state;
     return (
       <PostInfoForm
         onBackArrow={this.handleBackArrow}
@@ -218,17 +298,17 @@ class PostInfo extends React.Component {
         goToComments={this.goToComments}
         goToResources={this.goToResources}
         renderSubTasks={this.renderSubTasks}
-        isAuthor
+        isAuthor={userId === postAuthorId}
         badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
-        initialsText="EP"
+        initialsText={authorInitials}
         score={12}
-        className="Proyecto Final I"
-        postTitle="Entrega de Informe Final"
-        postDescription="Entregar project charter y un powerpoint para presentarlo en clase"
-        postDate="19 Lunes, Septiembre"
-        postTime="22:00"
-        author="Emma Paige"
-        personalScore={1}
+        className={subjectName}
+        postTitle={title}
+        postDescription={description}
+        postDate={formattedDate}
+        postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
+        author={postedBy}
+        personalScore={authorPoints}
       />
     );
   };
@@ -264,4 +344,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WithLogger(PostInfo);
+const mapStateToProps = (state, props) => {
+  const { getUserId } = userManagerSelectors;
+  return {
+    userId: getUserId(state, props),
+  };
+};
+
+export default WithLogger(
+  connect(
+    mapStateToProps,
+    null
+  )(PostInfo)
+);

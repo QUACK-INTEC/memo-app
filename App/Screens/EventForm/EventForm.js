@@ -86,6 +86,17 @@ class EventForm extends React.Component {
     setModalVisible(false);
   };
 
+  changeTimezone = date => {
+    const invdate = new Date(
+      date.toLocaleString('en-US', {
+        timeZone: 'America/Santo_Domingo',
+      })
+    );
+    const diff = date.getTime() - invdate.getTime();
+
+    return new Date(date.getTime() + diff);
+  };
+
   handleOnSubmitForm = objValues => {
     const { initialsValue } = this.props;
 
@@ -103,22 +114,27 @@ class EventForm extends React.Component {
     const momentStartTime = Moment(startTime);
     const momentEndTime = Moment(endTime);
 
-    const startDate = momentDateSelected
-      .set({
-        hour: momentStartTime.hours(),
-        minutes: momentStartTime.minutes(),
-        seconds: 0,
-        miliseconds: 0,
-      })
-      .unix();
-    const endDate = momentDateSelected
-      .set({
-        hour: momentEndTime.hours(),
-        minutes: momentEndTime.minutes(),
-        seconds: 0,
-        miliseconds: 0,
-      })
-      .unix();
+    const startDate = new Date(
+      Date.UTC(
+        momentDateSelected.year(),
+        momentDateSelected.month(),
+        momentDateSelected.date(),
+        momentStartTime.hours(),
+        momentStartTime.minutes(),
+        0
+      )
+    ).getTime();
+
+    const endDate = new Date(
+      Date.UTC(
+        momentDateSelected.year(),
+        momentDateSelected.month(),
+        momentDateSelected.date(),
+        momentEndTime.hours(),
+        momentEndTime.minutes(),
+        0
+      )
+    ).getTime();
 
     const objPayload = {
       title,
@@ -126,7 +142,7 @@ class EventForm extends React.Component {
       startDate,
       endDate,
       section,
-      type: 'Event',
+      type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
 

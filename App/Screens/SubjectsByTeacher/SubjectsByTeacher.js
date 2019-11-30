@@ -8,7 +8,6 @@ import SubjectsByTeacherComponent from '../../Components/SubjectsByTeacher';
 import DescriptiveInfoCard from '../../Components/DescriptiveInfoCard';
 import { spacers, colors, fonts } from '../../Core/Theme';
 import { TeacherResources } from '../../Models';
-import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 import Text from '../../Components/Common/Text';
 
 class SubjectsByTeacher extends React.Component {
@@ -18,6 +17,7 @@ class SubjectsByTeacher extends React.Component {
       isLoading: true,
       teacherResources: [],
       subjectName: null,
+      // sectionId: null <- will use when API
     };
   }
 
@@ -27,10 +27,10 @@ class SubjectsByTeacher extends React.Component {
       navigation: { getParam },
       logger,
     } = this.props;
-    // const sectionId = getParam('sectionId', {}); <- will use when connect to api
+    const sectionId = getParam('idSection', {});
     const subjectName = getParam('subjectName', {});
 
-    Promise.all([this.getTeacherResources()])
+    Promise.all([this.getTeacherResources(sectionId)])
       .then(listValues => {
         const [objCommentResponse] = listValues;
         const listTeacherResources = Lodash.get(objCommentResponse, 'data', []);
@@ -38,7 +38,6 @@ class SubjectsByTeacher extends React.Component {
           teacherResources: listTeacherResources,
           isLoading: false,
           subjectName,
-          //  sectionId, <- will use when connect to api
         });
         return logger.success({
           key: MessagesKey.LOAD_TEACHER_RESOURCES_SUCCESS,
@@ -56,142 +55,147 @@ class SubjectsByTeacher extends React.Component {
       });
   }
 
-  getTeacherResources = () => {
-    // DUMMY DATA: TODO: REPLACE WITH API
+  getTeacherResources = sectionId => {
+    if (sectionId === '5dcf2caa716452c07b5395d5') {
+      return {
+        success: true,
+        data: [
+          {
+            id: '1',
+            teacherName: 'Renato Gonzalez',
+            resources: [
+              {
+                id: '1',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '2',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '3',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '4',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '5',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '6',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '7',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '8',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '9',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+              {
+                id: '10',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+            ],
+          },
+          {
+            id: '2',
+            teacherName: 'Renato Gonzalez Disla de la Mora Morales',
+            resources: [
+              {
+                id: '1',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+            ],
+          },
+          {
+            id: '3',
+            teacherName: 'Renato Gonzalez',
+            resources: [
+              {
+                id: '1',
+                postTitle: 'AI For Humans',
+                author: 'Emma Paige',
+              },
+            ],
+          },
+          {
+            id: '4',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '5',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '6',
+            teacherName: 'Renato Gonzalez Disla de la Mora Morales',
+          },
+          {
+            id: '7',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '8',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '9',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '10',
+            teacherName: 'Renato Gonzalez Disla de la Mora Morales',
+          },
+          {
+            id: '11',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '12',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '13',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '14',
+            teacherName: 'Renato Gonzalez Disla de la Mora Morales',
+          },
+          {
+            id: '15',
+            teacherName: 'Renato Gonzalez',
+          },
+          {
+            id: '16',
+            teacherName: 'Renato Gonzalez',
+          },
+        ],
+      };
+    }
     return {
       success: true,
-      data: [
-        {
-          id: '1',
-          teacherName: 'Renato Gonzalez',
-          resources: [
-            {
-              id: '1',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '2',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '3',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '4',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '5',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '6',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '7',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '8',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '9',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-            {
-              id: '10',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-          ],
-        },
-        {
-          id: '2',
-          teacherName: 'Renato Gonzalez Disla de la Mora Morales',
-          resources: [
-            {
-              id: '1',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-          ],
-        },
-        {
-          id: '3',
-          teacherName: 'Renato Gonzalez',
-          resources: [
-            {
-              id: '1',
-              postTitle: 'AI For Humans',
-              author: 'Emma Paige',
-            },
-          ],
-        },
-        {
-          id: '4',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '5',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '6',
-          teacherName: 'Renato Gonzalez Disla de la Mora Morales',
-        },
-        {
-          id: '7',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '8',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '9',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '10',
-          teacherName: 'Renato Gonzalez Disla de la Mora Morales',
-        },
-        {
-          id: '11',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '12',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '13',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '14',
-          teacherName: 'Renato Gonzalez Disla de la Mora Morales',
-        },
-        {
-          id: '15',
-          teacherName: 'Renato Gonzalez',
-        },
-        {
-          id: '16',
-          teacherName: 'Renato Gonzalez',
-        },
-      ],
+      data: [],
     };
   };
 
@@ -233,12 +237,7 @@ class SubjectsByTeacher extends React.Component {
     if (Lodash.isEmpty(teacherResources)) {
       return (
         <View style={styles.noResourcesContainer}>
-          <Icon
-            type={ICON_TYPE.MEMO_ICONS}
-            name="moon"
-            color={colors.GRAY}
-            size={ICON_SIZE.EXTRA_LARGE}
-          />
+          <LoadingState.Empty />
           <Text.Medium
             text="No hay recursos disponibles para esta materia"
             style={styles.noResourcesText}

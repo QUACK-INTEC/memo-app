@@ -8,6 +8,7 @@ import DropDown from './DropDown';
 import DatePicker from './DatePicker';
 import TimePicker from './TimePicker';
 import Toggle from './Toggle';
+import FileInput from './FileInput';
 
 import { colors } from '../../Core/Theme';
 
@@ -17,6 +18,7 @@ const objInputs = {
   datepicker: DatePicker,
   timepicker: TimePicker,
   toggle: Toggle,
+  fileinput: FileInput,
 };
 
 class FormikInput extends Component {

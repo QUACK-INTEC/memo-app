@@ -97,7 +97,7 @@ class Register extends Component {
     const { logger } = this.props;
     return Api.UploadProfilePicture(strImageUri)
       .then(objResponse => {
-        const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
+        const objUserInfo = Lodash.get(objResponse, ['data', 'data'], null);
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], null);
         if (isSuccess) {
           this.finishUpRegistry(objUserInfo, strToken);

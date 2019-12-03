@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
 import LoadingState from '../../Components/LoadingState';
 import ProfileComponent from '../../Components/Profile';
@@ -13,10 +13,7 @@ class Profile extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      studentName: null,
-      studentMail: null,
       studentSubjects: null,
-      avatarUri: null,
       avatarInitialsText: null,
       badgeUri: null,
       memoPoints: null,
@@ -29,13 +26,10 @@ class Profile extends Component {
       navigation: { getParam },
     } = this.props;
     // MOCK DATA PARA FINES DE PRUEBA
-    const studentName = getParam('studentName', 'Emma Paige');
-    const studentMail = getParam('studentMail', 'emma.paige@edu.do');
     const studentSubjects = getParam(
       'studentSubjects',
       'Proyecto Final, Inteligencia Artificil, Big Data'
     );
-    const avatarUri = getParam('avatarUri', null);
     const avatarInitialsText = getParam('avatarInitialsText', 'EP');
     const badgeUri = getParam(
       'badgeUri',
@@ -46,10 +40,7 @@ class Profile extends Component {
 
     this.setState({
       isLoading: false,
-      studentName,
-      studentMail,
       studentSubjects,
-      avatarUri,
       avatarInitialsText,
       badgeUri,
       memoPoints,
@@ -67,10 +58,7 @@ class Profile extends Component {
   render() {
     const {
       isLoading,
-      studentName,
-      studentMail,
       studentSubjects,
-      avatarUri,
       avatarSrc,
       avatarInitialsText,
       badgeUri,
@@ -103,6 +91,20 @@ class Profile extends Component {
 const styles = StyleSheet.create({
   container: { flex: 1 },
 });
+
+Profile.defaultProps = {
+  userFirstName: null,
+  userLastName: null,
+  userAvatarURI: null,
+  userEmail: null,
+};
+
+Profile.propTypes = {
+  userFirstName: PropTypes.string,
+  userLastName: PropTypes.string,
+  userAvatarURI: PropTypes.string,
+  userEmail: PropTypes.string,
+};
 
 const mapStateToProps = (state, props) => {
   const { getFirstName, getLastName, getAvatarUser, getEmail } = userManagerSelectors;

@@ -1,10 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import Lodash from 'lodash';
 
 import SettingsComponent from '../../Components/Settings';
-import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
-import WithLogger from '../../HOCs/WithLogger';
+import {
+  selectors as userManagerSelectors,
+  actions as userActions,
+} from '../../Redux/Common/UserManager';
+import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
+import Api from '../../Core/Api';
 
 class Settings extends React.Component {
   goBack = () => {
@@ -15,8 +21,28 @@ class Settings extends React.Component {
   };
 
   handleOnChangeProfilePicture = strImageUri => {
-    // TODO: Change profile pic from API
-    return strImageUri;
+    return this.handleSetProfileImage(strImageUri);
+  };
+
+  handleSetProfileImage = strImageUri => {
+    const { logger, setUserInfo } = this.props;
+    return Api.UploadProfilePicture(strImageUri)
+      .then(objResponse => {
+        const objUserInfo = Lodash.get(objResponse, ['data', 'data'], null);
+        setUserInfo(objUserInfo);
+        return logger.success({
+          key: MessagesKey.CHANGE_PROFILE_PICTURE_SUCCESS,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.CHANGE_PROFILE_PICTURE_FAILED,
+            data: objError,
+          });
+        }, 1000);
+      });
   };
 
   render() {
@@ -34,6 +60,7 @@ class Settings extends React.Component {
 Settings.propTypes = {
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
+  setUserInfo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => {
@@ -44,9 +71,18 @@ const mapStateToProps = (state, props) => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setUserInfo: userActions.setUserInfo,
+    },
+    dispatch
+  );
+};
+
 export default WithLogger(
   connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
   )(Settings)
 );

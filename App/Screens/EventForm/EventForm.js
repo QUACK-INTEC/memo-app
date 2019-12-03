@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
-import Lodash from 'lodash';
 
 import EventFormComponent from '../../Components/EventForm';
 import { selectors as EventFormSelectors, actions as EventFormActions } from './Redux';
@@ -42,7 +41,6 @@ class EventForm extends React.Component {
 
   getInitialsValue = () => {
     const { initialsValue } = this.props;
-
     return {
       section: null,
       description: null,
@@ -73,7 +71,7 @@ class EventForm extends React.Component {
   };
 
   handleOnCloseModal = () => {
-    const { setModalVisible, setInitialFormValues } = this.props;
+    const { setModalVisible, setInitialFormValues, isEditing, setEditingModal } = this.props;
     setInitialFormValues({
       section: null,
       description: null,
@@ -83,6 +81,9 @@ class EventForm extends React.Component {
       title: null,
       type: 'public',
     });
+    if (isEditing) {
+      setEditingModal(false);
+    }
     setModalVisible(false);
   };
 
@@ -98,9 +99,8 @@ class EventForm extends React.Component {
   };
 
   handleOnSubmitForm = objValues => {
-    const { initialsValue } = this.props;
+    const { isEditing } = this.props;
 
-    // TODO: Implement attachments when is ready
     const {
       section,
       description,
@@ -109,6 +109,7 @@ class EventForm extends React.Component {
       startDate: startTime,
       title,
       type,
+      postId,
     } = objValues;
     const momentDateSelected = Moment(dateTime);
     const momentStartTime = Moment(startTime);
@@ -146,9 +147,7 @@ class EventForm extends React.Component {
       isPublic: type === 'public',
     };
 
-    const oldTitle = Lodash.get(initialsValue, ['title'], null);
-
-    return oldTitle ? this.handleEditPost(objPayload) : this.handleCreatePost(objPayload);
+    return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
   };
 
   handleCreatePost = objPayload => {
@@ -177,19 +176,29 @@ class EventForm extends React.Component {
       });
   };
 
-  handleEditPost = () => {
-    // TODO: Add logger, get id from post to edit
-    // return Api.EditPost(objPayload).then(objResponse => {
-    //   console.log({objResponse})
-    //   this.setState({ confirmationPopupVisible: true})
-    // }).catch( objError => {
-    //   console.log({objError})
-    // })
+  handleEditPost = (idPost, objPayload) => {
+    const { logger, MessagesKey, setModalVisible } = this.props;
+    return Api.EditPost(idPost, objPayload)
+      .then(objResponse => {
+        setModalVisible(false);
+        return logger.success({
+          key: MessagesKey.EDIT_POST_SUCCESS,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.EDIT_POST_SUCCESS,
+            data: objError,
+          });
+        }, 800);
+      });
   };
 
   renderEventForm = () => {
     const { confirmationPopupVisible, confirmationPopupMessage } = this.state;
-    const { isModalVisible } = this.props;
+    const { isModalVisible, isEditing } = this.props;
 
     if (confirmationPopupVisible) {
       return (
@@ -214,7 +223,7 @@ class EventForm extends React.Component {
           onSubmit={this.handleOnSubmitForm}
           initialValues={this.getInitialsValue()}
           validation={validation}
-          isEditing={false}
+          isEditing={isEditing}
           optionsClasses={this.getMyClassesOptions()}
         />
       </>
@@ -232,10 +241,12 @@ EventForm.propTypes = {
   isModalVisible: PropTypes.bool.isRequired,
   myClasses: PropTypes.arrayOf(PropTypes.string).isRequired,
   myClassesLookup: PropTypes.shape({}).isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  setEditingModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => {
-  const { getIsModalVisible, getInitialsValue } = EventFormSelectors;
+  const { getIsModalVisible, getInitialsValue, getIsEditingForm } = EventFormSelectors;
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
 
   return {
@@ -243,6 +254,7 @@ const mapStateToProps = (state, props) => {
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
     initialsValue: getInitialsValue(state, props),
+    isEditing: getIsEditingForm(state, props),
   };
 };
 
@@ -251,6 +263,7 @@ const mapDispatchToProps = dispatch => {
     {
       setModalVisible: EventFormActions.setModalVisible,
       setInitialFormValues: EventFormActions.setInitialFormValues,
+      setEditingModal: EventFormActions.setEditingModal,
     },
     dispatch
   );

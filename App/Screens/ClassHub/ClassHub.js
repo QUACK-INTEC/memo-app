@@ -11,7 +11,7 @@ import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import Text from '../../Components/Common/Text';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { fonts, colors } from '../../Core/Theme';
-import { actions as EventFormActions } from '../EventForm/Redux';
+import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
 
 import { Posts } from '../../Models';
 
@@ -80,6 +80,14 @@ class ClassHub extends React.Component {
       });
   }
 
+  componentDidUpdate(prevProps) {
+    const { isModalVisible } = this.props;
+    if (prevProps.isModalVisible !== isModalVisible) {
+      return this.fetchPosts();
+    }
+    return false;
+  }
+
   getSectionStudents = idSection => {
     return Api.GetSectionStudents(idSection);
   };
@@ -95,14 +103,19 @@ class ClassHub extends React.Component {
     return this.getSectionPosts(idSection)
       .then(objResponse => {
         const listPosts = Lodash.get(objResponse, ['data', 'data'], []);
-        this.setState({
-          posts: listPosts,
-          isFetchingPost: false,
-        });
-        return logger.success({
-          key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
-          data: objResponse,
-        });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState({
+            posts: listPosts,
+            isFetchingPost: false,
+          });
+          return logger.success({
+            key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
+            data: objResponse,
+          });
+        }
+
+        return null;
       })
       .catch(objError => {
         this.setState({ isFetchingPost: false });
@@ -258,8 +271,11 @@ ClassHub.propTypes = {
 };
 const mapStateToProps = (state, props) => {
   const { getMyClassesLookup } = myClassesSelectors;
+  const { getIsModalVisible } = EventFormSelectors;
+
   return {
     myClassesLookup: getMyClassesLookup(state, props),
+    isModalVisible: getIsModalVisible(state, props),
   };
 };
 

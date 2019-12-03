@@ -15,12 +15,26 @@ import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import { toBaseDesignPx, spacers, fonts, colors, constants } from '../../Core/Theme';
 
 class PostInfo extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if (state.personalScore !== props.personalScore) {
+      return {
+        isUpVote: props.personalScore != null ? props.personalScore > 0 : false,
+        isDownVote: props.personalScore != null ? props.personalScore < 0 : false,
+        personalScore: props.personalScore,
+        score: props.score,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
-    const { personalScore } = this.props;
+    const { personalScore, score } = this.props;
     this.state = {
-      isUpVote: personalScore && personalScore > 0,
-      isDownVote: personalScore && personalScore < 0,
+      isUpVote: personalScore != null ? personalScore > 0 : false,
+      isDownVote: personalScore != null ? personalScore < 0 : false,
+      personalScore,
+      score,
     };
   }
 
@@ -132,8 +146,8 @@ class PostInfo extends React.Component {
   };
 
   renderUpVotes = () => {
-    const { score } = this.props;
-    if (score && score > 0) {
+    const { score } = this.state;
+    if (score != null && score > -1) {
       return <Text.Medium text={`${score} Upvotes`} style={styles.upVotesStyle} />;
     }
     return null;
@@ -187,29 +201,50 @@ class PostInfo extends React.Component {
     );
   };
 
-  handleDownVote = value => {
+  handleDownVote = () => {
     const { onDownVote } = this.props;
-    if (value) {
-      this.setState({ isDownVote: true, isUpVote: false });
-    } else {
-      this.setState({ isDownVote: false, isUpVote: false });
-    }
-    onDownVote(value);
+    const { isDownVote } = this.state;
+    const isReaction = !isDownVote;
+    onDownVote(isReaction).then(success => {
+      if (success) {
+        if (isReaction) {
+          this.setState({
+            isDownVote: true,
+            isUpVote: false,
+          });
+        } else {
+          this.setState({
+            isDownVote: false,
+            isUpVote: false,
+          });
+        }
+      }
+    });
   };
 
-  handleUpVote = value => {
+  handleUpVote = () => {
     const { onUpVote } = this.props;
-    if (value) {
-      this.setState({ isDownVote: false, isUpVote: true });
-    } else {
-      this.setState({ isDownVote: false, isUpVote: false });
-    }
-    onUpVote(value);
+    const { isUpVote } = this.state;
+    const isReaction = !isUpVote;
+    onUpVote(isReaction).then(success => {
+      if (success) {
+        if (isReaction) {
+          this.setState({
+            isDownVote: false,
+            isUpVote: true,
+          });
+        } else {
+          this.setState({
+            isDownVote: false,
+            isUpVote: false,
+          });
+        }
+      }
+    });
   };
 
   renderUpVoteSection = () => {
     const { isAuthor } = this.props;
-    const { isUpVote, isDownVote } = this.state;
 
     if (isAuthor) {
       return null;
@@ -223,8 +258,6 @@ class PostInfo extends React.Component {
           rightButtonStyle={styles.arrowButtonStyle}
           onRightPress={this.handleUpVote}
           onLeftPress={this.handleDownVote}
-          isRightPressed={isUpVote}
-          isLeftPressed={isDownVote}
         />
       </View>
     );
@@ -274,7 +307,6 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: 'space-between',
     alignItems: 'center',
-    flex: 1,
   },
   headerBackIconContainer: {
     ...spacers.ML_14,
@@ -284,7 +316,7 @@ const styles = StyleSheet.create({
     ...spacers.MR_14,
     ...spacers.MB_4,
   },
-  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT, flex: 1 },
+  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT },
   titleStyle: {
     ...fonts.SIZE_XXL,
     ...spacers.ML_15,
@@ -324,11 +356,10 @@ const styles = StyleSheet.create({
     color: colors.GRAY,
   },
   arrowButtonsContainer: {
-    ...spacers.MB_7,
+    ...spacers.MB_3,
     ...spacers.MR_8,
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
+    alignSelf: 'flex-end',
+    justifyContent: 'flex-end',
   },
   arrowButtonStyle: {
     backgroundColor: colors.GREEN,

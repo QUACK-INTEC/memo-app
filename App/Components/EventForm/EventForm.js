@@ -58,7 +58,8 @@ class EventForm extends React.Component {
     const { startDate, endDate, title } = values;
     const isEditing = !!title;
     const titleText = isEditing ? 'Editar' : 'Crear';
-
+    const hasADate = hasDate || (endDate && startDate);
+    const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
     return (
       <>
         <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
@@ -67,7 +68,7 @@ class EventForm extends React.Component {
             bounces={false}
             alwaysBounceVertical={false}
             automaticallyAdjustContentInsets={false}
-            contentInset={{ top: 0, bottom: contentInsetBottom }}
+            contentInset={{ top: 0, bottom: contentInset }}
           >
             <FormikInput
               type="dropdown"
@@ -113,7 +114,7 @@ class EventForm extends React.Component {
                 labelStyle={styles.labelToggleInput}
               />
             </View>
-            {hasDate ? (
+            {hasADate ? (
               <View style={styles.containerTimePicker}>
                 <FormikInput
                   type="datepicker"

@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     color: colors.GRAY_LIGHT,
+    ...fonts.SIZE_XS,
   },
   error: {
     color: colors.ERROR,

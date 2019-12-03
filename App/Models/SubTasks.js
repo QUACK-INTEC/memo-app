@@ -6,9 +6,13 @@ const getSubTasksData = listData => {
   }
   return listData.map(objSubTask => {
     const value = Lodash.get(objSubTask, ['id'], '');
+    const label = Lodash.get(objSubTask, ['name'], '');
+    const done = Lodash.get(objSubTask, ['isDone'], '');
     return {
       ...objSubTask,
       value,
+      label,
+      done,
     };
   });
 };

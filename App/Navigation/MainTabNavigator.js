@@ -20,6 +20,7 @@ import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
 import TeacherResourcesScreen from '../Screens/TeacherResources';
 import PostCommentsScreen from '../Screens/PostComments';
 import PostInfo from '../Screens/PostInfo';
+import PostResourcesScreen from '../Screens/PostResources';
 import SettingsScreen from '../Screens/Settings';
 
 // Screens
@@ -112,6 +113,7 @@ const ClassRoomStack = createStackNavigator(
     SubjectsByTeacher: SubjectsByTeacherScreen,
     TeacherResources: TeacherResourcesScreen,
     PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
   },
   config
 );

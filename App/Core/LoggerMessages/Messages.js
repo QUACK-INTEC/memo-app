@@ -18,6 +18,8 @@ export const CREATE_POST_SUCCESS = 'CREATE_POST_SUCCESS';
 export const CREATE_POST_FAILED = 'CREATE_POST_FAILED';
 export const LOAD_SUBTASKS_SUCCESS = 'LOAD_SUBTASKS_SUCCESS';
 export const LOAD_SUBTASKS_FAILED = 'LOAD_SUBTASKS_FAILED';
+export const LOAD_POST_INFO_SUCCES = 'LOAD_POST_INFO_SUCCES';
+export const LOAD_POST_INFO_FAILED = 'LOAD_POST_INFO_FAILED';
 
 const getLoggerMessages = () => {
   return {
@@ -41,6 +43,8 @@ const getLoggerMessages = () => {
     [CREATE_POST_FAILED]: null,
     [LOAD_SUBTASKS_SUCCESS]: null,
     [LOAD_SUBTASKS_FAILED]: null,
+    [LOAD_POST_INFO_SUCCES]: null,
+    [LOAD_POST_INFO_FAILED]: null,
   };
 };
 

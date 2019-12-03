@@ -222,7 +222,7 @@ class PostInfo extends React.Component {
         }
 
         return logger.error({
-          key: MessagesKey.LOAD_POST_INFO_FAILEDv,
+          key: MessagesKey.LOAD_POST_INFO_FAILED,
           data: objPostInfoResponse,
         });
       })

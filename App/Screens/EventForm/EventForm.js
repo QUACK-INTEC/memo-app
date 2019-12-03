@@ -148,13 +148,13 @@ class EventForm extends React.Component {
     const objPayload = {
       title,
       description,
-      startDate,
-      endDate,
+      startDate: startTime ? startDate : null,
+      endDate: endTime ? endDate : null,
       section,
       type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
-
+    console.log({ objPayload });
     return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
   };
 

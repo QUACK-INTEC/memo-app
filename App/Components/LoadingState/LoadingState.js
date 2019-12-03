@@ -9,7 +9,7 @@ import { toBaseDesignPx, colors } from '../../Core/Theme';
 import { LOADER_SIZE } from './Constants';
 
 const SOURCE_ANIMATION_LOADER = require('../../Core/Assets/Animations/loading.json');
-const SOURCE_ANIMATION_EMPTY_FOR_TODAY = require('../../Core/Assets/Animations/emptyForToday.json');
+const SOURCE_ANIMATION_EMPTY_FOR_TODAY = require('../../Core/Assets/Animations/emptyForToday2.json');
 const SOURCE_ANIMATION_EMPTY_BOX = require('../../Core/Assets/Animations/emptyBox.json');
 
 class LoadingState extends React.Component {

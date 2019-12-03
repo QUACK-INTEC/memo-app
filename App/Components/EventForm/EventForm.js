@@ -153,15 +153,11 @@ class EventForm extends React.Component {
 
             {canAddFile ? (
               <FormikInput
-                type="dropdown"
-                options={[
-                  { value: 'public', label: 'Publico' },
-                  { value: 'privado', label: 'Privado' },
-                ]}
+                type="fileinput"
                 labelStyle={styles.labelStyle}
                 label="Tipo de evento"
-                name="type"
-                containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
+                name="attachments"
+                containerStyle={{ ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
             ) : null}

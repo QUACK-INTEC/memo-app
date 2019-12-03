@@ -5,12 +5,20 @@ import Lodash from 'lodash';
 import { Field, FastField } from 'formik';
 import TextInput from './TextInput';
 import DropDown from './DropDown';
+import DatePicker from './DatePicker';
+import TimePicker from './TimePicker';
+import Toggle from './Toggle';
+import FileInput from './FileInput';
 
 import { colors } from '../../Core/Theme';
 
 const objInputs = {
   input: TextInput,
   dropdown: DropDown,
+  datepicker: DatePicker,
+  timepicker: TimePicker,
+  toggle: Toggle,
+  fileinput: FileInput,
 };
 
 class FormikInput extends Component {

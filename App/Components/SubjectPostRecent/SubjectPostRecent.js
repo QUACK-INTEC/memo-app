@@ -28,11 +28,20 @@ class SubjectPostRecent extends React.Component {
     );
   };
 
-  renderSubjectDateInfo = () => {
+  renderTimeSinceText = () => {
     const { createdSince } = this.props;
+
+    if (createdSince) {
+      return <Text.Light style={styles.dateCreatedText} text={`Hace ${createdSince} días`} />;
+    }
+
+    return null;
+  };
+
+  renderSubjectDateInfo = () => {
     return (
       <View style={styles.containerDateInfo}>
-        <Text.Light style={styles.dateCreatedText} text={`Hace ${createdSince} días`} />
+        {this.renderTimeSinceText()}
         <Icon
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.EXTRA_SMALL}
@@ -66,10 +75,14 @@ const styles = StyleSheet.create({
   postTitleText: { ...fonts.SIZE_L, color: colors.GRAY, width: toBaseDesignPx(218) },
 });
 
+SubjectPostRecent.defaultProps = {
+  createdSince: null,
+};
+
 SubjectPostRecent.propTypes = {
   postTitle: PropTypes.string.isRequired,
   postUser: PropTypes.string.isRequired,
-  createdSince: PropTypes.number.isRequired,
+  createdSince: PropTypes.number,
   onPress: PropTypes.func.isRequired,
 };
 

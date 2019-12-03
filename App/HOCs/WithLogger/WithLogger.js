@@ -1,8 +1,9 @@
 import React from 'react';
 import hoistNonReactStatic from 'hoist-non-react-statics';
 
-import LoggerMessages from '../../Core/LoggerMessages';
+import LoggerMessages, { MessagesKey } from '../../Core/LoggerMessages';
 import Logger from '../../Services/Logger';
+import EventForm from '../../Screens/EventForm';
 
 const WithLogger = WrappedComponent => {
   class EnhancedComponent extends React.Component { // eslint-disable-line
@@ -23,6 +24,7 @@ const WithLogger = WrappedComponent => {
     render() {
       return (
         <>
+          <EventForm logger={this.logger} MessagesKey={MessagesKey} />
           <WrappedComponent {...this.props} logger={this.logger} />
         </>
       );

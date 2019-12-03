@@ -2,14 +2,18 @@ import React from 'react';
 import { FlatList, Alert, Keyboard, View, StyleSheet } from 'react-native';
 import Lodash from 'lodash';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import LoadingState from '../../Components/LoadingState';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import { PostCommentList } from '../../Models';
+import Api from '../../Core/Api';
+import LoadingState from '../../Components/LoadingState';
 
 import PostCommentsComponent from '../../Components/PostComments';
 import PostComment from '../../Components/PostComment';
 import PopUp from '../../Components/Common/PopUp';
+import { spacers } from '../../Core/Theme';
+import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 
 class PostComments extends React.Component {
   constructor(props) {
@@ -19,48 +23,43 @@ class PostComments extends React.Component {
       postComments: [],
       selectedCommentId: null,
       confirmationPopUpVisible: false,
+      author: '',
+      postTitle: '',
+      postId: '',
+      authorId: '',
     };
   }
 
   componentDidMount() {
-    // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
-      // navigation: { getParam, pop },
-      logger,
+      navigation: { getParam },
     } = this.props;
-    // const authorTitle = getParam('authorName', {});
-    // const postTitle = getParam('postTitle', {});
-    // const postId = getParam('postId', {});
-    // const authorId = getParam('authorId', {});
+    const author = getParam('author', '');
+    const postTitle = getParam('title', '');
+    const postId = getParam('postId', '');
+    const authorId = getParam('authorId', '');
+    const comments = getParam('comments', []);
 
-    Promise.all([this.getPostComments()])
-      .then(listValues => {
-        const [objCommentResponse] = listValues;
-        const listPostComments = Lodash.get(objCommentResponse, 'data', []);
-        this.setState({ postComments: listPostComments, isLoading: false });
-        return logger.success({
-          key: MessagesKey.LOAD_POST_COMMENTS_SUCCESS,
-          data: listValues,
-        });
-      })
-      .catch(objError => {
-        this.setState({ isLoading: false });
-        return setTimeout(() => {
-          logger.error({
-            key: MessagesKey.LOAD_POST_COMMENTS_FAILED,
-            data: objError,
-          });
-        }, 800);
-      });
+    this.setState({
+      postComments: comments,
+      author,
+      postTitle,
+      postId,
+      authorId,
+      isLoading: false,
+    });
   }
 
-  handleAuthorPress = authorId => {
-    // TODO : PuSH to author
-    // const {
-    //   navigation: { push },
-    // } = this.props;
-    // push('UserProfile', {authorId});
-    Alert.alert(`goToAuthor: ${authorId}`);
+  setLoading = isLoading => {
+    return this.setState({ isLoading });
+  };
+
+  handleAuthorPress = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const { authorId } = this.state;
+    return navigate('UserProfile', { authorId });
   };
 
   handleBackArrow = () => {
@@ -68,34 +67,14 @@ class PostComments extends React.Component {
     return navigation.goBack();
   };
 
-  getPostComments = () => {
-    return {
-      success: true,
-      data: [
-        {
-          id: '5dcb3a143f84959c924adfa8',
-          author: 'Emma Paige',
-          authorBadgeUri: 'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png',
-          authorInitials: 'EP',
-          comment: 'Entregar project charter y un power point para presentarlo en clase.',
-          isAuthor: false,
-          score: 10,
-          personalScore: 1,
-          authorId: '1',
-        },
-        {
-          id: '5d924adfa89',
-          author: 'Emma Paige',
-          authorBadgeUri: 'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png',
-          authorInitials: 'EP',
-          comment: 'Entregar project charter y un power point para presentarlo en clase.',
-          isAuthor: true,
-          score: 10,
-          personalScore: -1,
-          authorId: '2',
-        },
-      ],
-    };
+  goBack = () => {
+    const {
+      navigation: { pop },
+    } = this.props;
+    this.setState({
+      confirmationPopUpVisible: false,
+    });
+    pop();
   };
 
   handleUpVote = (commentId, isUpVote) => {
@@ -125,11 +104,39 @@ class PostComments extends React.Component {
   };
 
   deleteComment = () => {
-    const { selectedCommentId } = this.state;
-    this.setState({ isLoading: true });
+    const { logger } = this.props;
+    const { selectedCommentId, postId } = this.state;
+
     if (selectedCommentId) {
-      // TODO : Send Delete Comment to API
-      this.deleteItemById(selectedCommentId);
+      this.setState({ isLoading: true });
+      Api.DeleteComment(postId, selectedCommentId)
+        .then(objResponse => {
+          this.setState({ isLoading: false });
+          const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+          if (isSuccess) {
+            this.setState({
+              isLoading: false,
+            });
+            this.deleteItemById(selectedCommentId);
+            logger.success({
+              key: MessagesKey.DELETE_COMMENT_SUCCESS,
+              data: objResponse,
+            });
+          }
+          return logger.error({
+            key: MessagesKey.DELETE_COMMENT_FAILED,
+            data: objResponse,
+          });
+        })
+        .catch(objError => {
+          this.setState({ isLoading: false });
+          return setTimeout(() => {
+            logger.error({
+              key: MessagesKey.DELETE_COMMENT_FAILED,
+              data: objError,
+            });
+          }, 800);
+        });
     }
     this.setState({
       selectedCommentId: null,
@@ -138,20 +145,49 @@ class PostComments extends React.Component {
     });
   };
 
-  handlePostComment = comment => {
-    // TODO : Send Post Comment to API
-    const commentObj = {
-      id: `5dcb3a143f84959c924adfa89${comment}`,
-      author: 'Emma Paige',
-      authorBadgeUri: 'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png',
-      authorInitials: 'EP',
-      comment,
-      isAuthor: true,
-      score: 10,
-      personalScore: -1,
-      authorId: '2',
-    };
-    this.setState(prevState => ({ postComments: [...prevState.postComments, commentObj] }));
+  handlePostComment = body => {
+    const { userFirstName, userLastName, logger, userId, userEmail } = this.props;
+    const { postId } = this.state;
+    this.setLoading(true);
+    Api.AddComment(postId, { body })
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState({
+            isLoading: false,
+          });
+          const objCommentResponse = Lodash.get(objResponse, ['data', 'comment'], {});
+          const author = {
+            id: `${userId}`,
+            email: `${userEmail}`,
+            firstName: `${userFirstName}`,
+            lastName: `${userLastName}`,
+            points: 0,
+          };
+          objCommentResponse.author = author;
+          this.setState(prevState => ({
+            postComments: [...prevState.postComments, objCommentResponse],
+          }));
+          logger.success({
+            key: MessagesKey.CREATE_COMMENT_SUCCESS,
+            data: objResponse,
+          });
+        }
+        return logger.error({
+          key: MessagesKey.CREATE_COMMENT_FAILED,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.CREATE_COMMENT_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
     Keyboard.dismiss();
   };
 
@@ -163,20 +199,23 @@ class PostComments extends React.Component {
   };
 
   renderComment = ({ item }) => {
+    const { userId } = this.props;
     return (
-      <PostComment
-        author={item.author}
-        onAuthorPress={() => this.handleAuthorPress(item.authorId)}
-        onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote)}
-        onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
-        badgeUri={item.authorBadgeUri}
-        initialsText={item.authorInitials}
-        comment={item.comment}
-        isAuthor={item.isAuthor}
-        score={item.score}
-        personalScore={item.PersonalScore}
-        onDeleteComment={() => this.showConfirmationBox(item.id)}
-      />
+      <View style={styles.postCommentContainer}>
+        <PostComment
+          author={item.author}
+          onAuthorPress={() => this.handleAuthorPress(item.authorId)}
+          onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote)}
+          onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
+          badgeUri={item.authorBadgeUri}
+          initialsText={item.authorInitials}
+          comment={item.body}
+          isAuthor={userId === item.authorId}
+          score={item.score}
+          personalScore={item.currentUserReaction}
+          onDeleteComment={() => this.showConfirmationBox(item.id)}
+        />
+      </View>
     );
   };
 
@@ -194,13 +233,13 @@ class PostComments extends React.Component {
   };
 
   renderPostCommentsComponent = () => {
-    const { authorName, postTitle, authorId } = this.props;
+    const { author, postTitle, authorId } = this.state;
     return (
       <PostCommentsComponent
         onBackArrow={this.goBack}
         onAuthorPress={() => this.handleAuthorPress(authorId)}
         renderComments={this.renderComments}
-        author={authorName}
+        author={author}
         postTitle={postTitle}
         onCommentPost={this.handlePostComment}
       />
@@ -228,19 +267,37 @@ class PostComments extends React.Component {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  postCommentContainer: { ...spacers.PB_1 },
 });
 
-// DUMMY DATA
 PostComments.defaultProps = {
-  authorName: 'Emma Paige',
-  postTitle: 'Entrega de Informe Final',
-  authorId: '3',
+  userId: null,
+  userFirstName: null,
+  userLastName: null,
+  userEmail: null,
 };
 
 PostComments.propTypes = {
-  authorName: PropTypes.string,
-  postTitle: PropTypes.string,
-  authorId: PropTypes.string,
+  userId: PropTypes.string,
+  userFirstName: PropTypes.string,
+  userLastName: PropTypes.string,
+  userEmail: PropTypes.string,
 };
 
-export default WithLogger(PostComments);
+const mapStateToProps = (state, props) => {
+  const { getFirstName, getLastName, getAvatarUser, getEmail, getUserId } = userManagerSelectors;
+  return {
+    userFirstName: getFirstName(state, props),
+    userLastName: getLastName(state, props),
+    userAvatarURI: getAvatarUser(state, props),
+    userEmail: getEmail(state, props),
+    userId: getUserId(state, props),
+  };
+};
+
+export default WithLogger(
+  connect(
+    mapStateToProps,
+    null
+  )(PostComments)
+);

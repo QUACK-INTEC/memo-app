@@ -51,7 +51,7 @@ class ClassRooms extends React.Component {
   }
 }
 const styles = StyleSheet.create({
-  classesContainer: { justifyContent: 'space-between' },
+  classesContainer: { justifyContent: 'space-between', flex: 1 },
   myClassContainer: { ...spacers.MA_1 },
 });
 

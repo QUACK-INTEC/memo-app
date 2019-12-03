@@ -18,7 +18,46 @@ export const getUserToken = createSelector(
   }
 );
 
+export const getUserId = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'id'], null);
+  }
+);
+
+export const getFirstName = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'firstName'], null);
+  }
+);
+
+export const getLastName = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'lastName'], null);
+  }
+);
+
+export const getAvatarUser = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'avatarURL'], null);
+  }
+);
+export const getEmail = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'email'], null);
+  }
+);
+
 export default {
+  getEmail,
+  getAvatarUser,
+  getLastName,
+  getFirstName,
   isLogged,
+  getUserId,
   getUserToken,
 };

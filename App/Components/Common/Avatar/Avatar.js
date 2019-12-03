@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 // Theme
-import { colors, toBaseDesignPx } from '../../../Core/Theme';
+import { colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import ImageWrapper from '../ImageWrapper';
@@ -22,7 +22,9 @@ class Avatar extends React.Component {
 
     return (
       <View {...this.props} style={[styles.avatarStyle, style]}>
-        <Text.Medium text={initialsText} style={[styles.textStyle, textStyle]} />
+        <View style={[style, styles.textViewStyle]}>
+          <Text.Medium text={initialsText} style={[styles.textStyle, textStyle]} />
+        </View>
       </View>
     );
   };
@@ -41,9 +43,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  textViewStyle: {
+    width: toBaseDesignPx(94),
+    height: toBaseDesignPx(94),
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...spacers.MR_0,
+    ...spacers.ML_0,
+    ...spacers.MB_0,
+    ...spacers.MT_0,
+  },
   textStyle: {
     color: colors.GRAY,
     fontSize: RFValue(48),
+    textAlign: 'center',
+    ...spacers.ML_1,
+    ...spacers.MT_1,
+    ...spacers.MB_1,
+    ...spacers.MR_1,
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
 });
 

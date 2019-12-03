@@ -1,5 +1,6 @@
+/* eslint-disable global-require */
 import React from 'react';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarLabel from '../Components/TabBar/TabBarLabel';
@@ -13,6 +14,14 @@ import HomeScreen from '../Screens/Home';
 import CalendarScreen from '../Screens/Calendar';
 import ClassRoomScreen from '../Screens/ClassRooms';
 import ProfileScreen from '../Screens/Profile';
+import ClassParticipantsScreen from '../Screens/ClassParticipants';
+import ViewProfileScreen from '../Screens/ViewProfile';
+import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
+import TeacherResourcesScreen from '../Screens/TeacherResources';
+import PostCommentsScreen from '../Screens/PostComments';
+import PostInfo from '../Screens/PostInfo';
+import PostResourcesScreen from '../Screens/PostResources';
+import SettingsScreen from '../Screens/Settings';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -50,7 +59,6 @@ CalendarStack.navigationOptions = {
 
 CalendarStack.path = '';
 
-// TODO: Open a modal when is add is pressed
 const AddStack = createStackNavigator(
   {
     Add: Playground,
@@ -85,21 +93,9 @@ AddStack.navigationOptions = {
     />
   ),
   tabBarOnPress: () => {
-    // TO-DO Open Modal!
-    Alert.alert(
-      'Agregar publicacion',
-      'Desea agregar una nueva publicacion?',
-      [
-        { text: 'Despues', onPress: () => null },
-        {
-          text: 'No',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        { text: 'Si', onPress: null },
-      ],
-      { cancelable: false }
-    );
+    const EventForm = require('../Screens/EventForm/Redux');
+    const StoreRedux = require('../Redux');
+    return StoreRedux.store.dispatch(EventForm.actions.setModalVisible(true));
   },
 };
 
@@ -111,6 +107,13 @@ const ClassRoomStack = createStackNavigator(
     ClassHub: {
       screen: ClassHubScreen,
     },
+    PostInfo,
+    Participants: ClassParticipantsScreen,
+    ViewProfile: ViewProfileScreen,
+    SubjectsByTeacher: SubjectsByTeacherScreen,
+    TeacherResources: TeacherResourcesScreen,
+    PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
   },
   config
 );
@@ -133,13 +136,22 @@ ClassRoomStack.path = '';
 const ProfileStack = createStackNavigator(
   {
     Profile: ProfileScreen,
+    Settings: SettingsScreen,
   },
   config
 );
 
-ProfileStack.navigationOptions = {
-  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
+ProfileStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+    tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
+  };
 };
 
 ProfileStack.path = '';

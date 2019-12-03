@@ -10,7 +10,6 @@ import LoadingState from '../../Components/LoadingState';
 import Text from '../../Components/Common/Text';
 import Link from '../../Components/Common/Link';
 import HomeComponent from '../../Components/Home';
-import Icon, { ICON_TYPE, ICON_SIZE } from '../../Components/Common/Icon';
 import { colors, fonts, spacers } from '../../Core/Theme';
 import Api, { MemoApi } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
@@ -114,12 +113,8 @@ class Home extends React.Component {
 
     return (
       <View style={styles.noEventsContainer}>
-        <Icon
-          type={ICON_TYPE.MEMO_ICONS}
-          name="moon"
-          color={colors.GRAY}
-          size={ICON_SIZE.EXTRA_LARGE}
-        />
+        <LoadingState.NoEvents />
+
         <Text.Medium text="Nada para hoy" style={styles.noEventsText} />
         <Link
           text="Ver mi calendario"
@@ -149,7 +144,7 @@ const styles = StyleSheet.create({
   noEventsContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    ...spacers.MB_15,
+    ...spacers.MB_4,
     ...spacers.MT_15,
   },
   goToCalendarText: { color: colors.GREEN_LIGHT, ...fonts.SIZE_S },

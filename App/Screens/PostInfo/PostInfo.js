@@ -15,6 +15,7 @@ import SubTask from '../../Components/SubTask';
 import { SubTasks } from '../../Models';
 import { spacers } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
+import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
 
 class PostInfo extends React.Component {
   constructor(props) {
@@ -44,9 +45,10 @@ class PostInfo extends React.Component {
   componentDidMount() {
     // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
-      navigation: { getParam },
+      navigation: { getParam, addListener },
       logger,
     } = this.props;
+
     const postedBy = getParam('postedBy', {});
     const title = getParam('title', '');
     const id = getParam('id', {});
@@ -88,6 +90,8 @@ class PostInfo extends React.Component {
         const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
         const postAuthor = Lodash.get(objPostInfo, ['author'], {});
         const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+        const postSectionId = Lodash.get(objPostInfo, ['section'], null);
+        const isPublic = Lodash.get(objPostInfo, ['isPublic'], false);
         // TODO: render subtasks from API
         // const postSubtask = Lodash.get(objPostInfo, ['subtask']);
         console.log({ objPostInfo });
@@ -98,6 +102,8 @@ class PostInfo extends React.Component {
           comments: postComments,
           attachments: postAttachments,
           postAuthorId,
+          postSectionId,
+          isPublic,
         });
 
         // TODO: CHANGE MESSAGE KEY TO LOAD_POST_INFO...
@@ -116,6 +122,37 @@ class PostInfo extends React.Component {
         }, 800);
       });
   }
+
+  // componentDidUpdate(prevProps, prevState){
+  //   if (prevProps.isModalVisible !== this.props.isModalVisible){
+       
+  //   }
+  // }
+
+  fetchPostInfo = () => {
+    const { postId } = this.state;
+    return this.getPostInfo(postId).then(objResponse => {
+      const objPostInfo = Lodash.get(objResponse, ['data', 'data'], {});
+
+      const postComments = Lodash.get(objPostInfo, ['comments'], []);
+      const postDescription = Lodash.get(objPostInfo, ['description'], '');
+      const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
+      const postAuthor = Lodash.get(objPostInfo, ['author'], {});
+      const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+      const postSectionId = Lodash.get(objPostInfo, ['section'], null);
+      const isPublic = Lodash.get(objPostInfo, ['isPublic'], false);
+      this.setState({
+        userSubTasks: listSubTasks,
+        isLoading: false,
+        description: postDescription,
+        comments: postComments,
+        attachments: postAttachments,
+        postAuthorId,
+        postSectionId,
+        isPublic,
+      });
+    });
+  };
 
   getPostInfo = idPost => {
     return Api.GetPostInfo(idPost);
@@ -140,8 +177,18 @@ class PostInfo extends React.Component {
   };
 
   handleEdit = () => {
-    // TODO : EDIT POST
-    Alert.alert('Edit Post');
+    const { title, description, postSectionId, isPublic, postId } = this.state;
+    const { setEditingModal, setInitialFormValues, setModalVisible } = this.props;
+    const objFormValues = {
+      title,
+      description,
+      section: postSectionId,
+      type: isPublic ? 'public' : 'private',
+      postId,
+    };
+    setInitialFormValues(objFormValues);
+    setEditingModal(true);
+    setModalVisible(true);
   };
 
   deletePost = () => {
@@ -346,14 +393,28 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, props) => {
   const { getUserId } = userManagerSelectors;
+  const { getIsModalVisible } = EventFormSelectors;
+
   return {
     userId: getUserId(state, props),
+    isModalVisible: getIsModalVisible(state, props),
   };
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setInitialFormValues: EventFormActions.setInitialFormValues,
+      setEditingModal: EventFormActions.setEditingModal,
+      setModalVisible: EventFormActions.setModalVisible,
+    },
+    dispatch
+  );
 };
 
 export default WithLogger(
   connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
   )(PostInfo)
 );

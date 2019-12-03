@@ -250,9 +250,9 @@ class PostInfo extends React.Component {
       section: postSectionId,
       type: isPublic ? 'public' : 'private',
       postId,
-      endDate: Moment(endDate).utc(),
-      startDate: Moment(startDate).utc(),
-      dateTime: Moment(startDate).toDate(),
+      endDate: endDate ? Moment(endDate).utc() : null,
+      startDate: startDate ? Moment(startDate).utc() : null,
+      dateTime: startDate ? Moment(startDate).toDate() : new Date(),
     };
     setInitialFormValues(objFormValues);
     setEditingModal(true);

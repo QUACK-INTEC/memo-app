@@ -8,25 +8,26 @@ import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
 class SettingsItem extends React.Component {
   renderRightArrow = () => {
+    const { iconColor } = this.props;
     return (
       <Icon
         name="arrow-point-to-right"
         type={ICON_TYPE.MEMO_ICONS}
         size={ICON_SIZE.XTINY}
-        color={colors.GRAY}
+        color={iconColor || colors.GRAY}
       />
     );
   };
 
   render() {
-    const { renderCustomRightChoice, onPress, hasOnPress, label, style } = this.props;
+    const { renderCustomRightChoice, onPress, hasOnPress, label, style, labelStyle } = this.props;
     return (
       <TouchableOpacity
         activeOpacity={hasOnPress ? 0.2 : 1}
         onPress={onPress}
         style={[styles.container, style]}
       >
-        <Text.SemiBold text={label} style={styles.label} />
+        <Text.SemiBold text={label} style={[styles.label, labelStyle]} />
         <View style={styles.rightChoiceContainer}>
           {renderCustomRightChoice ? renderCustomRightChoice() : this.renderRightArrow()}
         </View>
@@ -58,6 +59,8 @@ SettingsItem.defaultProps = {
   hasOnPress: true,
   label: null,
   style: null,
+  labelStyle: null,
+  iconColor: null,
 };
 
 SettingsItem.propTypes = {
@@ -65,7 +68,9 @@ SettingsItem.propTypes = {
   onPress: PropTypes.func,
   hasOnPress: PropTypes.bool,
   label: PropTypes.string,
+  iconColor: PropTypes.string,
   style: PropTypes.shape(),
+  labelStyle: PropTypes.shape(),
 };
 
 export default SettingsItem;

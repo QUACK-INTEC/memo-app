@@ -75,6 +75,14 @@ class Home extends React.Component {
     return navigate('ClassHub', { id: idSection, sectionInfo: objSection });
   };
 
+  handleOnMyCalendarPress = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+
+    return navigate('Calendar');
+  };
+
   renderSubject = ({ item }) => {
     return (
       <View style={styles.myClassContainer}>
@@ -106,7 +114,6 @@ class Home extends React.Component {
   };
 
   renderEvents = () => {
-    const { logout } = this.props;
     const { isLoading } = this.state;
 
     if (isLoading) return <></>;
@@ -119,7 +126,7 @@ class Home extends React.Component {
         <Link
           text="Ver mi calendario"
           textStyle={styles.goToCalendarText}
-          onPress={() => logout()}
+          onPress={this.handleOnMyCalendarPress}
         />
       </View>
     );
@@ -181,7 +188,6 @@ const mapDispatchToProps = dispatch => {
     {
       setMyClasses: classesActions.setClasses,
       setUserToken: userActions.setUserToken,
-      logout: userActions.logout,
     },
     dispatch
   );

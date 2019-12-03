@@ -8,10 +8,11 @@ import { toBaseDesignPx } from '../../Core/Theme';
 
 class SettingsItemImagePicker extends React.Component {
   renderImagePicker = () => {
-    const { onChangeProfilePicture } = this.props;
+    const { onChangeProfilePicture, imageUri } = this.props;
     return (
       <ImagePicker
         style={styles.imagePicker}
+        imageUri={imageUri}
         onChangeImage={strImageUri => onChangeProfilePicture(strImageUri)}
       />
     );
@@ -40,10 +41,12 @@ const styles = StyleSheet.create({
 
 SettingsItemImagePicker.defaultProps = {
   onChangeProfilePicture: () => null,
+  imageUri: null,
 };
 
 SettingsItemImagePicker.propTypes = {
   onChangeProfilePicture: PropTypes.func,
+  imageUri: PropTypes.string,
 };
 
 export default SettingsItemImagePicker;

@@ -96,15 +96,18 @@ class SyncAccount extends Component {
     const {
       setUserSync,
       setUserToken,
-      navigation: { getParam },
+      navigation: { getParam, navigate },
     } = this.props;
     this.setLoading(false);
 
     const userToken = getParam('userToken', null);
+
     if (objUserSyncData) {
       setUserSync(objUserSyncData);
-
-      return setUserToken(userToken);
+      if (userToken) {
+        return setUserToken(userToken);
+      }
+      return navigate('Home');
     }
 
     return null;

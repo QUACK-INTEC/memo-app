@@ -53,10 +53,9 @@ class EventForm extends React.Component {
 
   renderForm = objForm => {
     const { canAddFile, hasDate, contentInsetBottom } = this.state;
-    const { optionsClasses } = this.props;
+    const { optionsClasses, isEditing } = this.props;
     const { values } = objForm;
-    const { startDate, endDate, title } = values;
-    const isEditing = !!title;
+    const { startDate, endDate } = values;
     const titleText = isEditing ? 'Editar' : 'Crear';
     const hasADate = hasDate || (endDate && startDate);
     const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
@@ -76,6 +75,7 @@ class EventForm extends React.Component {
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
               name="section"
+              disabled={isEditing}
               labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
@@ -239,6 +239,7 @@ EventForm.propTypes = {
   validation: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool.isRequired,
 };
 
 export default EventForm;

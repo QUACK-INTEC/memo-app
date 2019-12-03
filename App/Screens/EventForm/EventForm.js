@@ -13,7 +13,7 @@ import PopUp from '../../Components/Common/PopUp';
 
 const validation = objValues => {
   const errors = {};
-  const { section, description, title } = objValues;
+  const { section, description, title, endDate, startDate } = objValues;
 
   if (!title) {
     errors.title = 'Campo obligatorio';
@@ -25,6 +25,14 @@ const validation = objValues => {
 
   if (!section) {
     errors.section = 'Campo obligatorio';
+  }
+
+  if (endDate && !startDate) {
+    errors.startDate = 'Necesita una fecha';
+  }
+
+  if (startDate && !endDate) {
+    errors.endDate = 'Necesita una fecha';
   }
 
   return errors;

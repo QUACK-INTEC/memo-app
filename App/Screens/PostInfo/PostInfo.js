@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Alert, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import Lodash from 'lodash';
 import Moment from 'moment';
@@ -72,6 +72,7 @@ class PostInfo extends React.Component {
           const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
           const postAuthor = Lodash.get(objPostInfo, ['author'], '');
           const title = Lodash.get(objPostInfo, ['title'], '');
+          const section = Lodash.get(objPostInfo, ['section'], null);
           const score = Lodash.get(objPostInfo, ['score'], 0);
           const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
@@ -79,6 +80,7 @@ class PostInfo extends React.Component {
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
+          const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -114,6 +116,8 @@ class PostInfo extends React.Component {
             authorInitials,
             score,
             currentUserReaction,
+            postSectionId: section,
+            isPublic,
           });
 
           return logger.success({
@@ -138,6 +142,14 @@ class PostInfo extends React.Component {
       });
   }
 
+  componentDidUpdate(prevProps) {
+    const { isModalVisible } = this.props;
+    if (prevProps.isModalVisible !== isModalVisible) {
+      return this.fetchPost();
+    }
+    return false;
+  }
+
   fetchPost = () => {
     const { postId } = this.state;
     const { logger } = this.props;
@@ -160,6 +172,8 @@ class PostInfo extends React.Component {
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
+          const section = Lodash.get(objPostInfo, ['section'], null);
+          const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -195,6 +209,10 @@ class PostInfo extends React.Component {
             authorInitials,
             score,
             currentUserReaction,
+            postSectionId: section,
+            isPublic,
+            startDate,
+            endDate,
           });
 
           return logger.success({
@@ -224,7 +242,7 @@ class PostInfo extends React.Component {
   };
 
   handleEdit = () => {
-    const { title, description, postSectionId, isPublic, postId } = this.state;
+    const { title, description, postSectionId, isPublic, postId, endDate, startDate } = this.state;
     const { setEditingModal, setInitialFormValues, setModalVisible } = this.props;
     const objFormValues = {
       title,
@@ -232,6 +250,9 @@ class PostInfo extends React.Component {
       section: postSectionId,
       type: isPublic ? 'public' : 'private',
       postId,
+      endDate: Moment(endDate).utc(),
+      startDate: Moment(startDate).utc(),
+      dateTime: Moment(startDate).toDate(),
     };
     setInitialFormValues(objFormValues);
     setEditingModal(true);
@@ -658,6 +679,9 @@ PostInfo.defaultProps = {
 
 PostInfo.propTypes = {
   userId: PropTypes.string,
+  setEditingModal: PropTypes.func.isRequired,
+  setInitialFormValues: PropTypes.func.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => {

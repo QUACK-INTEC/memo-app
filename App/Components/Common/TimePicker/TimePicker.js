@@ -2,6 +2,7 @@ import React from 'react';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
+import Moment from 'moment';
 // eslint-disable-next-line import/no-unresolved
 import { Appearance } from 'react-native-appearance';
 
@@ -11,7 +12,7 @@ import Text from '../Text';
 class TimePicker extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (props.time !== state.date && props.time) {
-      const strDate = `${props.time.getHours()}:${props.time.getMinutes()}`;
+      const strDate = `${Moment(props.time).hours()}:${Moment(props.time).minutes()}`;
       return {
         date: strDate,
       };
@@ -38,7 +39,9 @@ class TimePicker extends React.Component {
   handleDatePicked = date => {
     const { onChange } = this.props;
     onChange(date);
-    this.setState({ date: `${date.getHours()}:${date.getMinutes()}` }, this.hideDateTimePicker());
+    const strDate = Moment(date).utc();
+
+    this.setState({ date: `${strDate.hours()}:${strDate.minutes()}` }, this.hideDateTimePicker());
   };
 
   render() {

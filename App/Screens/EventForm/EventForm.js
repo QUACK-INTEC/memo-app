@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
-import Lodash from 'lodash';
 
 import EventFormComponent from '../../Components/EventForm';
 import { selectors as EventFormSelectors, actions as EventFormActions } from './Redux';
@@ -42,7 +41,6 @@ class EventForm extends React.Component {
 
   getInitialsValue = () => {
     const { initialsValue } = this.props;
-
     return {
       section: null,
       description: null,
@@ -101,9 +99,8 @@ class EventForm extends React.Component {
   };
 
   handleOnSubmitForm = objValues => {
-    const { initialsValue, isEditing } = this.props;
+    const { isEditing } = this.props;
 
-    // TODO: Implement attachments when is ready
     const {
       section,
       description,
@@ -244,6 +241,8 @@ EventForm.propTypes = {
   isModalVisible: PropTypes.bool.isRequired,
   myClasses: PropTypes.arrayOf(PropTypes.string).isRequired,
   myClassesLookup: PropTypes.shape({}).isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  setEditingModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => {

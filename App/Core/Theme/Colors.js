@@ -65,4 +65,5 @@ export default {
   TRANSPARENT,
   DISABLED,
   ORANGE_LIGHT,
+  RED,
 };

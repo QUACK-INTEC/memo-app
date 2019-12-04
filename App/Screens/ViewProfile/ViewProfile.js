@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
+import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
+import { MessagesKey } from '../../HOCs/WithLogger';
 import ProfileComponent from '../../Components/Profile';
 import ClassInfoCard from '../../Components/ClassInfoCard';
 import ClassesComponent from '../../Components/Classes';
+import Api from '../../Core/Api';
 
 import { Classes } from '../../Models';
 
@@ -32,7 +35,37 @@ class ViewProfile extends React.Component {
   componentDidMount() {
     const {
       navigation: { getParam },
+      logger,
     } = this.props;
+
+    Promise.all([this.getUserProfile()])
+      .then(listValues => {
+        const [objClassResponse] = listValues;
+        const userProfile = Lodash.get(objClassResponse, ['data', 'user'], {});
+
+        this.setState({
+          isLoading: false,
+          studentName: userProfile.firstName + userProfile.lastName,
+          studentMail: userProfile.email,
+          studentSubjects,
+          avatarUri: userProfile.avatarUrl,
+          avatarSrc,
+          avatarInitialsText,
+          badgeUri,
+          badgeSrc,
+          memoPoints,
+          rank,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
     const studentName = getParam('studentName', {});
     const studentMail = getParam('studentMail', {});
     const studentSubjects = getParam('studentSubjects', {});
@@ -58,6 +91,10 @@ class ViewProfile extends React.Component {
       rank,
     });
   }
+
+  getUserProfile = idUser => {
+    return Api.GetUserProfile(idUser);
+  };
 
   renderSubject = ({ item }) => {
     return (

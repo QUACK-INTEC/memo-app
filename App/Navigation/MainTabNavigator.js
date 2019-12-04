@@ -19,6 +19,9 @@ import ViewProfileScreen from '../Screens/ViewProfile';
 import SubjectsByTeacherScreen from '../Screens/SubjectsByTeacher';
 import TeacherResourcesScreen from '../Screens/TeacherResources';
 import PostCommentsScreen from '../Screens/PostComments';
+import PostInfo from '../Screens/PostInfo';
+import PostResourcesScreen from '../Screens/PostResources';
+import SettingsScreen from '../Screens/Settings';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -56,7 +59,6 @@ CalendarStack.navigationOptions = {
 
 CalendarStack.path = '';
 
-// TODO: Open a modal when is add is pressed
 const AddStack = createStackNavigator(
   {
     Add: Playground,
@@ -105,11 +107,13 @@ const ClassRoomStack = createStackNavigator(
     ClassHub: {
       screen: ClassHubScreen,
     },
+    PostInfo,
     Participants: ClassParticipantsScreen,
     ViewProfile: ViewProfileScreen,
     SubjectsByTeacher: SubjectsByTeacherScreen,
     TeacherResources: TeacherResourcesScreen,
     PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
   },
   config
 );
@@ -132,13 +136,22 @@ ClassRoomStack.path = '';
 const ProfileStack = createStackNavigator(
   {
     Profile: ProfileScreen,
+    Settings: SettingsScreen,
   },
   config
 );
 
-ProfileStack.navigationOptions = {
-  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
+ProfileStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+    tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Perfil" />,
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="user" />,
+  };
 };
 
 ProfileStack.path = '';

@@ -26,6 +26,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 function fnRootReducerInterceptor(objState, objAction) {
   if (objAction.type === actionTypesUserManager.LOG_OUT) {
+    AsyncStorage.removeItem('persist:root');
     return persistedReducer({}, objAction);
   }
   return persistedReducer(objState, objAction);

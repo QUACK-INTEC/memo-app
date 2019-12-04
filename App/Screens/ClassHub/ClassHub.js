@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import Lodash from 'lodash';
 import { bindActionCreators } from 'redux';
@@ -10,7 +11,9 @@ import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import Text from '../../Components/Common/Text';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { fonts, colors } from '../../Core/Theme';
-import { actions as EventFormActions } from '../EventForm/Redux';
+import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
+
+import { Posts } from '../../Models';
 
 class ClassHub extends React.Component {
   constructor(props) {
@@ -21,13 +24,16 @@ class ClassHub extends React.Component {
       code: null,
       subjectName: null,
       participants: [],
+      posts: [],
       idSection: null,
+      isLoadingPosts: false,
+      isFetchingPost: false,
     };
   }
 
   componentDidMount() {
     const {
-      navigation: { getParam, pop },
+      navigation: { getParam, pop, addListener },
       logger,
     } = this.props;
     const objSectionInfo = getParam('sectionInfo', {});
@@ -42,14 +48,21 @@ class ClassHub extends React.Component {
       code,
       subjectName,
       idSection,
+      isLoadingPosts: true,
     });
-    Promise.all([this.getSectionStudents(idSection)])
+    this.focusListener = addListener('didFocus', () => {
+      return this.fetchPosts();
+    });
+    Promise.all([this.getSectionStudents(idSection), this.getSectionPosts(idSection)])
       .then(listValues => {
-        const [objSectionStudentsResponse] = listValues;
+        const [objSectionStudentsResponse, objSectionPostResponse] = listValues;
         const listStudents = Lodash.get(objSectionStudentsResponse, ['data', 'data'], []);
+        const listPosts = Lodash.get(objSectionPostResponse, ['data', 'data'], []);
         this.setState({
           students: listStudents.length,
+          posts: listPosts,
           participants: listStudents,
+          isLoadingPosts: false,
         });
         return logger.success({
           key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
@@ -57,7 +70,7 @@ class ClassHub extends React.Component {
         });
       })
       .catch(objError => {
-        pop();
+        this.setState({ isLoadingPosts: false }, () => pop());
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.LOAD_SECTION_INFO_FAILED,
@@ -67,8 +80,52 @@ class ClassHub extends React.Component {
       });
   }
 
+  componentDidUpdate(prevProps) {
+    const { isModalVisible } = this.props;
+    if (prevProps.isModalVisible !== isModalVisible) {
+      return this.fetchPosts();
+    }
+    return false;
+  }
+
   getSectionStudents = idSection => {
     return Api.GetSectionStudents(idSection);
+  };
+
+  getSectionPosts = idSection => {
+    return Api.GetSectionPosts(idSection);
+  };
+
+  fetchPosts = () => {
+    const { idSection } = this.state;
+    const { logger } = this.props;
+    this.setState({ isFetchingPost: true });
+    return this.getSectionPosts(idSection)
+      .then(objResponse => {
+        const listPosts = Lodash.get(objResponse, ['data', 'data'], []);
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState({
+            posts: listPosts,
+            isFetchingPost: false,
+          });
+          return logger.success({
+            key: MessagesKey.LOAD_SECTION_INFO_SUCCESS,
+            data: objResponse,
+          });
+        }
+
+        return null;
+      })
+      .catch(objError => {
+        this.setState({ isFetchingPost: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.LOAD_SECTION_INFO_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
   };
 
   handleOnPressBackArrow = () => {
@@ -108,6 +165,36 @@ class ClassHub extends React.Component {
     setModalVisible(true);
   };
 
+  handleOnPressPost = objPost => {
+    const { subjectName } = this.state;
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const {
+      id,
+      title,
+      description,
+      author,
+      postedBy,
+      startDate,
+      endDate,
+      authorInitials,
+    } = objPost;
+    const { id: authorId, points: authorPoints } = author;
+    navigate('PostInfo', {
+      id,
+      title,
+      description,
+      authorPoints,
+      postedBy,
+      authorId,
+      startDate,
+      endDate,
+      subjectName,
+      authorInitials,
+    });
+  };
+
   renderScheduleClass = () => {
     const {
       navigation: { getParam },
@@ -127,8 +214,30 @@ class ClassHub extends React.Component {
     });
   };
 
+  renderPostsEmpty = () => {
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <Text.ItalicLight
+          text="No hay ningun post en creado para esta materia"
+          style={{ color: colors.GRAY }}
+        />
+      </View>
+    );
+  };
+
   renderClassHubComponent = () => {
-    const { professorName, students, classRoom, code, subjectName } = this.state;
+    const {
+      professorName,
+      students,
+      classRoom,
+      code,
+      subjectName,
+      posts,
+      isFetchingPost,
+      isLoadingPosts,
+    } = this.state;
+    const postData = Posts.getPostData(posts).reverse();
+
     return (
       <ClassHubComponent
         subjectName={subjectName}
@@ -142,6 +251,11 @@ class ClassHub extends React.Component {
         onPressGoToResources={this.handleOnPressGoToResources}
         onBackArrowPress={this.handleOnPressBackArrow}
         onPressAddPublication={this.handleAddPublication}
+        posts={postData}
+        isFetchingPost={isFetchingPost}
+        isLoadingPosts={isLoadingPosts}
+        onRefreshPosts={this.fetchPosts}
+        onPressPost={this.handleOnPressPost}
       />
     );
   };
@@ -157,8 +271,11 @@ ClassHub.propTypes = {
 };
 const mapStateToProps = (state, props) => {
   const { getMyClassesLookup } = myClassesSelectors;
+  const { getIsModalVisible } = EventFormSelectors;
+
   return {
     myClassesLookup: getMyClassesLookup(state, props),
+    isModalVisible: getIsModalVisible(state, props),
   };
 };
 

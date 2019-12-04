@@ -62,7 +62,10 @@ class Register extends Component {
         });
 
         this.setLoading(false);
-        return this.handleSetProfileImage(profileImage, strToken);
+        if (profileImage) {
+          return this.handleSetProfileImage(profileImage, strToken);
+        }
+        return this.finishUpRegistry(objResponse, strToken);
       })
       .catch(objError => {
         this.setLoading(false);
@@ -75,24 +78,29 @@ class Register extends Component {
       });
   };
 
-  handleSetProfileImage = (strImageUri, strToken) => {
+  finishUpRegistry = (objUserInfo, strToken) => {
     const {
       navigation: { navigate },
       logger,
       setUserInfo,
     } = this.props;
+    setUserInfo(objUserInfo);
+    this.setLoading(false);
+    logger.success({
+      key: MessagesKey.SIGN_IN_SUCCESS,
+      data: objUserInfo,
+    });
+    return navigate('Sync', { userToken: strToken });
+  };
+
+  handleSetProfileImage = (strImageUri, strToken) => {
+    const { logger } = this.props;
     return Api.UploadProfilePicture(strImageUri)
       .then(objResponse => {
-        const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
+        const objUserInfo = Lodash.get(objResponse, ['data', 'data'], null);
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], null);
         if (isSuccess) {
-          setUserInfo(objUserInfo);
-          this.setLoading(false);
-          logger.success({
-            key: MessagesKey.SIGN_IN_SUCCESS,
-            data: objResponse,
-          });
-          return navigate('Sync', { userToken: strToken });
+          this.finishUpRegistry(objUserInfo, strToken);
         }
         return null;
       })

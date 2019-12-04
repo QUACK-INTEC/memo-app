@@ -16,8 +16,15 @@ export const getInitialsValue = createSelector(
     return Lodash.get(objState, ['values'], {});
   }
 );
+export const getIsEditingForm = createSelector(
+  getEventForm,
+  objState => {
+    return Lodash.get(objState, ['isEditing'], false);
+  }
+);
 
 export default {
   getIsModalVisible,
   getInitialsValue,
+  getIsEditingForm,
 };

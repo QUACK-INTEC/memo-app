@@ -1,7 +1,11 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Alert, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import Lodash from 'lodash';
+import Moment from 'moment';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import PostInfoForm from '../../Components/PostInfo';
@@ -11,95 +15,264 @@ import PopUp from '../../Components/Common/PopUp';
 import SubTask from '../../Components/SubTask';
 import { SubTasks } from '../../Models';
 import { spacers } from '../../Core/Theme';
+import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
+import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
 
 class PostInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
       confirmationPopUpVisible: false,
       deleteConfirmationPopUpVisible: false,
       postId: null,
       userSubTasks: [],
+      postedBy: '',
+      title: '',
+      description: '',
+      authorId: null,
+      subjectName: '',
+      formattedDate: null,
+      formattedStartDate: null,
+      formattedEndDate: null,
+      authorInitials: '',
+      comments: [],
+      attachments: [],
+      score: 0,
+      currentUserReaction: 0,
     };
   }
 
   componentDidMount() {
-    // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
-      // navigation: { getParam, pop },
+      navigation: { getParam, addListener },
       logger,
     } = this.props;
-    // const authorTitle = getParam('authorName', {});
-    // const postTitle = getParam('postTitle', {});
-    // const postId = getParam('postId', {});
-    // const authorId = getParam('authorId', {});
+    const id = getParam('id', {});
+    const subjectName = getParam('subjectName', {});
 
-    Promise.all([this.getSubTasks()])
-      .then(listValues => {
-        const [objSubTasks] = listValues;
-        const listSubTasks = Lodash.get(objSubTasks, 'data', []);
-        this.setState({ userSubTasks: listSubTasks, isLoading: false });
-        return logger.success({
-          key: MessagesKey.LOAD_SUBTASKS_SUCCESS,
-          data: listValues,
+    this.setState({
+      subjectName,
+      postId: id,
+    });
+
+    this.focusListener = addListener('didFocus', () => {
+      return this.fetchPost();
+    });
+
+    this.getPostInfo(id)
+      .then(objPostInfoResponse => {
+        const isSuccess = Lodash.get(objPostInfoResponse, ['data', 'success'], false);
+
+        if (isSuccess) {
+          const objPostInfo = Lodash.get(objPostInfoResponse, ['data', 'data'], {});
+          const listSubTasks = Lodash.get(objPostInfo, ['subtasks'], []);
+          const postComments = Lodash.get(objPostInfo, ['comments'], []);
+          const postDescription = Lodash.get(objPostInfo, ['description'], '');
+          const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
+          const postAuthor = Lodash.get(objPostInfo, ['author'], '');
+          const title = Lodash.get(objPostInfo, ['title'], '');
+          const section = Lodash.get(objPostInfo, ['section'], null);
+          const score = Lodash.get(objPostInfo, ['score'], 0);
+          const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
+          const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
+          const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
+          const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+          const startDate = Lodash.get(objPostInfo, ['startDate'], null);
+          const endDate = Lodash.get(objPostInfo, ['endDate'], null);
+          const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
+
+          const authorName = `${authorFirstName} ${authorLastName}`;
+          const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
+
+          const formattedDate = startDate
+            ? Moment(startDate)
+                .locale('es')
+                .format('dddd DD, MMMM')
+            : null;
+          const formattedStartDate = startDate
+            ? Moment(startDate)
+                .utc()
+                .format('HH:mm')
+            : null;
+          const formattedEndDate = endDate
+            ? Moment(endDate)
+                .utc()
+                .format('HH:mm')
+            : null;
+
+          this.setState({
+            userSubTasks: listSubTasks,
+            isLoading: false,
+            description: postDescription,
+            comments: postComments,
+            attachments: postAttachments,
+            postAuthorId,
+            formattedDate,
+            formattedStartDate,
+            formattedEndDate,
+            title,
+            postedBy: authorName,
+            authorInitials,
+            score,
+            currentUserReaction,
+            postSectionId: section,
+            isPublic,
+          });
+
+          return logger.success({
+            key: MessagesKey.LOAD_POST_INFO_SUCCESS,
+            data: objPostInfoResponse,
+          });
+        }
+
+        return logger.error({
+          key: MessagesKey.LOAD_POST_INFO_FAILEDv,
+          data: objPostInfoResponse,
         });
       })
       .catch(objError => {
         this.setState({ isLoading: false });
         return setTimeout(() => {
           logger.error({
-            key: MessagesKey.LOAD_SUBTASKS_FAILED,
+            key: MessagesKey.LOAD_POST_INFO_FAILED,
             data: objError,
           });
         }, 800);
       });
   }
 
-  getSubTasks = () => {
-    return {
-      success: true,
-      data: [
-        {
-          id: '5dcb3a143f84959c924adfa8',
-          label: 'Hacer esta cosa',
-          done: false,
-        },
-        {
-          id: '5d924adfa89',
-          label: 'Hacer aquella cosa',
-          done: true,
-        },
-      ],
-    };
+  componentDidUpdate(prevProps) {
+    const { isModalVisible } = this.props;
+    if (prevProps.isModalVisible !== isModalVisible) {
+      return this.fetchPost();
+    }
+    return false;
+  }
+
+  fetchPost = () => {
+    const { postId } = this.state;
+    const { logger } = this.props;
+    return this.getPostInfo(postId)
+      .then(objPostInfoResponse => {
+        const isSuccess = Lodash.get(objPostInfoResponse, ['data', 'success'], false);
+
+        if (isSuccess) {
+          const objPostInfo = Lodash.get(objPostInfoResponse, ['data', 'data'], {});
+          const listSubTasks = Lodash.get(objPostInfo, ['subtasks'], []);
+          const postComments = Lodash.get(objPostInfo, ['comments'], []);
+          const postDescription = Lodash.get(objPostInfo, ['description'], '');
+          const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
+          const postAuthor = Lodash.get(objPostInfo, ['author'], '');
+          const title = Lodash.get(objPostInfo, ['title'], '');
+          const score = Lodash.get(objPostInfo, ['score'], 0);
+          const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
+          const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
+          const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
+          const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+          const startDate = Lodash.get(objPostInfo, ['startDate'], null);
+          const endDate = Lodash.get(objPostInfo, ['endDate'], null);
+          const section = Lodash.get(objPostInfo, ['section'], null);
+          const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
+
+          const authorName = `${authorFirstName} ${authorLastName}`;
+          const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
+
+          const formattedDate = startDate
+            ? Moment(startDate)
+                .locale('es')
+                .format('dddd DD, MMMM')
+            : null;
+          const formattedStartDate = startDate
+            ? Moment(startDate)
+                .utc()
+                .format('HH:mm')
+            : null;
+          const formattedEndDate = endDate
+            ? Moment(endDate)
+                .utc()
+                .format('HH:mm')
+            : null;
+
+          this.setState({
+            userSubTasks: listSubTasks,
+            isLoading: false,
+            description: postDescription,
+            comments: postComments,
+            attachments: postAttachments,
+            postAuthorId,
+            formattedDate,
+            formattedStartDate,
+            formattedEndDate,
+            title,
+            postedBy: authorName,
+            authorInitials,
+            score,
+            currentUserReaction,
+            postSectionId: section,
+            isPublic,
+            startDate,
+            endDate,
+          });
+
+          return logger.success({
+            key: MessagesKey.LOAD_POST_INFO_SUCCESS,
+            data: objPostInfoResponse,
+          });
+        }
+
+        return logger.error({
+          key: MessagesKey.LOAD_POST_INFO_FAILED,
+          data: objPostInfoResponse,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.LOAD_POST_INFO_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
+  };
+
+  getPostInfo = idPost => {
+    return Api.GetPostInfo(idPost);
   };
 
   handleEdit = () => {
-    // TODO : EDIT POST
-    Alert.alert('Edit Post');
+    const { title, description, postSectionId, isPublic, postId, endDate, startDate } = this.state;
+    const { setEditingModal, setInitialFormValues, setModalVisible } = this.props;
+    const objFormValues = {
+      title,
+      description,
+      section: postSectionId,
+      type: isPublic ? 'public' : 'private',
+      postId,
+      endDate: endDate ? Moment(endDate).utc() : null,
+      startDate: startDate ? Moment(startDate).utc() : null,
+      dateTime: startDate ? Moment(startDate).toDate() : new Date(),
+    };
+    setInitialFormValues(objFormValues);
+    setEditingModal(true);
+    setModalVisible(true);
   };
 
   deletePost = () => {
     const { logger } = this.props;
     const { postId } = this.state;
-    this.setState({ isLoading: true, confirmationPopUpVisible: false });
+    this.setState({ confirmationPopUpVisible: false });
     return Api.DeletePost(postId)
       .then(objResponse => {
-        this.setState({ isLoading: false });
-        const isSuccess = Lodash.get(objResponse, 'success', false);
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
         if (isSuccess) {
-          this.setState({
-            deleteConfirmationPopUpVisible: true,
-          });
-          return logger.success({
+          logger.success({
             key: MessagesKey.DELETE_POST_SUCCESS,
             data: objResponse,
           });
         }
-        return logger.error({
-          key: MessagesKey.DELETE_POST_FAILED,
-          data: objResponse,
-        });
+        return this.goBack();
       })
       .catch(objError => {
         this.setState({ isLoading: false });
@@ -122,31 +295,171 @@ class PostInfo extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
-    return navigate('PostComments');
+    const { postId, comments, title, postedBy, authorId } = this.state;
+    return navigate('PostComments', { postId, comments, author: postedBy, title, authorId });
   };
 
   goToResources = () => {
     const {
       navigation: { navigate },
     } = this.props;
-    return navigate('PostResources');
+    const { postId, attachments, title, postedBy } = this.state;
+    return navigate('PostResources', { postId, attachments, author: postedBy, title });
   };
 
   handleUpVote = value => {
-    // TODO
-    Alert.alert(`upvote: ${value}`);
+    const { logger } = this.props;
+    const { postId } = this.state;
+    this.setState({ isLoading: true });
+    if (value) {
+      return Api.UpvotePost(postId)
+        .then(objResponse => {
+          this.setState({ isLoading: false });
+          const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+          if (isSuccess) {
+            this.setState(prevState => ({
+              isLoading: false,
+              score:
+                prevState.currentUserReaction !== 0 ? prevState.score + 2 : prevState.score + 1,
+              currentUserReaction: 1,
+            }));
+            logger.success({
+              key: MessagesKey.UPVOTE_POST_SUCCESS,
+              data: objResponse,
+            });
+            return true;
+          }
+          logger.error({
+            key: MessagesKey.UPVOTE_POST_FAILED,
+            data: objResponse,
+          });
+          return false;
+        })
+        .catch(objError => {
+          this.setState({ isLoading: false });
+          setTimeout(() => {
+            logger.error({
+              key: MessagesKey.UPVOTE_POST_FAILED,
+              data: objError,
+            });
+          }, 800);
+          return false;
+        });
+    }
+    return Api.ResetvotePost(postId)
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState(prevState => ({
+            isLoading: false,
+            score: prevState.score - 1,
+            currentUserReaction: 0,
+          }));
+          logger.success({
+            key: MessagesKey.RESETVOTE_POST_SUCCESS,
+            data: objResponse,
+          });
+          return true;
+        }
+        logger.error({
+          key: MessagesKey.RESETVOTE_POST_FAILED,
+          data: objResponse,
+        });
+        return false;
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        setTimeout(() => {
+          logger.error({
+            key: MessagesKey.RESETVOTE_POST_FAILED,
+            data: objError,
+          });
+        }, 800);
+        return false;
+      });
   };
 
   handleDownVote = value => {
-    // TODO
-    Alert.alert(`downvote: ${value}`);
+    const { logger } = this.props;
+    const { postId } = this.state;
+    this.setState({ isLoading: true });
+
+    if (value) {
+      return Api.DownvotePost(postId)
+        .then(objResponse => {
+          this.setState({ isLoading: false });
+          const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+          if (isSuccess) {
+            this.setState(prevState => ({
+              isLoading: false,
+              score:
+                prevState.currentUserReaction !== 0 ? prevState.score - 2 : prevState.score - 1,
+              currentUserReaction: -1,
+            }));
+            logger.success({
+              key: MessagesKey.DOWNVOTE_POST_SUCCESS,
+              data: objResponse,
+            });
+            return true;
+          }
+          logger.error({
+            key: MessagesKey.DOWNVOTE_POST_FAILED,
+            data: objResponse,
+          });
+          return false;
+        })
+        .catch(objError => {
+          this.setState({ isLoading: false });
+          setTimeout(() => {
+            logger.error({
+              key: MessagesKey.DOWNVOTE_POST_FAILED,
+              data: objError,
+            });
+          }, 800);
+          return false;
+        });
+    }
+    return Api.ResetvotePost(postId)
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState(prevState => ({
+            isLoading: false,
+            score: prevState.score + 1,
+            currentUserReaction: 0,
+          }));
+          logger.success({
+            key: MessagesKey.RESETVOTE_POST_SUCCESS,
+            data: objResponse,
+          });
+          return true;
+        }
+        logger.error({
+          key: MessagesKey.RESETVOTE_POST_FAILED,
+          data: objResponse,
+        });
+        return false;
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        setTimeout(() => {
+          logger.error({
+            key: MessagesKey.RESETVOTE_POST_FAILED,
+            data: objError,
+          });
+        }, 800);
+        return false;
+      });
   };
 
   handleAuthorPress = () => {
     const {
       navigation: { navigate },
     } = this.props;
-    return navigate('UserProfile');
+    const { authorId } = this.state;
+    return navigate('UserProfile', { authorId });
   };
 
   handleBackArrow = () => {
@@ -162,38 +475,120 @@ class PostInfo extends React.Component {
     const {
       navigation: { pop },
     } = this.props;
-    this.setState({
-      deleteConfirmationPopUpVisible: false,
-    });
     pop();
   };
 
-  handleSubTaskPress = (isPressed, subTaskId) => {
-    // TODO: send request to api to mark as done/undone
-    Alert.alert(`Press SubTask id: ${subTaskId}, checked: ${isPressed}`);
+  handleSubTaskPress = (isDone, subTaskId) => {
+    const { logger } = this.props;
+    const { postId } = this.state;
+    this.setLoading(true);
+    Api.UpdateSubTask(postId, subTaskId, { isDone })
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState({
+            isLoading: false,
+          });
+          logger.success({
+            key: MessagesKey.UPDATE_SUBTASK_SUCCESS,
+            data: objResponse,
+          });
+        }
+        return logger.error({
+          key: MessagesKey.UPDATE_SUBTASK_FAILED,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.UPDATE_SUBTASK_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
   };
 
-  deleteSubTask = subTaskIdd => {
-    // TODO: send request to api to delete SubTask
-    Alert.alert(`delete SubTask id: ${subTaskIdd}`);
+  RemoveSubTaskById = id => {
+    const { userSubTasks } = this.state;
+    const filteredData = userSubTasks.filter(item => item.id !== id);
+    this.setState({ userSubTasks: filteredData });
   };
 
-  addSubTask = subTaskLabel => {
-    // TODO: send request to api to add SubTask
-    const subTaskObj = {
-      id: '5d924adfa8934',
-      label: subTaskLabel,
-      done: false,
-    };
-    this.setState(prevState => ({ userSubTasks: [...prevState.userSubTasks, subTaskObj] }));
+  deleteSubTask = subTaskId => {
+    const { logger } = this.props;
+    const { postId } = this.state;
+    this.setLoading(true);
+    Api.DeleteSubTask(postId, subTaskId)
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState({
+            isLoading: false,
+          });
+          this.RemoveSubTaskById(subTaskId);
+          logger.success({
+            key: MessagesKey.DELETE_SUBTASK_SUCCESS,
+            data: objResponse,
+          });
+        }
+        return logger.error({
+          key: MessagesKey.DELETE_SUBTASK_FAILED,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.DELETE_SUBTASK_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
+  };
+
+  addSubTask = name => {
+    const { logger } = this.props;
+    const { postId } = this.state;
+    this.setLoading(true);
+    Api.AddSubTask(postId, { name })
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          this.setState({
+            isLoading: false,
+          });
+          const objSubTask = Lodash.get(objResponse, ['data', 'task'], false);
+          this.setState(prevState => ({ userSubTasks: [...prevState.userSubTasks, objSubTask] }));
+          logger.success({
+            key: MessagesKey.CREATE_SUBTASK_SUCCESS,
+            data: objResponse,
+          });
+        }
+        return logger.error({
+          key: MessagesKey.CREATE_SUBTASK_FAILED,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.CREATE_SUBTASK_FAILED,
+            data: objError,
+          });
+        }, 800);
+      });
   };
 
   renderSubTasks = () => {
     const { userSubTasks } = this.state;
     const subtasksFormatted = SubTasks.getSubTasksData(userSubTasks);
-    if (Lodash.isEmpty(subtasksFormatted)) {
-      return null;
-    }
     return (
       <View style={{ ...spacers.ML_3, ...spacers.MR_3 }}>
         <SubTask
@@ -207,6 +602,20 @@ class PostInfo extends React.Component {
   };
 
   renderPostInfo = () => {
+    const { userId } = this.props;
+    const {
+      title,
+      description,
+      postedBy,
+      subjectName,
+      formattedDate,
+      formattedStartDate,
+      formattedEndDate,
+      authorInitials,
+      postAuthorId,
+      currentUserReaction,
+      score,
+    } = this.state;
     return (
       <PostInfoForm
         onBackArrow={this.handleBackArrow}
@@ -218,17 +627,17 @@ class PostInfo extends React.Component {
         goToComments={this.goToComments}
         goToResources={this.goToResources}
         renderSubTasks={this.renderSubTasks}
-        isAuthor
+        isAuthor={userId === postAuthorId}
         badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
-        initialsText="EP"
-        score={12}
-        className="Proyecto Final I"
-        postTitle="Entrega de Informe Final"
-        postDescription="Entregar project charter y un powerpoint para presentarlo en clase"
-        postDate="19 Lunes, Septiembre"
-        postTime="22:00"
-        author="Emma Paige"
-        personalScore={1}
+        initialsText={authorInitials}
+        score={score}
+        className={subjectName}
+        postTitle={title}
+        postDescription={description}
+        postDate={formattedDate}
+        postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
+        author={postedBy}
+        personalScore={currentUserReaction}
       />
     );
   };
@@ -264,4 +673,41 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WithLogger(PostInfo);
+PostInfo.defaultProps = {
+  userId: null,
+};
+
+PostInfo.propTypes = {
+  userId: PropTypes.string,
+  setEditingModal: PropTypes.func.isRequired,
+  setInitialFormValues: PropTypes.func.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state, props) => {
+  const { getUserId } = userManagerSelectors;
+  const { getIsModalVisible } = EventFormSelectors;
+
+  return {
+    userId: getUserId(state, props),
+    isModalVisible: getIsModalVisible(state, props),
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setInitialFormValues: EventFormActions.setInitialFormValues,
+      setEditingModal: EventFormActions.setEditingModal,
+      setModalVisible: EventFormActions.setModalVisible,
+    },
+    dispatch
+  );
+};
+
+export default WithLogger(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PostInfo)
+);

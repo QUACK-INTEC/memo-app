@@ -14,22 +14,23 @@ import { fonts, spacers, constants, colors, toBaseDesignPx } from '../../Core/Th
 class Profile extends React.Component {
   renderEmail = () => {
     const { studentMail } = this.props;
-    return <Text.SemiBold text={studentMail} />;
+    return <Text.SemiBold text={studentMail} style={styles.studentMail} />;
   };
 
   renderSubjects = () => {
     const { studentSubjects } = this.props;
-    return <Text.SemiBold text={studentSubjects} />;
+    return <Text.SemiBold text={studentSubjects} style={styles.studentSubjects} />;
   };
 
   renderEditIcon = () => {
+    const { onEditUser } = this.props;
     return (
       <View style={styles.editIconContainer}>
         <Icon
           name="edit"
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.TINY}
-          onPress={this.showEditOptions}
+          onPress={onEditUser}
           color={colors.GRAY}
         />
       </View>
@@ -101,19 +102,25 @@ Profile.defaultProps = {
   avatarInitialsText: null,
   badgeSrc: null,
   badgeUri: null,
+  studentName: null,
+  studentMail: null,
+  memoPoints: null,
+  rank: null,
+  onEditUser: null,
 };
 
 Profile.propTypes = {
-  studentName: PropTypes.string.isRequired,
-  studentMail: PropTypes.string.isRequired,
+  studentName: PropTypes.string,
+  studentMail: PropTypes.string,
   studentSubjects: PropTypes.string,
   avatarSrc: PropTypes.string,
   avatarUri: PropTypes.string,
   avatarInitialsText: PropTypes.string,
   badgeSrc: PropTypes.string,
   badgeUri: PropTypes.string,
-  memoPoints: PropTypes.string.isRequired,
-  rank: PropTypes.string.isRequired,
+  memoPoints: PropTypes.number,
+  rank: PropTypes.string,
+  onEditUser: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -123,6 +130,7 @@ const styles = StyleSheet.create({
   studentName: {
     ...fonts.SIZE_XL,
     textAlign: 'center',
+    color: colors.GRAY,
   },
   memoPointsRow: {
     alignSelf: 'center',
@@ -151,6 +159,12 @@ const styles = StyleSheet.create({
   studentSection: {
     ...spacers.MT_3,
     alignSelf: 'center',
+  },
+  studentMail: {
+    color: colors.GRAY,
+  },
+  studentSubjects: {
+    color: colors.GRAY,
   },
   badgeStyle: {
     width: toBaseDesignPx(12),

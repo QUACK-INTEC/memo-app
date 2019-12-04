@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
-import Lodash from 'lodash';
 
 import EventFormComponent from '../../Components/EventForm';
 import { selectors as EventFormSelectors, actions as EventFormActions } from './Redux';
@@ -14,7 +13,7 @@ import PopUp from '../../Components/Common/PopUp';
 
 const validation = objValues => {
   const errors = {};
-  const { section, description, title } = objValues;
+  const { section, description, title, endDate, startDate } = objValues;
 
   if (!title) {
     errors.title = 'Campo obligatorio';
@@ -26,6 +25,14 @@ const validation = objValues => {
 
   if (!section) {
     errors.section = 'Campo obligatorio';
+  }
+
+  if (endDate && !startDate) {
+    errors.startDate = 'Necesita una fecha';
+  }
+
+  if (startDate && !endDate) {
+    errors.endDate = 'Necesita una fecha';
   }
 
   return errors;
@@ -42,7 +49,6 @@ class EventForm extends React.Component {
 
   getInitialsValue = () => {
     const { initialsValue } = this.props;
-
     return {
       section: null,
       description: null,
@@ -73,7 +79,7 @@ class EventForm extends React.Component {
   };
 
   handleOnCloseModal = () => {
-    const { setModalVisible, setInitialFormValues } = this.props;
+    const { setModalVisible, setInitialFormValues, isEditing, setEditingModal } = this.props;
     setInitialFormValues({
       section: null,
       description: null,
@@ -83,13 +89,26 @@ class EventForm extends React.Component {
       title: null,
       type: 'public',
     });
+    if (isEditing) {
+      setEditingModal(false);
+    }
     setModalVisible(false);
   };
 
-  handleOnSubmitForm = objValues => {
-    const { initialsValue } = this.props;
+  changeTimezone = date => {
+    const invdate = new Date(
+      date.toLocaleString('en-US', {
+        timeZone: 'America/Santo_Domingo',
+      })
+    );
+    const diff = date.getTime() - invdate.getTime();
 
-    // TODO: Implement attachments when is ready
+    return new Date(date.getTime() + diff);
+  };
+
+  handleOnSubmitForm = objValues => {
+    const { isEditing } = this.props;
+
     const {
       section,
       description,
@@ -98,41 +117,44 @@ class EventForm extends React.Component {
       startDate: startTime,
       title,
       type,
+      postId,
     } = objValues;
     const momentDateSelected = Moment(dateTime);
     const momentStartTime = Moment(startTime);
     const momentEndTime = Moment(endTime);
 
-    const startDate = momentDateSelected
-      .set({
-        hour: momentStartTime.hours(),
-        minutes: momentStartTime.minutes(),
-        seconds: 0,
-        miliseconds: 0,
-      })
-      .unix();
-    const endDate = momentDateSelected
-      .set({
-        hour: momentEndTime.hours(),
-        minutes: momentEndTime.minutes(),
-        seconds: 0,
-        miliseconds: 0,
-      })
-      .unix();
+    const startDate = new Date(
+      Date.UTC(
+        momentDateSelected.year(),
+        momentDateSelected.month(),
+        momentDateSelected.date(),
+        momentStartTime.hours(),
+        momentStartTime.minutes(),
+        0
+      )
+    ).getTime();
+
+    const endDate = new Date(
+      Date.UTC(
+        momentDateSelected.year(),
+        momentDateSelected.month(),
+        momentDateSelected.date(),
+        momentEndTime.hours(),
+        momentEndTime.minutes(),
+        0
+      )
+    ).getTime();
 
     const objPayload = {
       title,
       description,
-      startDate,
-      endDate,
+      startDate: startTime ? startDate : null,
+      endDate: endTime ? endDate : null,
       section,
-      type: 'Event',
+      type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
-
-    const oldTitle = Lodash.get(initialsValue, ['title'], null);
-
-    return oldTitle ? this.handleEditPost(objPayload) : this.handleCreatePost(objPayload);
+    return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
   };
 
   handleCreatePost = objPayload => {
@@ -161,19 +183,29 @@ class EventForm extends React.Component {
       });
   };
 
-  handleEditPost = () => {
-    // TODO: Add logger, get id from post to edit
-    // return Api.EditPost(objPayload).then(objResponse => {
-    //   console.log({objResponse})
-    //   this.setState({ confirmationPopupVisible: true})
-    // }).catch( objError => {
-    //   console.log({objError})
-    // })
+  handleEditPost = (idPost, objPayload) => {
+    const { logger, MessagesKey, setModalVisible } = this.props;
+    return Api.EditPost(idPost, objPayload)
+      .then(objResponse => {
+        setModalVisible(false);
+        return logger.success({
+          key: MessagesKey.EDIT_POST_SUCCESS,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.EDIT_POST_SUCCESS,
+            data: objError,
+          });
+        }, 800);
+      });
   };
 
   renderEventForm = () => {
     const { confirmationPopupVisible, confirmationPopupMessage } = this.state;
-    const { isModalVisible } = this.props;
+    const { isModalVisible, isEditing } = this.props;
 
     if (confirmationPopupVisible) {
       return (
@@ -198,7 +230,7 @@ class EventForm extends React.Component {
           onSubmit={this.handleOnSubmitForm}
           initialValues={this.getInitialsValue()}
           validation={validation}
-          isEditing={false}
+          isEditing={isEditing}
           optionsClasses={this.getMyClassesOptions()}
         />
       </>
@@ -216,10 +248,12 @@ EventForm.propTypes = {
   isModalVisible: PropTypes.bool.isRequired,
   myClasses: PropTypes.arrayOf(PropTypes.string).isRequired,
   myClassesLookup: PropTypes.shape({}).isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  setEditingModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => {
-  const { getIsModalVisible, getInitialsValue } = EventFormSelectors;
+  const { getIsModalVisible, getInitialsValue, getIsEditingForm } = EventFormSelectors;
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
 
   return {
@@ -227,6 +261,7 @@ const mapStateToProps = (state, props) => {
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
     initialsValue: getInitialsValue(state, props),
+    isEditing: getIsEditingForm(state, props),
   };
 };
 
@@ -235,6 +270,7 @@ const mapDispatchToProps = dispatch => {
     {
       setModalVisible: EventFormActions.setModalVisible,
       setInitialFormValues: EventFormActions.setInitialFormValues,
+      setEditingModal: EventFormActions.setEditingModal,
     },
     dispatch
   );

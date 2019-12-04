@@ -37,7 +37,7 @@ class PostComment extends React.Component {
 
   renderUpVotes = () => {
     const { score } = this.props;
-    if (score && score > 0) {
+    if (score != null && score > -1) {
       return <Text.Medium text={`${score} Upvotes`} style={styles.upVotesStyle} />;
     }
     return null;

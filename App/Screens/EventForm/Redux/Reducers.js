@@ -4,6 +4,7 @@ import * as types from './ActionTypes';
 
 const initialState = {
   isModalVisible: false,
+  isEditing: false,
   values: {
     clase: null,
     title: null,
@@ -36,11 +37,19 @@ const onSetModalVisible = (state, action) => {
     isModalVisible,
   };
 };
-
+// SET_MODAL_EDITING
+const onSetModalEditing = (state, action) => {
+  const isFormEditing = Lodash.get(action, ['payload'], '');
+  return {
+    ...state,
+    isEditing: isFormEditing,
+  };
+};
 const contentReducer = typeToReducer(
   {
     [types.SET_INITIAL_FORM_VALUES]: onSetInitialValues,
     [types.SET_MODAL_VISIBLE]: onSetModalVisible,
+    [types.SET_MODAL_EDITING]: onSetModalEditing,
   },
   initialState
 );

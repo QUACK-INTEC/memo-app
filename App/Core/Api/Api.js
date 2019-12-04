@@ -91,6 +91,46 @@ const UploadProfilePicture = photo => {
   });
 };
 
+const GetSectionPosts = idSection => {
+  return MemoApi.get(`/sections/${idSection}/posts`);
+};
+
+const GetPostInfo = idPost => {
+  return MemoApi.get(`posts/${idPost}`);
+};
+
+const UpvotePost = idPost => {
+  return MemoApi.post(`posts/${idPost}/upvote`);
+};
+
+const DownvotePost = idPost => {
+  return MemoApi.post(`posts/${idPost}/downvote`);
+};
+
+const ResetvotePost = idPost => {
+  return MemoApi.post(`posts/${idPost}/resetvote`);
+};
+
+const AddSubTask = (idPost, objSubTask) => {
+  return MemoApi.post(`posts/${idPost}/subtask`, objSubTask);
+};
+
+const UpdateSubTask = (idPost, idSubTask, objSubtaskUpdate) => {
+  return MemoApi.put(`posts/${idPost}/subtask/${idSubTask}`, objSubtaskUpdate);
+};
+
+const DeleteSubTask = (idPost, idSubTask) => {
+  return MemoApi.delete(`posts/${idPost}/subtask/${idSubTask}`);
+};
+
+const AddComment = (idPost, objComment) => {
+  return MemoApi.post(`posts/${idPost}/comment`, objComment);
+};
+
+const DeleteComment = (idPost, idComment) => {
+  return MemoApi.delete(`posts/${idPost}/comment/${idComment}`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -105,6 +145,16 @@ const Api = {
   DeletePost,
   CreatePost,
   EditPost,
+  GetSectionPosts,
+  GetPostInfo,
+  UpvotePost,
+  DownvotePost,
+  ResetvotePost,
+  AddSubTask,
+  UpdateSubTask,
+  DeleteSubTask,
+  AddComment,
+  DeleteComment,
   GetUserProfile,
 };
 

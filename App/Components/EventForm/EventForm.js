@@ -53,12 +53,12 @@ class EventForm extends React.Component {
 
   renderForm = objForm => {
     const { canAddFile, hasDate, contentInsetBottom } = this.state;
-    const { optionsClasses } = this.props;
+    const { optionsClasses, isEditing } = this.props;
     const { values } = objForm;
-    const { startDate, endDate, title } = values;
-    const isEditing = !!title;
+    const { startDate, endDate } = values;
     const titleText = isEditing ? 'Editar' : 'Crear';
-
+    const hasADate = hasDate || (endDate && startDate);
+    const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
     return (
       <>
         <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
@@ -67,7 +67,7 @@ class EventForm extends React.Component {
             bounces={false}
             alwaysBounceVertical={false}
             automaticallyAdjustContentInsets={false}
-            contentInset={{ top: 0, bottom: contentInsetBottom }}
+            contentInset={{ top: 0, bottom: contentInset }}
           >
             <FormikInput
               type="dropdown"
@@ -75,6 +75,7 @@ class EventForm extends React.Component {
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
               name="section"
+              disabled={isEditing}
               labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
@@ -113,7 +114,7 @@ class EventForm extends React.Component {
                 labelStyle={styles.labelToggleInput}
               />
             </View>
-            {hasDate ? (
+            {hasADate ? (
               <View style={styles.containerTimePicker}>
                 <FormikInput
                   type="datepicker"
@@ -152,15 +153,11 @@ class EventForm extends React.Component {
 
             {canAddFile ? (
               <FormikInput
-                type="dropdown"
-                options={[
-                  { value: 'public', label: 'Publico' },
-                  { value: 'privado', label: 'Privado' },
-                ]}
+                type="fileinput"
                 labelStyle={styles.labelStyle}
                 label="Tipo de evento"
-                name="type"
-                containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
+                name="attachments"
+                containerStyle={{ ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
             ) : null}
@@ -238,6 +235,7 @@ EventForm.propTypes = {
   validation: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool.isRequired,
 };
 
 export default EventForm;

@@ -22,3 +22,18 @@ export const createFormDataPhoto = photo => {
 
   return data;
 };
+
+export const createFormDataFile = file => {
+  const data = new FormData();
+
+  file.forEach(element => {
+    const newElement = {};
+    newElement.name = `${element.name}.${element.type}`;
+    newElement.uri = Platform.OS === 'android' ? element.uri : element.uri.replace('file://', '');
+    data.append('files', newElement);
+  });
+
+  console.log('Data', data);
+
+  return data;
+};

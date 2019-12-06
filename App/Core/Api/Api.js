@@ -1,6 +1,6 @@
 // TODO: Api
 import axios from 'axios';
-import { createFormDataPhoto } from '../../Utils';
+import { createFormDataPhoto, createFormDataFile } from '../../Utils';
 // import Lodash from 'lodash';
 
 // const HTTP_STATUS = {
@@ -87,6 +87,15 @@ const UploadProfilePicture = photo => {
   });
 };
 
+const UploadFile = file => {
+  const formData = createFormDataFile(file);
+  return MemoApi.post('/upload/attachments', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 const GetSectionPosts = idSection => {
   return MemoApi.get(`/sections/${idSection}/posts`);
 };
@@ -151,6 +160,7 @@ const Api = {
   DeleteSubTask,
   AddComment,
   DeleteComment,
+  UploadFile,
 };
 
 export default Api;

@@ -127,6 +127,10 @@ const DeleteComment = (idPost, idComment) => {
   return MemoApi.delete(`posts/${idPost}/comment/${idComment}`);
 };
 
+const GetSectionResources = idSubject => {
+  return MemoApi.get(`sections/${idSubject}/resources`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -151,6 +155,7 @@ const Api = {
   DeleteSubTask,
   AddComment,
   DeleteComment,
+  GetSectionResources,
 };
 
 export default Api;

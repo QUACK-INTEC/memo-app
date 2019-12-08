@@ -54,6 +54,10 @@ const GetSupportedUniversities = () => {
   return MemoApi.get(`sync/universities`);
 };
 
+const GetMyProfile = () => {
+  return MemoApi.get(`profile`);
+};
+
 const GetMyClasses = () => {
   return MemoApi.get(`sections`);
 };
@@ -155,6 +159,7 @@ const Api = {
   DeleteSubTask,
   AddComment,
   DeleteComment,
+  GetMyProfile,
   GetSectionResources,
 };
 

@@ -51,6 +51,18 @@ export const getEmail = createSelector(
     return Lodash.get(objState, ['user', 'email'], null);
   }
 );
+export const getPoints = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'points'], 0);
+  }
+);
+export const getRank = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'rank'], 'unranked');
+  }
+);
 
 export default {
   getEmail,
@@ -60,4 +72,6 @@ export default {
   isLogged,
   getUserId,
   getUserToken,
+  getPoints,
+  getRank,
 };

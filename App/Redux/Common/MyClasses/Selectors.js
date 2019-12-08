@@ -17,7 +17,18 @@ export const getMyClasses = createSelector(
   }
 );
 
+export const getMyClassesString = createSelector(
+  getMyClassesManager,
+  objState => {
+    const Clases = Lodash.get(objState, ['classes', 'entities', 'classes'], {});
+    return Object.keys(Clases)
+      .map(key => Clases[key].subject.name)
+      .join(', ');
+  }
+);
+
 export default {
   getMyClasses,
   getMyClassesLookup,
+  getMyClassesString,
 };

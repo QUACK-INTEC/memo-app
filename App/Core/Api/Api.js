@@ -135,6 +135,11 @@ const GetSectionResources = idSubject => {
   return MemoApi.get(`sections/${idSubject}/resources`);
 };
 
+// const RegisterForNotifications = (token, username) => {
+//   // TODO: Set endpoint when is ready
+//   // return MemoApi.post(``);
+// };
+
 const Api = {
   AuthCheck,
   TokenRefresh,

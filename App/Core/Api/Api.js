@@ -132,7 +132,7 @@ const DeleteComment = (idPost, idComment) => {
 };
 
 const GetSectionResources = idSubject => {
-  return MemoApi.get(`sections/${idSubject}/resources`);
+  return MemoApi.get(`subjects/${idSubject}/resources`);
 };
 
 const Api = {

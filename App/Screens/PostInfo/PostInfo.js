@@ -70,7 +70,7 @@ class PostInfo extends React.Component {
           const postComments = Lodash.get(objPostInfo, ['comments'], []);
           const postDescription = Lodash.get(objPostInfo, ['description'], '');
           const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
-          const postAuthor = Lodash.get(objPostInfo, ['author'], '');
+          const postAuthor = Lodash.get(objPostInfo, ['author'], {});
           const title = Lodash.get(objPostInfo, ['title'], '');
           const section = Lodash.get(objPostInfo, ['section'], null);
           const score = Lodash.get(objPostInfo, ['score'], 0);

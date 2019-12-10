@@ -33,9 +33,9 @@ class SettingsItemImagePicker extends React.Component {
 
 const styles = StyleSheet.create({
   imagePicker: {
-    height: toBaseDesignPx(50),
-    width: toBaseDesignPx(50),
-    borderRadius: toBaseDesignPx(25),
+    height: toBaseDesignPx(90),
+    width: toBaseDesignPx(90),
+    borderRadius: toBaseDesignPx(45),
   },
 });
 

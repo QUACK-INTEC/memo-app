@@ -10,9 +10,10 @@ import Api from '../../Core/Api';
 import LoadingState from '../../Components/LoadingState';
 
 import PostCommentsComponent from '../../Components/PostComments';
+import Text from '../../Components/Common/Text';
 import PostComment from '../../Components/PostComment';
 import PopUp from '../../Components/Common/PopUp';
-import { spacers } from '../../Core/Theme';
+import { spacers, colors } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 
 class PostComments extends React.Component {
@@ -223,6 +224,18 @@ class PostComments extends React.Component {
     const { postComments } = this.state;
     const postCommentsFormatted = PostCommentList.getPostCommentsData(postComments);
 
+    if (Lodash.isEmpty(postCommentsFormatted)) {
+      return (
+        <View style={styles.noCommentsContainer}>
+          <LoadingState.Empty />
+          <Text.Medium
+            text="Aún no se han registrado comentarios en esta publicación. Dejanos saber tu opinión!"
+            style={styles.noCommentsText}
+          />
+        </View>
+      );
+    }
+
     return (
       <FlatList
         data={postCommentsFormatted}
@@ -268,6 +281,19 @@ class PostComments extends React.Component {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   postCommentContainer: { ...spacers.PB_1 },
+  noCommentsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...spacers.MB_15,
+  },
+  noCommentsText: {
+    color: colors.GRAY,
+    ...spacers.MT_16,
+    ...spacers.MB_2,
+    ...spacers.ML_8,
+    ...spacers.MR_8,
+    textAlign: 'center',
+  },
 });
 
 PostComments.defaultProps = {

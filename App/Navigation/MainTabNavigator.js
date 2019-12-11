@@ -22,6 +22,7 @@ import PostCommentsScreen from '../Screens/PostComments';
 import PostInfo from '../Screens/PostInfo';
 import PostResourcesScreen from '../Screens/PostResources';
 import SettingsScreen from '../Screens/Settings';
+import ViewResourceScreen from '../Screens/ViewResource';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -114,6 +115,7 @@ const ClassRoomStack = createStackNavigator(
     TeacherResources: TeacherResourcesScreen,
     PostComments: PostCommentsScreen,
     PostResources: PostResourcesScreen,
+    ViewResource: ViewResourceScreen,
   },
   config
 );

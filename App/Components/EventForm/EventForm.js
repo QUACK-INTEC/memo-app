@@ -18,7 +18,6 @@ class EventForm extends React.Component {
     super(props);
     this.state = {
       canAddFile: false,
-      hasDate: false,
       contentInsetBottom: 100,
     };
   }
@@ -28,7 +27,9 @@ class EventForm extends React.Component {
     onCloseModal();
   };
 
-  handleOnToggleAddFile = isOn => {
+  handleOnToggleAddFile = (isOn, objForm) => {
+    const { setFieldValue } = objForm;
+    setFieldValue('hasFile', isOn);
     this.setState(prevState => ({
       canAddFile: isOn,
       contentInsetBottom: isOn
@@ -44,7 +45,6 @@ class EventForm extends React.Component {
 
   handleOnToggleHasDate = isOn => {
     this.setState(prevState => ({
-      hasDate: isOn,
       contentInsetBottom: isOn
         ? prevState.contentInsetBottom + 120
         : prevState.contentInsetBottom - 120,
@@ -52,10 +52,10 @@ class EventForm extends React.Component {
   };
 
   renderForm = objForm => {
-    const { canAddFile, hasDate, contentInsetBottom } = this.state;
+    const { canAddFile, contentInsetBottom } = this.state;
     const { optionsClasses, isEditing } = this.props;
     const { values } = objForm;
-    const { startDate, endDate } = values;
+    const { startDate, endDate, hasDate } = values;
     const titleText = isEditing ? 'Editar' : 'Crear';
     const hasADate = hasDate || (endDate && startDate);
     const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
@@ -108,13 +108,14 @@ class EventForm extends React.Component {
               enablesReturnKeyAutomatically
             />
             <View style={styles.containerToggleInput}>
-              <ToggleButton
+              <FormikInput
+                type="toggle"
                 label="Tiene fecha?"
-                onChange={this.handleOnToggleHasDate}
+                name="hasDate"
                 labelStyle={styles.labelToggleInput}
               />
             </View>
-            {hasADate ? (
+            {hasDate ? (
               <View style={styles.containerTimePicker}>
                 <FormikInput
                   type="datepicker"
@@ -146,7 +147,7 @@ class EventForm extends React.Component {
             <View style={styles.containerToggleInput}>
               <ToggleButton
                 label="Anexar archivo?"
-                onChange={this.handleOnToggleAddFile}
+                onChange={isOn => this.handleOnToggleAddFile(isOn, objForm)}
                 labelStyle={styles.labelToggleInput}
               />
             </View>
@@ -155,7 +156,7 @@ class EventForm extends React.Component {
               <FormikInput
                 type="fileinput"
                 labelStyle={styles.labelStyle}
-                label="Tipo de evento"
+                label="Archivos adjuntos"
                 name="attachments"
                 containerStyle={{ ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically

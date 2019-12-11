@@ -15,7 +15,7 @@ class ImagePicker extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (props.imageUri !== state.imageUri) {
       return {
-        imageUri: props.imageUri,
+        imageUri: state.imageUri || props.imageUri,
       };
     }
     return null;
@@ -76,6 +76,7 @@ class ImagePicker extends React.Component {
   render() {
     const { imageUri } = this.state;
     const { style } = this.props;
+    console.log({ imageUri });
     return (
       <TouchableOpacity onPress={this.handleOnPress} style={[styles.avatarStyle, style]}>
         <Avatar uri={imageUri} style={[styles.avatarStyle, style]} />

@@ -15,8 +15,8 @@ class PostResources extends React.Component {
     this.state = {
       isLoading: true,
       attachments: [],
-      author: 'Victor Diaz',
-      title: 'Entrega Asignacion',
+      author: '',
+      title: '',
     };
   }
 
@@ -26,7 +26,7 @@ class PostResources extends React.Component {
     } = this.props;
     const attachments = getParam('attachments', []);
     const title = getParam('title', '');
-    const author = getParam('author', {});
+    const author = getParam('author', '');
 
     this.setState({
       attachments,
@@ -87,7 +87,7 @@ class PostResources extends React.Component {
       <View style={styles.container}>
         <PostResourcesComponent
           postName={title}
-          studentName={`${author.firstName} ${author.lastName}`}
+          studentName={`${author}`}
           renderResources={this.renderResources}
           onBackArrow={this.handleBackArrow}
         />

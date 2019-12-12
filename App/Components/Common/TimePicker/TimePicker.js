@@ -30,8 +30,10 @@ class TimePicker extends React.Component {
     const { onChange } = this.props;
     onChange(date);
     const strDate = Moment(date).utc();
-    const hours = strDate.hours() < 10 ? `0${strDate.hours().toString()}` : strDate.hours();
-    const minutes = strDate.minutes() < 10 ? `0${strDate.minutes().toString()}` : strDate.minutes();
+    const hours =
+      strDate.hours() < 10 ? `0${strDate.hours().toString()}` : strDate.hours().ToString();
+    const minutes =
+      strDate.minutes() < 10 ? `0${strDate.minutes().toString()}` : strDate.minutes().toString();
 
     this.setState(
       {

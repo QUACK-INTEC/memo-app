@@ -10,16 +10,6 @@ import { Appearance } from 'react-native-appearance';
 import Text from '../Text';
 
 class TimePicker extends React.Component {
-  static getDerivedStateFromProps(props, state) {
-    if (props.time !== state.date && props.time) {
-      const strDate = `${Moment(props.time).hours()}:${Moment(props.time).minutes()}`;
-      return {
-        date: strDate,
-      };
-    }
-    return null;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -43,8 +33,6 @@ class TimePicker extends React.Component {
     const hours = strDate.hours() < 10 ? `0${strDate.hours().toString()}` : strDate.hours();
     const minutes = strDate.minutes() < 10 ? `0${strDate.minutes().toString()}` : strDate.minutes();
 
-    console.log(hours);
-    console.log(minutes);
     this.setState(
       {
         date: `${hours}:${minutes}`,
@@ -83,13 +71,11 @@ class TimePicker extends React.Component {
 }
 
 TimePicker.defaultProps = {
-  time: null,
   textStyle: null,
   onChange: () => null,
 };
 
 TimePicker.propTypes = {
-  time: PropTypes.string,
   textStyle: PropTypes.shape({}),
   onChange: PropTypes.func,
 };

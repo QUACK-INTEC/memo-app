@@ -40,6 +40,7 @@ class PostInfo extends React.Component {
       attachments: [],
       score: 0,
       currentUserReaction: 0,
+      authorURL: '',
     };
   }
 
@@ -77,6 +78,7 @@ class PostInfo extends React.Component {
           const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
           const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
+          const authorURL = Lodash.get(postAuthor, ['avatarURL'], '');
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
@@ -118,6 +120,7 @@ class PostInfo extends React.Component {
             currentUserReaction,
             postSectionId: section,
             isPublic,
+            authorURL,
           });
 
           return logger.success({
@@ -615,6 +618,7 @@ class PostInfo extends React.Component {
       postAuthorId,
       currentUserReaction,
       score,
+      authorURL,
     } = this.state;
     return (
       <PostInfoForm
@@ -634,6 +638,7 @@ class PostInfo extends React.Component {
         className={subjectName}
         postTitle={title}
         postDescription={description}
+        avatarUri={authorURL}
         postDate={formattedDate}
         postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
         author={postedBy}

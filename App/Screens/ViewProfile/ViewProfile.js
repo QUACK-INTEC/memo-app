@@ -17,7 +17,7 @@ class ViewProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
+      isLoading: false,
       studentName: null,
       studentMail: null,
       commonClasses: [],
@@ -38,7 +38,6 @@ class ViewProfile extends React.Component {
     const userId = getParam('userId', '');
     this.getUserProfile(userId)
       .then(objClassResponse => {
-        console.log(objClassResponse);
         const userProfile = Lodash.get(objClassResponse, ['data', 'user'], {});
         const studentName =
           Lodash.get(userProfile, 'firstName', '') + Lodash.get(userProfile, 'lastName', '');
@@ -65,7 +64,7 @@ class ViewProfile extends React.Component {
         this.setState({ isLoading: false });
         return setTimeout(() => {
           logger.error({
-            key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_FAILED,
+            key: MessagesKey.LOAD_USER_PROFILE_FAILED,
             data: objError,
           });
         }, 800);
@@ -123,7 +122,6 @@ class ViewProfile extends React.Component {
     } = this.state;
     return (
       <View style={styles.container}>
-        <LoadingState.Modal isLoading={isLoading} />
         <ViewProfileComponent
           studentName={studentName}
           studentMail={studentMail}
@@ -136,6 +134,7 @@ class ViewProfile extends React.Component {
           onBackArrow={this.handleBackArrow}
         />
         <ClassesComponent renderClasses={this.renderClasses} />
+        <LoadingState.Modal isLoading={isLoading} />
       </View>
     );
   }

@@ -158,9 +158,6 @@ const styles = StyleSheet.create({
   studentMail: {
     color: colors.GRAY,
   },
-  studentSubjects: {
-    color: colors.GRAY,
-  },
   badgeStyle: {
     width: toBaseDesignPx(12),
     height: toBaseDesignPx(12),

@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import PropTypes from 'prop-types';
 import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
-import { MessagesKey } from '../../HOCs/WithLogger';
-import ProfileComponent from '../../Components/Profile';
+import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
+import ViewProfileComponent from '../../Components/ViewProfile';
 import ClassInfoCard from '../../Components/ClassInfoCard';
 import ClassesComponent from '../../Components/Classes';
 import Api from '../../Core/Api';
@@ -21,12 +20,10 @@ class ViewProfile extends React.Component {
       isLoading: true,
       studentName: null,
       studentMail: null,
-      studentSubjects: null,
+      commonClasses: [],
       avatarUri: null,
-      avatarSrc: null,
       avatarInitialsText: null,
       badgeUri: null,
-      badgeSrc: null,
       memoPoints: null,
       rank: null,
     };
@@ -38,23 +35,30 @@ class ViewProfile extends React.Component {
       logger,
     } = this.props;
 
-    Promise.all([this.getUserProfile()])
-      .then(listValues => {
-        const [objClassResponse] = listValues;
+    const userId = getParam('userId', '');
+    this.getUserProfile(userId)
+      .then(objClassResponse => {
+        console.log(objClassResponse);
         const userProfile = Lodash.get(objClassResponse, ['data', 'user'], {});
-
+        const studentName =
+          Lodash.get(userProfile, 'firstName', '') + Lodash.get(userProfile, 'lastName', '');
+        const studentMail = Lodash.get(userProfile, 'email', '');
+        const avatarUri = Lodash.get(userProfile, 'avatarUri', {});
+        const avatarInitialsText = Lodash.get(userProfile, 'avatarInitialsText', {});
+        const badgeUri = Lodash.get(userProfile, 'badgeUri', {});
+        const memoPoints = Lodash.get(userProfile, 'points', 0);
+        const rank = Lodash.get(userProfile, 'rank', '');
+        const commonClasses = Lodash.get(objClassResponse, ['data', 'commonClasses'], []);
         this.setState({
           isLoading: false,
-          studentName: userProfile.firstName + userProfile.lastName,
-          studentMail: userProfile.email,
-          studentSubjects,
-          avatarUri: userProfile.avatarUrl,
-          avatarSrc,
+          studentName,
+          studentMail,
+          avatarUri,
           avatarInitialsText,
           badgeUri,
-          badgeSrc,
           memoPoints,
           rank,
+          commonClasses,
         });
       })
       .catch(objError => {
@@ -66,34 +70,15 @@ class ViewProfile extends React.Component {
           });
         }, 800);
       });
-    const studentName = getParam('studentName', {});
-    const studentMail = getParam('studentMail', {});
-    const studentSubjects = getParam('studentSubjects', {});
-    const avatarUri = getParam('avatarUri', {});
-    const avatarSrc = getParam('avatarSrc', {});
-    const avatarInitialsText = getParam('avatarInitialsText', {});
-    const badgeUri = getParam('badgeUri', {});
-    const badgeSrc = getParam('badgeSrc', {});
-    const memoPoints = getParam('memoPoints', {});
-    const rank = getParam('rank', {});
-
-    this.setState({
-      isLoading: false,
-      studentName,
-      studentMail,
-      studentSubjects,
-      avatarUri,
-      avatarSrc,
-      avatarInitialsText,
-      badgeUri,
-      badgeSrc,
-      memoPoints,
-      rank,
-    });
   }
 
-  getUserProfile = idUser => {
-    return Api.GetUserProfile(idUser);
+  handleBackArrow = () => {
+    const { navigation } = this.props;
+    return navigation.goBack();
+  };
+
+  getUserProfile = userId => {
+    return Api.GetUserProfile(userId);
   };
 
   renderSubject = ({ item }) => {
@@ -110,8 +95,8 @@ class ViewProfile extends React.Component {
   };
 
   renderClasses = () => {
-    const { commonClasses, commonClassesLookup } = this.props;
-    const myClassesFormatted = Classes.getClassesData(commonClasses, commonClassesLookup);
+    const { commonClasses } = this.state;
+    const myClassesFormatted = Classes.getClassesDataFromList(commonClasses);
 
     return (
       <FlatList
@@ -131,27 +116,24 @@ class ViewProfile extends React.Component {
       studentMail,
       studentSubjects,
       avatarUri,
-      avatarSrc,
       avatarInitialsText,
       badgeUri,
-      badgeSrc,
       memoPoints,
       rank,
     } = this.state;
     return (
       <View style={styles.container}>
         <LoadingState.Modal isLoading={isLoading} />
-        <ProfileComponent
+        <ViewProfileComponent
           studentName={studentName}
           studentMail={studentMail}
           studentSubjects={studentSubjects}
           avatarUri={avatarUri}
-          avatarSrc={avatarSrc}
           avatarInitialsText={avatarInitialsText}
           badgeUri={badgeUri}
-          badgeSrc={badgeSrc}
           memoPoints={memoPoints}
           rank={rank}
+          onBackArrow={this.handleBackArrow}
         />
         <ClassesComponent renderClasses={this.renderClasses} />
       </View>
@@ -160,19 +142,9 @@ class ViewProfile extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  container: { flex: 1 },
   classesContainer: { justifyContent: 'space-between', flex: 1 },
   myClassContainer: { ...spacers.MA_1 },
 });
 
-ViewProfile.defaultProps = {
-  commonClasses: [],
-  commonClassesLookup: {},
-};
-
-ViewProfile.propTypes = {
-  commonClasses: PropTypes.arrayOf(PropTypes.string),
-  commonClassesLookup: PropTypes.shape({}),
-};
-
-export default ViewProfile;
+export default WithLogger(ViewProfile);

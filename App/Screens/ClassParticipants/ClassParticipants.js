@@ -45,7 +45,7 @@ class ClassParticipants extends React.Component {
       <View style={styles.participantContainer}>
         <ParticipantCard
           participantName={item.fullName}
-          avatarUri={item.avatarUrl}
+          avatarUri={item.avatarUri}
           initialsText={item.initials}
           badgeUri={item.badgeUri}
           onPress={() => this.handleOnPressParticipantItem(item)}

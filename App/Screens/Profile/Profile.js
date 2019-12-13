@@ -78,7 +78,9 @@ class Profile extends Component {
   };
 
   getInitials = (name, lastname) => {
-    return name.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase();
+    return name && lastname
+      ? name.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase()
+      : null;
   };
 
   render() {

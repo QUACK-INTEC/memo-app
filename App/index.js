@@ -14,7 +14,6 @@ import FontList from './Core/Assets/Fonts';
 import Navigator from './Navigation/AppToken';
 import { store, persistor } from './Redux/RootReducer';
 import LoadingState from './Components/LoadingState';
-import { RegisterForNotifications } from './Core/Api';
 
 Moment.lang('es', {
   months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Juilio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split(
@@ -37,7 +36,6 @@ class App extends Component {
 
   async componentDidMount() {
     await Font.loadAsync(FontList);
-    await RegisterForNotifications();
     this.setState({ fontLoaded: true });
   }
 

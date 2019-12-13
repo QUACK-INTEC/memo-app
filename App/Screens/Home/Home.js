@@ -11,7 +11,7 @@ import Text from '../../Components/Common/Text';
 import Link from '../../Components/Common/Link';
 import HomeComponent from '../../Components/Home';
 import { colors, fonts, spacers } from '../../Core/Theme';
-import Api, { MemoApi } from '../../Core/Api';
+import Api, { MemoApi, RegisterForNotifications } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import ClassInfoCard from '../../Components/ClassInfoCard';
 import {
@@ -34,12 +34,14 @@ class Home extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { setMyClasses, logger, loggedIn, userToken } = this.props;
 
     if (loggedIn) {
       MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
     }
+
+    await RegisterForNotifications();
 
     Promise.all([this.getMyClasses()])
       .then(listValues => {

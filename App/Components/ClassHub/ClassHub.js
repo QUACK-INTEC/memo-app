@@ -117,7 +117,7 @@ class ClassHub extends React.PureComponent {
         onPress={() => onPressPost(item)}
         postTitle={item.title}
         postUser={item.postedBy}
-        createdSince={3}
+        createdSince={item.createdSince}
       />
     );
   };

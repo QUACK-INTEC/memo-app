@@ -18,7 +18,6 @@ class SubjectsByTeacher extends React.Component {
       isLoading: true,
       teacherResources: [],
       subjectName: null,
-      // sectionId: null <- will use when API
     };
   }
 
@@ -34,7 +33,7 @@ class SubjectsByTeacher extends React.Component {
     Promise.all([this.getTeacherResources(sectionId)])
       .then(listValues => {
         const [objCommentResponse] = listValues;
-        const listTeacherResources = Lodash.get(objCommentResponse, 'data', []);
+        const listTeacherResources = Lodash.get(objCommentResponse, ['data', 'data'], []);
         this.setState({
           teacherResources: listTeacherResources,
           isLoading: false,
@@ -57,7 +56,7 @@ class SubjectsByTeacher extends React.Component {
   }
 
   getTeacherResources = sectionId => {
-    return Api.GetSubjectResources(sectionId);
+    return Api.GetSectionResources(sectionId);
   };
 
   handleOnPressProfessorItem = objTeacherResource => {

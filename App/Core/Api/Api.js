@@ -147,6 +147,10 @@ const ResetvoteComment = idComment => {
   return MemoApi.post(`posts/comments/${idComment}/resetvote`);
 };
 
+const RegisterForNotifications = pushToken => {
+  return MemoApi.post(`notifications/register`, { pushToken });
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -176,6 +180,7 @@ const Api = {
   UpvoteComment,
   DownvoteComment,
   ResetvoteComment,
+  RegisterForNotifications,
 };
 
 export default Api;

@@ -18,7 +18,6 @@ class ViewResource extends React.Component {
     const {
       navigation: { getParam },
     } = this.props;
-    // DUMMY DATA
     const resourceName = getParam('resourceName', 'Data de Prueba');
     const resourceURI = getParam(
       'resourceURI',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Avatar from '../Common/Avatar';
@@ -84,12 +84,14 @@ class Profile extends React.Component {
             <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
             <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
           </InLineComponent>
-          <Section title="Clases" viewStyle={styles.sectionViewStyle}>
-            {renderClasses()}
-          </Section>
-          <Section title="Mail" viewStyle={styles.sectionViewStyle}>
-            {this.renderEmail()}
-          </Section>
+          <ScrollView>
+            <Section title="Clases" viewStyle={styles.sectionViewStyle}>
+              {renderClasses()}
+            </Section>
+            <Section title="Mail" viewStyle={styles.sectionViewStyle}>
+              {this.renderEmail()}
+            </Section>
+          </ScrollView>
         </View>
       </SafeAreaView>
     );

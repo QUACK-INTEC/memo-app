@@ -135,6 +135,10 @@ const GetSectionResources = idSubject => {
   return MemoApi.get(`subjects/${idSubject}/resources`);
 };
 
+const RegisterForNotifications = pushToken => {
+  return MemoApi.post(`notifications/register`, { pushToken });
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -161,6 +165,7 @@ const Api = {
   DeleteComment,
   GetMyProfile,
   GetSectionResources,
+  RegisterForNotifications,
 };
 
 export default Api;

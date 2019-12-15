@@ -62,6 +62,9 @@ class EventForm extends React.Component {
 
   getInitialsValue = () => {
     const { initialsValue } = this.props;
+    const startDate = Lodash.get(initialsValue, ['startDate'], null);
+    const endDate = Lodash.get(initialsValue, ['endDate'], null);
+
     return {
       section: null,
       description: null,
@@ -71,7 +74,7 @@ class EventForm extends React.Component {
       title: null,
       type: 'public',
       hasFile: false,
-      hasDate: false,
+      hasDate: startDate && endDate,
       attachments: [],
       ...initialsValue,
     };
@@ -134,6 +137,7 @@ class EventForm extends React.Component {
       title,
       type,
       postId,
+      hasDate,
     } = objValues;
     const momentDateSelected = Moment(dateTime);
     const momentStartTime = Moment(startTime);
@@ -164,8 +168,8 @@ class EventForm extends React.Component {
     const objPayload = {
       title,
       description,
-      startDate: startTime ? startDate : null,
-      endDate: endTime ? endDate : null,
+      startDate: hasDate ? startDate : null,
+      endDate: hasDate ? endDate : null,
       section,
       type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',

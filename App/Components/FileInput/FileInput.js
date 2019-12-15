@@ -60,12 +60,12 @@ class FileInput extends React.Component {
     const index = newData.findIndex(x => x.name === resultName);
     if (index < 0) {
       const item = {};
-      item.upload = true;
-      item.fullname = name;
+      item.id = null;
+      item.name = name;
+      item.fileURL = uri;
       item.type = mime.lookup(resultExtension);
       item.extension = resultExtension;
-      item.name = resultName;
-      item.uri = uri;
+      item.alias = resultName;
       newData.push(item);
       this.setState({ value: newData });
       onChange(newData);
@@ -155,13 +155,13 @@ class FileInput extends React.Component {
             renderItem={({ item }) => (
               <FilePill
                 id={item.uri}
-                documentText={item.name}
+                documentText={item.alias}
                 documentType={item.extension}
                 onPress={this.handleAlert}
               />
             )}
             horizontal
-            keyExtractor={item => `${item.uri}`}
+            keyExtractor={item => `${item.uri + item.alias}`}
             extraData={this.state}
             showsHorizontalScrollIndicator={false}
           />

@@ -168,7 +168,12 @@ class EventForm extends React.Component {
       )
     ).getTime();
 
-    const listUpload = Lodash.filter(attachments, objFile => Lodash.isNull(objFile.id));
+    const listUpload = Lodash.filter(attachments, objFile => {
+      if (Lodash.isNull(objFile.id)) {
+        return objFile;
+      }
+      return null;
+    });
     const objPayload = {
       title,
       description,
@@ -177,12 +182,15 @@ class EventForm extends React.Component {
       section,
       type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
-      attachments,
     };
 
     if (!Lodash.isEmpty(listUpload)) {
       return Api.UploadFile(listUpload)
-        .then(() => {
+        .then(objResponse => {
+          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(
+            file => file.id
+          );
+          objPayload.attachments = newAttachments;
           return this.handleCreatePost(objPayload);
         })
         .catch(objError => {

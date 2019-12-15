@@ -2,6 +2,8 @@ import React from 'react';
 import { View, ViewPropTypes, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
+import * as mime from 'react-native-mime-types';
+
 import * as DocumentPicker from 'expo-document-picker';
 
 // Theme
@@ -53,13 +55,16 @@ class FileInput extends React.Component {
 
     const { uri, name } = result;
     const nameseparator = name.split('.');
-    const [resultName, resultType] = nameseparator;
+    const [resultName, resultExtension] = nameseparator;
 
     const index = newData.findIndex(x => x.name === resultName);
     if (index < 0) {
       const item = {};
+      item.upload = true;
+      item.fullname = name;
+      item.type = mime.lookup(resultExtension);
+      item.extension = resultExtension;
       item.name = resultName;
-      item.type = resultType;
       item.uri = uri;
       newData.push(item);
       this.setState({ value: newData });
@@ -151,7 +156,7 @@ class FileInput extends React.Component {
               <FilePill
                 id={item.uri}
                 documentText={item.name}
-                documentType={item.type}
+                documentType={item.extension}
                 onPress={this.handleAlert}
               />
             )}

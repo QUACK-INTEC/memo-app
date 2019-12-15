@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
+import Lodash from 'lodash';
 
 import EventFormComponent from '../../Components/EventForm';
 import { selectors as EventFormSelectors, actions as EventFormActions } from './Redux';
@@ -109,6 +110,8 @@ class EventForm extends React.Component {
   handleOnSubmitForm = objValues => {
     const { isEditing } = this.props;
 
+    const { setModalVisible, logger, MessagesKey } = this.props;
+
     const {
       section,
       description,
@@ -118,6 +121,7 @@ class EventForm extends React.Component {
       title,
       type,
       postId,
+      attachments,
     } = objValues;
     const momentDateSelected = Moment(dateTime);
     const momentStartTime = Moment(startTime);
@@ -145,20 +149,39 @@ class EventForm extends React.Component {
       )
     ).getTime();
 
-    const objPayload = {
-      title,
-      description,
-      startDate: startTime ? startDate : null,
-      endDate: endTime ? endDate : null,
-      section,
-      type: endTime && startTime ? 'Event' : 'Resource',
-      isPublic: type === 'public',
-    };
-    return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
+    const listUpload = Lodash.filter(attachments, objFile => Lodash.isNull(objFile.id));
+
+    if (!Lodash.isEmpty(listUpload)) {
+      return Api.UploadFile(attachments)
+        .then(() => {
+          setModalVisible(false);
+          const objPayload = {
+            title,
+            description,
+            startDate: startTime ? startDate : null,
+            endDate: endTime ? endDate : null,
+            section,
+            type: endTime && startTime ? 'Event' : 'Resource',
+            isPublic: type === 'public',
+            attachments,
+          };
+          return this.handleCreatePost(objPayload);
+        })
+        .catch(objError => {
+          return setTimeout(() => {
+            logger.error({
+              key: MessagesKey.CREATE_POST_FAILED,
+              data: objError,
+            });
+          }, 800);
+        });
+    }
+    return isEditing ? this.handleEditPost(postId, {}) : this.handleCreatePost({});
   };
 
   handleCreatePost = objPayload => {
     const { setModalVisible, logger, MessagesKey } = this.props;
+
     return Api.CreatePost(objPayload)
       .then(objResponse => {
         setModalVisible(false);

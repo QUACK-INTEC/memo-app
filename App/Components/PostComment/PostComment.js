@@ -15,6 +15,25 @@ import UpDownVoteSimple from '../Common/UpDownVoteSimple';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
 class PostComment extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if (state.score !== props.score || state.personalScore !== props.personalScore) {
+      return {
+        score: props.score,
+        personalScore: props.personalScore,
+      };
+    }
+    return null;
+  }
+
+  constructor(props) {
+    super(props);
+    const { score, personalScore } = this.props;
+    this.state = {
+      score,
+      personalScore,
+    };
+  }
+
   showEditOptions = () => {
     const { onDeleteComment, showActionSheetWithOptions } = this.props;
     const options = ['Borrar', 'Cancelar'];
@@ -36,7 +55,7 @@ class PostComment extends React.Component {
   };
 
   renderUpVotes = () => {
-    const { score } = this.props;
+    const { score } = this.state;
     if (score != null && score > -1) {
       return <Text.Medium text={`${score} Upvotes`} style={styles.upVotesStyle} />;
     }
@@ -44,14 +63,8 @@ class PostComment extends React.Component {
   };
 
   renderReactions = () => {
-    const {
-      isAuthor,
-      personalScore,
-      onUpVote,
-      onRemoveUpVote,
-      onDownVote,
-      onRemoveDownVote,
-    } = this.props;
+    const { isAuthor, onUpVote, onDownVote } = this.props;
+    const { personalScore } = this.state;
 
     if (isAuthor) {
       return (
@@ -66,15 +79,7 @@ class PostComment extends React.Component {
         </View>
       );
     }
-    return (
-      <UpDownVoteSimple
-        score={personalScore}
-        onUpVote={onUpVote}
-        onRemoveUpVote={onRemoveUpVote}
-        onDownVote={onDownVote}
-        onRemoveDownVote={onRemoveDownVote}
-      />
-    );
+    return <UpDownVoteSimple score={personalScore} onUpVote={onUpVote} onDownVote={onDownVote} />;
   };
 
   render() {
@@ -171,9 +176,7 @@ const styles = StyleSheet.create({
 PostComment.defaultProps = {
   onAuthorPress: () => null,
   onUpVote: () => null,
-  onRemoveUpVote: () => null,
   onDownVote: () => null,
-  onRemoveDownVote: () => null,
   onDeleteComment: () => null,
   isAuthor: false,
   badgeSrc: null,
@@ -188,9 +191,7 @@ PostComment.defaultProps = {
 PostComment.propTypes = {
   onAuthorPress: PropTypes.func,
   onUpVote: PropTypes.func,
-  onRemoveUpVote: PropTypes.func,
   onDownVote: PropTypes.func,
-  onRemoveDownVote: PropTypes.func,
   onDeleteComment: PropTypes.func,
   isAuthor: PropTypes.bool,
   badgeSrc: PropTypes.number,

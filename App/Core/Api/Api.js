@@ -135,6 +135,18 @@ const GetSectionResources = idSubject => {
   return MemoApi.get(`subjects/${idSubject}/resources`);
 };
 
+const UpvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/upvote`);
+};
+
+const DownvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/downvote`);
+};
+
+const ResetvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/resetvote`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -161,6 +173,9 @@ const Api = {
   DeleteComment,
   GetMyProfile,
   GetSectionResources,
+  UpvoteComment,
+  DownvoteComment,
+  ResetvoteComment,
 };
 
 export default Api;

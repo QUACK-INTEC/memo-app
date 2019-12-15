@@ -15,7 +15,7 @@ class ImagePicker extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (props.imageUri !== state.imageUri) {
       return {
-        imageUri: props.imageUri,
+        imageUri: state.imageUri || props.imageUri,
       };
     }
     return null;

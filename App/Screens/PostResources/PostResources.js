@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
@@ -14,9 +14,9 @@ class PostResources extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
-      postResources: ['Recurso 1', 'Recurso 2'],
-      studentName: 'Victor Diaz',
-      postName: 'Entrega Asignacion',
+      attachments: [],
+      author: '',
+      title: '',
     };
   }
 
@@ -24,21 +24,28 @@ class PostResources extends React.Component {
     const {
       navigation: { getParam },
     } = this.props;
-    const postResources = getParam('postResources', {});
-    const postName = getParam('postName', {});
-    const studentName = getParam('studentName', {});
+    const attachments = getParam('attachments', []);
+    const title = getParam('title', '');
+    const author = getParam('author', '');
 
     this.setState({
-      postResources,
+      attachments,
       isLoading: false,
-      postName,
-      studentName,
+      title,
+      author,
     });
   }
 
   handleOnPressResourceItem = objResourceID => {
     // TODO: showResource
-    Alert.alert(`showResource:${objResourceID}`);
+    const {
+      navigation: { navigate },
+    } = this.props;
+
+    navigate('ViewResource', {
+      resourceName: Lodash.get(objResourceID, ['name'], null),
+      resourceURI: Lodash.get(objResourceID, ['fileURL'], null),
+    });
   };
 
   handleBackArrow = () => {
@@ -49,18 +56,15 @@ class PostResources extends React.Component {
   renderResource = ({ item }) => {
     return (
       <View style={styles.resourceContainer}>
-        <PostResource
-          postTitle={item.postTitle}
-          onPress={() => this.handleOnPressResourceItem(item.id)}
-        />
+        <PostResource postTitle={item.name} onPress={() => this.handleOnPressResourceItem(item)} />
       </View>
     );
   };
 
   renderResources = () => {
-    const { postResources } = this.state;
-    const postResourcesFormatted = PostResourcesList.getResourcesData(postResources);
-    if (Lodash.isEmpty(postResources)) {
+    const { attachments } = this.state;
+    const postResourcesFormatted = PostResourcesList.getResourcesData(attachments);
+    if (Lodash.isEmpty(attachments)) {
       return (
         <View style={styles.noResourcesContainer}>
           <LoadingState.Empty />
@@ -82,12 +86,12 @@ class PostResources extends React.Component {
   };
 
   render() {
-    const { isLoading, postName, studentName } = this.state;
+    const { isLoading, title, author } = this.state;
     return (
       <View style={styles.container}>
         <PostResourcesComponent
-          postName={postName}
-          studentName={studentName}
+          postName={title}
+          studentName={`${author}`}
           renderResources={this.renderResources}
           onBackArrow={this.handleBackArrow}
         />

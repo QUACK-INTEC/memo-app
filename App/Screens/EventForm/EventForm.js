@@ -12,33 +12,6 @@ import { Classes } from '../../Models';
 import Api from '../../Core/Api';
 import PopUp from '../../Components/Common/PopUp';
 
-const validation = objValues => {
-  const errors = {};
-  const { section, description, title, endDate, startDate } = objValues;
-
-  if (!title) {
-    errors.title = 'Campo obligatorio';
-  }
-
-  if (!description) {
-    errors.description = 'Campo obligatorio';
-  }
-
-  if (!section) {
-    errors.section = 'Campo obligatorio';
-  }
-
-  if (endDate && !startDate) {
-    errors.startDate = 'Necesita una fecha';
-  }
-
-  if (startDate && !endDate) {
-    errors.endDate = 'Necesita una fecha';
-  }
-
-  return errors;
-};
-
 class EventForm extends React.Component {
   constructor(props) {
     super(props);
@@ -48,8 +21,50 @@ class EventForm extends React.Component {
     };
   }
 
+  getValidation = objValues => {
+    const errors = {};
+    const section = Lodash.get(objValues, ['section'], null);
+    const description = Lodash.get(objValues, ['description'], null);
+    const title = Lodash.get(objValues, ['title'], null);
+    const endDate = Lodash.get(objValues, ['endDate'], null);
+    const startDate = Lodash.get(objValues, ['startDate'], null);
+    const hasDate = Lodash.get(objValues, ['hasDate'], null);
+    const hasFile = Lodash.get(objValues, ['hasFile'], null);
+    const attachments = Lodash.get(objValues, ['attachments'], null);
+
+    if (!title) {
+      errors.title = 'Campo obligatorio';
+    }
+
+    if (!description) {
+      errors.description = 'Campo obligatorio';
+    }
+
+    if (!section) {
+      errors.section = 'Campo obligatorio';
+    }
+
+    if (hasDate) {
+      if (!endDate || !startDate) {
+        errors.startDate = 'Necesita una fecha';
+        errors.endDate = 'Necesita una fecha';
+      }
+    }
+
+    if (hasFile) {
+      if (attachments && attachments.length <= 0) {
+        errors.attachments = 'Necesita una fecha';
+      }
+    }
+
+    return errors;
+  };
+
   getInitialsValue = () => {
     const { initialsValue } = this.props;
+    const startDate = Lodash.get(initialsValue, ['startDate'], null);
+    const endDate = Lodash.get(initialsValue, ['endDate'], null);
+
     return {
       section: null,
       description: null,
@@ -58,6 +73,9 @@ class EventForm extends React.Component {
       startDate: null,
       title: null,
       type: 'public',
+      hasFile: false,
+      hasDate: startDate && endDate,
+      attachments: [],
       ...initialsValue,
     };
   };
@@ -110,7 +128,7 @@ class EventForm extends React.Component {
   handleOnSubmitForm = objValues => {
     const { isEditing } = this.props;
 
-    const { setModalVisible, logger, MessagesKey } = this.props;
+    const { logger, MessagesKey } = this.props;
 
     const {
       section,
@@ -121,6 +139,7 @@ class EventForm extends React.Component {
       title,
       type,
       postId,
+      hasDate,
       attachments,
     } = objValues;
     const momentDateSelected = Moment(dateTime);
@@ -150,21 +169,20 @@ class EventForm extends React.Component {
     ).getTime();
 
     const listUpload = Lodash.filter(attachments, objFile => Lodash.isNull(objFile.id));
+    const objPayload = {
+      title,
+      description,
+      startDate: hasDate ? startDate : null,
+      endDate: hasDate ? endDate : null,
+      section,
+      type: endTime && startTime ? 'Event' : 'Resource',
+      isPublic: type === 'public',
+      attachments,
+    };
 
     if (!Lodash.isEmpty(listUpload)) {
-      return Api.UploadFile(attachments)
+      return Api.UploadFile(listUpload)
         .then(() => {
-          setModalVisible(false);
-          const objPayload = {
-            title,
-            description,
-            startDate: startTime ? startDate : null,
-            endDate: endTime ? endDate : null,
-            section,
-            type: endTime && startTime ? 'Event' : 'Resource',
-            isPublic: type === 'public',
-            attachments,
-          };
           return this.handleCreatePost(objPayload);
         })
         .catch(objError => {
@@ -176,7 +194,7 @@ class EventForm extends React.Component {
           }, 800);
         });
     }
-    return isEditing ? this.handleEditPost(postId, {}) : this.handleCreatePost({});
+    return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
   };
 
   handleCreatePost = objPayload => {
@@ -252,7 +270,7 @@ class EventForm extends React.Component {
           isVisible={isModalVisible}
           onSubmit={this.handleOnSubmitForm}
           initialValues={this.getInitialsValue()}
-          validation={validation}
+          validation={this.getValidation}
           isEditing={isEditing}
           optionsClasses={this.getMyClassesOptions()}
         />

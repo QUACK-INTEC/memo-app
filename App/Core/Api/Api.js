@@ -54,6 +54,10 @@ const GetSupportedUniversities = () => {
   return MemoApi.get(`sync/universities`);
 };
 
+const GetMyProfile = () => {
+  return MemoApi.get(`profile`);
+};
+
 const GetMyClasses = () => {
   return MemoApi.get(`sections`);
 };
@@ -136,6 +140,14 @@ const DeleteComment = (idPost, idComment) => {
   return MemoApi.delete(`posts/${idPost}/comment/${idComment}`);
 };
 
+const GetSectionResources = idSubject => {
+  return MemoApi.get(`subjects/${idSubject}/resources`);
+};
+
+const RegisterForNotifications = pushToken => {
+  return MemoApi.post(`notifications/register`, { pushToken });
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -160,6 +172,9 @@ const Api = {
   DeleteSubTask,
   AddComment,
   DeleteComment,
+  GetMyProfile,
+  GetSectionResources,
+  RegisterForNotifications,
   UploadFile,
 };
 

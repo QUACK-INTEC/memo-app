@@ -7,14 +7,46 @@ import { colors, toBaseDesignPx, spacers, fonts, constants } from '../../../Core
 import Text from '../Text';
 
 class Toast extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isVisible: false,
+      message: null,
+    };
+    this.timeout = null;
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
+  setToastVisible = (strMessage, timeout = 3000) => {
+    this.setState(
+      {
+        isVisible: true,
+        message: strMessage,
+      },
+      () => {
+        this.timeout = setTimeout(() => {
+          this.setState({
+            isVisible: false,
+            message: null,
+          });
+        }, timeout);
+      }
+    );
+  };
+
   renderToast = () => {
-    const { title, titleStyle, isVisible, onPress } = this.props;
+    const { isVisible, message } = this.state;
+    const { titleStyle, onPress } = this.props;
+    const activeOpacity = onPress ? 0.2 : 0;
     if (isVisible) {
       return (
         <View style={styles.toastStyle}>
-          <TouchableOpacity onPress={onPress}>
+          <TouchableOpacity onPress={onPress} activeOpacity={activeOpacity}>
             <View style={styles.textContainer}>
-              <Text.Medium text={title} style={[styles.titleStyle, titleStyle]} />
+              <Text.Medium text={message} style={[styles.titleStyle, titleStyle]} />
             </View>
           </TouchableOpacity>
         </View>
@@ -39,7 +71,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GRAY,
     borderRadius: toBaseDesignPx(8),
     justifyContent: 'center',
-    opacity: 0.7,
   },
   titleStyle: {
     color: colors.WHITE,
@@ -54,16 +85,12 @@ const styles = StyleSheet.create({
 
 Toast.defaultProps = {
   onPress: () => null,
-  title: null,
   titleStyle: null,
-  isVisible: null,
 };
 
 Toast.propTypes = {
   onPress: PropTypes.func,
-  title: PropTypes.string,
   titleStyle: PropTypes.shape({}),
-  isVisible: PropTypes.bool,
 };
 
 export default Toast;

@@ -2557,6 +2557,10 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
 
+escape-string-regexp@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
+
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -2902,7 +2906,7 @@ expo-document-picker@~7.0.0:
   dependencies:
     uuid "^3.3.2"
 
-expo-file-system@~7.0.0:
+expo-file-system@^7.0.0, expo-file-system@~7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-7.0.0.tgz#ac98233b18774cce299fffd9451f08f21b116564"
   dependencies:
@@ -2921,7 +2925,6 @@ expo-image-picker@~7.0.0:
 expo-intent-launcher@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/expo-intent-launcher/-/expo-intent-launcher-7.0.0.tgz#913da3e7cc32ea10f5e67be02ae0b590d1498c8a"
-  integrity sha512-GrtG6tJMCtrOIkcf+2nwVLW7Mmb5442opmGPjXxMOUeXaPkVwO6/1+eQo10X9FgI/ehLXbdi7PgHMJniTPf70g==
 
 expo-keep-awake@~7.0.0:
   version "7.0.0"
@@ -3992,7 +3995,7 @@ interpret@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
 
-invariant@^2.2.2, invariant@^2.2.4:
+invariant@2.2.4, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
@@ -6797,6 +6800,13 @@ react-native-web@^0.11.7:
     normalize-css-color "^1.0.2"
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.4"
+
+react-native-webview@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-7.6.0.tgz#6bae76430200be5e5ead7d986af2fa341b650186"
+  dependencies:
+    escape-string-regexp "2.0.0"
+    invariant "2.2.4"
 
 "react-native@https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz":
   version "0.59.8"

@@ -64,6 +64,7 @@ class Profile extends React.Component {
       memoPoints,
       rank,
       studentName,
+      renderClasses,
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
@@ -84,7 +85,7 @@ class Profile extends React.Component {
             <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
           </InLineComponent>
           <Section title="Clases" viewStyle={styles.sectionViewStyle}>
-            {this.renderSubjects()}
+            {renderClasses()}
           </Section>
           <Section title="Mail" viewStyle={styles.sectionViewStyle}>
             {this.renderEmail()}
@@ -106,6 +107,8 @@ Profile.defaultProps = {
   studentMail: null,
   memoPoints: null,
   rank: null,
+  onEditUser: null,
+  renderClasses: null,
 };
 
 Profile.propTypes = {
@@ -119,6 +122,8 @@ Profile.propTypes = {
   badgeUri: PropTypes.string,
   memoPoints: PropTypes.number,
   rank: PropTypes.string,
+  onEditUser: PropTypes.func,
+  renderClasses: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

@@ -45,10 +45,11 @@ class Home extends React.Component {
         subjectName={item.subject}
         eventTitle={item.title}
         eventStartTime={item.time}
-        author={item.author}
+        author={item.name}
         onLeftSwipe={() => onEventDownVote(item)}
         onRightSwipe={() => onEventUpVote(item)}
         onPress={() => onEventPress(item)}
+        avatarUri={item.avatarURL}
       />
     );
   };
@@ -64,7 +65,7 @@ class Home extends React.Component {
           renderItem={this.renderEvent}
           keyExtractor={item => item.id}
           scrollEnabled={false}
-          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_14 }} />}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
         />
       );
     }
@@ -94,7 +95,7 @@ class Home extends React.Component {
           renderItem={this.renderSubject}
           keyExtractor={item => item.id}
           scrollEnabled={false}
-          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_14 }} />}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
           ListFooterComponent={() => <View style={{ ...spacers.MA_14 }} />}
         />
       );

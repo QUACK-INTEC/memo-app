@@ -71,10 +71,11 @@ class Calendar extends React.Component {
         subjectName={item.subject}
         eventTitle={item.title}
         eventStartTime={item.time}
-        author={item.author}
+        author={item.name}
         onPress={() => onEventPress(item)}
         onLeftSwipe={() => onEventDownVote(item)}
         onRightSwipe={() => onEventUpVote(item)}
+        avatarUri={item.avatarURL}
       />
     );
   };
@@ -90,7 +91,7 @@ class Calendar extends React.Component {
           renderItem={this.renderEvent}
           keyExtractor={item => item.id}
           scrollEnabled={false}
-          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_14 }} />}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
           ListFooterComponent={() => <View style={{ ...spacers.MA_14 }} />}
         />
       );
@@ -122,7 +123,7 @@ class Calendar extends React.Component {
           renderItem={this.renderSubject}
           keyExtractor={item => item.id}
           scrollEnabled={false}
-          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_14 }} />}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
           ListFooterComponent={() => <View style={{ ...spacers.MA_14 }} />}
           ListHeaderComponent={() => <View style={{ ...spacers.MA_14 }} />}
         />

@@ -140,7 +140,7 @@ class ClassHub extends React.Component {
     const {
       navigation: { pop },
     } = this.props;
-    pop();
+    return pop();
   };
 
   handleOnPressGoToEvents = () => {

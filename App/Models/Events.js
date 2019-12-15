@@ -3,7 +3,7 @@ import Moment from 'moment';
 import { toUpperCaseFirsLetter } from '../Utils';
 
 const getClassesData = (listData = []) => {
-  return listData.map(objClass => {
+  const listClasses = listData.map(objClass => {
     const objSchedule = Lodash.get(objClass, ['schedule'], {});
     const objSubject = Lodash.get(objClass, ['subject'], {});
     const intFrom = Lodash.get(objSchedule, ['from'], 0);
@@ -20,11 +20,17 @@ const getClassesData = (listData = []) => {
       name: toUpperCaseFirsLetter(strSubjectName),
     };
   });
+
+  const listClassesOrdered = Lodash.orderBy(listClasses, ['from'], ['asc']);
+  return listClassesOrdered;
 };
 
 const getEventsData = (listData = []) => {
-  return listData.map(objEvent => {
+  const listEvents = listData.map(objEvent => {
     const objAuthor = Lodash.get(objEvent, ['author'], {});
+    const strFirstName = Lodash.get(objAuthor, ['firstName'], '');
+    const strLastName = Lodash.get(objAuthor, ['lastName'], '');
+    const strAvatarURL = Lodash.get(objAuthor, ['avatarURL'], '');
     const objSubject = Lodash.get(objEvent, ['subject'], {});
     const strSubjectName = Lodash.get(objSubject, ['name'], '');
     const strAuthorName = Lodash.get(objAuthor, ['name'], '');
@@ -39,15 +45,21 @@ const getEventsData = (listData = []) => {
       .format('HH:mm');
     const strSeparator = startDate && endDate ? '-' : '';
     const strTimeEvent = `${startDateFormatted} ${strSeparator} ${endDateFormatted}`;
+    const startTimeStamp = Moment(startDate).unix();
 
     return {
       ...objEvent,
+      startTimeStamp,
+      name: `${strFirstName} ${strLastName}`,
+      avatarURL: strAvatarURL,
       subject: toUpperCaseFirsLetter(strSubjectName),
       title: strTitle,
       author: strAuthorName,
       time: strTimeEvent,
     };
   });
+  const listEventsOrdered = Lodash.orderBy(listEvents, ['startTimeStamp'], ['asc']);
+  return listEventsOrdered;
 };
 
 const Events = {

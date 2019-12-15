@@ -147,7 +147,7 @@ class PostComments extends React.Component {
   };
 
   handlePostComment = body => {
-    const { userFirstName, userLastName, logger, userId, userEmail } = this.props;
+    const { userFirstName, userLastName, logger, userId, userEmail, userAvatarURI } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
     Api.AddComment(postId, { body })
@@ -164,6 +164,7 @@ class PostComments extends React.Component {
             email: `${userEmail}`,
             firstName: `${userFirstName}`,
             lastName: `${userLastName}`,
+            avatarURL: `${userAvatarURI}`,
             points: 0,
           };
           objCommentResponse.author = author;
@@ -210,6 +211,7 @@ class PostComments extends React.Component {
           onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
           badgeUri={item.authorBadgeUri}
           initialsText={item.authorInitials}
+          avatarUri={item.avatarUri}
           comment={item.body}
           isAuthor={userId === item.authorId}
           score={item.score}
@@ -301,6 +303,7 @@ PostComments.defaultProps = {
   userFirstName: null,
   userLastName: null,
   userEmail: null,
+  userAvatarURI: null,
 };
 
 PostComments.propTypes = {
@@ -308,6 +311,7 @@ PostComments.propTypes = {
   userFirstName: PropTypes.string,
   userLastName: PropTypes.string,
   userEmail: PropTypes.string,
+  userAvatarURI: PropTypes.string,
 };
 
 const mapStateToProps = (state, props) => {

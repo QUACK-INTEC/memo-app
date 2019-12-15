@@ -38,6 +38,8 @@ export const DELETE_COMMENT_SUCCESS = 'DELETE_COMMENT_SUCCESS';
 export const DELETE_COMMENT_FAILED = 'DELETE_COMMENT_FAILED';
 export const CREATE_COMMENT_SUCCESS = 'CREATE_COMMENT_SUCCESS';
 export const CREATE_COMMENT_FAILED = 'CREATE_COMMENT_FAILED';
+export const LOAD_EVENTS_SUCCESS = 'LOAD_EVENTS_SUCCESS';
+export const LOAD_EVENTS_FAILED = 'LOAD_EVENTS_FAILED';
 
 const getLoggerMessages = () => {
   return {
@@ -81,6 +83,8 @@ const getLoggerMessages = () => {
     [DELETE_COMMENT_FAILED]: null,
     [CREATE_COMMENT_SUCCESS]: null,
     [CREATE_COMMENT_FAILED]: null,
+    [LOAD_EVENTS_SUCCESS]: null,
+    [LOAD_EVENTS_FAILED]: null,
   };
 };
 

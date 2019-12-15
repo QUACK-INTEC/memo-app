@@ -1,34 +1,12 @@
-// TODO: Api
 import axios from 'axios';
 import { createFormDataPhoto } from '../../Utils';
-// import Lodash from 'lodash';
 
-// const HTTP_STATUS = {
-//   BAD_REQUEST: 400,
-//   UNAUTHORIZED: 401,
-//   CONFLICT: 409,
-// };
 const API_VERSION = 1;
 const API_HOST = `https://memo-staging.herokuapp.com/v${API_VERSION}`;
 
 export const MemoApi = axios.create({
   baseURL: API_HOST,
 });
-
-// TODO: Interceptor ?? to handle token??
-// MemoApi.interceptors.response.use(null, error => {
-//   const { response } = error;
-//   const status = Lodash.get(response, ['status'], null);
-//   // if (status === HTTP_STATUS.UNAUTHORIZED) {
-//   TokenRefresh()
-//     .then(objResponseToken => {
-//       console.log({ objResponseToken });
-//     })
-//     .catch(objError => {
-//       console.log({ objError });
-//     });
-//   // }
-// });
 
 const AuthCheck = () => {
   return MemoApi.get(`auth/check`);
@@ -135,6 +113,10 @@ const GetSectionResources = idSubject => {
   return MemoApi.get(`subjects/${idSubject}/resources`);
 };
 
+const GetEvents = strDate => {
+  return MemoApi.get(`/calendar/${strDate}?isPublic=true`);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -161,6 +143,7 @@ const Api = {
   DeleteComment,
   GetMyProfile,
   GetSectionResources,
+  GetEvents,
 };
 
 export default Api;

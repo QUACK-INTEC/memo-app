@@ -50,7 +50,7 @@ class PostInfo extends React.Component {
       logger,
     } = this.props;
     const id = getParam('id', {});
-    const subjectName = getParam('subjectName', {});
+    const subjectName = getParam('subjectName', '');
 
     this.setState({
       subjectName,

@@ -116,6 +116,7 @@ class Profile extends Component {
         numColumns={2}
         renderItem={this.renderSubject}
         keyExtractor={item => item.id}
+        scrollEnabled={false}
       />
     );
   };

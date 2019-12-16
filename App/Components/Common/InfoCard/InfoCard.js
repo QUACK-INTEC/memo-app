@@ -21,9 +21,13 @@ class InfoCard extends React.Component {
   };
 
   render() {
-    const { children, title, style, titleStyle } = this.props;
+    const { children, title, style, titleStyle, disabled } = this.props;
     return (
-      <TouchableOpacity style={[styles.buttonStyle, style]} onPress={this.handleOnPress}>
+      <TouchableOpacity
+        activeOpacity={disabled ? 1 : 0.2}
+        style={[styles.buttonStyle, style]}
+        onPress={this.handleOnPress}
+      >
         <Text.SemiBold
           text={title}
           style={[styles.titleStyle, titleStyle]}

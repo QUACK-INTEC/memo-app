@@ -17,7 +17,7 @@ class ViewProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
       studentName: null,
       studentMail: null,
       commonClasses: [],
@@ -87,6 +87,7 @@ class ViewProfile extends React.Component {
           subject={item.subjectName}
           professor={item.professorName}
           schedule={item.classDays}
+          disabled
           onPress={() => this.handleOnPressClassItem(item.id, item)}
         />
       </View>
@@ -120,6 +121,15 @@ class ViewProfile extends React.Component {
       memoPoints,
       rank,
     } = this.state;
+
+    if (isLoading) {
+      return (
+        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <LoadingState.Small isLoading={isLoading} />
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
         <ViewProfileComponent
@@ -134,7 +144,6 @@ class ViewProfile extends React.Component {
           onBackArrow={this.handleBackArrow}
         />
         <ClassesComponent renderClasses={this.renderClasses} />
-        <LoadingState.Small isLoading={isLoading} />
       </View>
     );
   }

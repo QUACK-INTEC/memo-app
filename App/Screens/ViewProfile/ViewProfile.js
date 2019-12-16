@@ -134,7 +134,7 @@ class ViewProfile extends React.Component {
           onBackArrow={this.handleBackArrow}
         />
         <ClassesComponent renderClasses={this.renderClasses} />
-        <LoadingState.Modal isLoading={isLoading} />
+        <LoadingState.Small isLoading={isLoading} />
       </View>
     );
   }

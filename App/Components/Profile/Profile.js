@@ -106,6 +106,7 @@ Profile.defaultProps = {
   studentMail: null,
   memoPoints: null,
   rank: null,
+  onEditUser: () => null,
 };
 
 Profile.propTypes = {
@@ -119,6 +120,7 @@ Profile.propTypes = {
   badgeUri: PropTypes.string,
   memoPoints: PropTypes.number,
   rank: PropTypes.string,
+  onEditUser: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

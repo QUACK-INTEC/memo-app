@@ -3,6 +3,7 @@ import { View, ViewPropTypes, StyleSheet, TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+// eslint-disable-next-line import/no-unresolved
 import { Appearance } from 'react-native-appearance';
 
 // Theme

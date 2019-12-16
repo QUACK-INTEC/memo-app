@@ -109,7 +109,7 @@ Profile.defaultProps = {
   studentMail: null,
   memoPoints: null,
   rank: null,
-  onEditUser: null,
+  onEditUser: () => null,
   renderClasses: null,
 };
 

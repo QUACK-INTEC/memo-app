@@ -53,7 +53,7 @@ class EventForm extends React.Component {
 
     if (hasFile) {
       if (attachments && attachments.length <= 0) {
-        errors.attachments = 'Necesita una fecha';
+        errors.attachments = 'Necesita almenos un documento';
       }
     }
 
@@ -106,6 +106,7 @@ class EventForm extends React.Component {
       dateTime: new Date(),
       startDate: null,
       title: null,
+      attachments: [],
       type: 'public',
     });
     if (isEditing) {

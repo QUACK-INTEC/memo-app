@@ -50,7 +50,7 @@ class PostInfo extends React.Component {
       logger,
     } = this.props;
     const id = getParam('id', {});
-    const subjectName = getParam('subjectName', {});
+    const subjectName = getParam('subjectName', '');
 
     this.setState({
       subjectName,
@@ -73,7 +73,7 @@ class PostInfo extends React.Component {
           const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
           const postAuthor = Lodash.get(objPostInfo, ['author'], {});
           const title = Lodash.get(objPostInfo, ['title'], '');
-          const section = Lodash.get(objPostInfo, ['section'], null);
+          const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const score = Lodash.get(objPostInfo, ['score'], 0);
           const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
@@ -90,6 +90,7 @@ class PostInfo extends React.Component {
           const formattedDate = startDate
             ? Moment(startDate)
                 .locale('es')
+                .utc()
                 .format('dddd DD, MMMM')
             : null;
           const formattedStartDate = startDate
@@ -175,7 +176,7 @@ class PostInfo extends React.Component {
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
-          const section = Lodash.get(objPostInfo, ['section'], null);
+          const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
 
           const authorName = `${authorFirstName} ${authorLastName}`;

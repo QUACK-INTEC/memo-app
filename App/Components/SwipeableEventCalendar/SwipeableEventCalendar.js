@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Swipeable from 'react-native-swipeable';
 
 // Theme
-import { spacers } from '../../Core/Theme';
+import { spacers, colors } from '../../Core/Theme';
 
 // Common
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
@@ -15,13 +15,23 @@ class SwipeableEventCalendar extends React.Component {
     super(props);
     this.rightContent = (
       <View style={styles.rightIconStyle}>
-        <Icon size={ICON_SIZE.SMALL} type={ICON_TYPE.MEMO_ICONS} name="like" />
+        <Icon
+          size={ICON_SIZE.SMALL}
+          type={ICON_TYPE.MEMO_ICONS}
+          name="thumb_up"
+          color={colors.GREEN}
+        />
       </View>
     );
 
     this.leftContent = (
       <View style={styles.leftIconStyle}>
-        <Icon size={ICON_SIZE.SMALL} type={ICON_TYPE.MEMO_ICONS} name="thumbs-down-silhouette" />
+        <Icon
+          size={ICON_SIZE.SMALL}
+          type={ICON_TYPE.MEMO_ICONS}
+          name="thumb_down"
+          color={colors.RED}
+        />
       </View>
     );
   }

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
-import { colors, spacers, toBaseDesignPx } from '../../Core/Theme';
+import { colors, spacers, toBaseDesignPx, fonts } from '../../Core/Theme';
 
 // Common
 import InLineComponent from '../Common/InLineComponent';
@@ -21,12 +21,21 @@ class SubjectCalendar extends React.Component {
   };
 
   render() {
-    const { subjectSchedule, subjectName } = this.props;
+    const { subjectSchedule, subjectName, disabled } = this.props;
     return (
-      <TouchableOpacity onPress={this.handleOnPress} style={styles.viewStyle}>
+      <TouchableOpacity
+        onPress={this.handleOnPress}
+        style={styles.viewStyle}
+        activeOpacity={disabled ? 1 : 0.2}
+      >
         <InLineComponent viewStyle={styles.inLineComponentStyle}>
           <Text.SemiBold text={subjectName} style={styles.subjectStyle} />
-          <Text.Light text={subjectSchedule} style={styles.scheduleStyle} />
+          <Text.Light
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            text={subjectSchedule}
+            style={styles.scheduleStyle}
+          />
         </InLineComponent>
       </TouchableOpacity>
     );
@@ -37,29 +46,28 @@ const styles = StyleSheet.create({
   viewStyle: {
     borderLeftWidth: toBaseDesignPx(7),
     borderLeftColor: colors.GREEN_LIGHT,
-    backgroundColor: 'rgba(120, 180, 145, 0.3)',
+    backgroundColor: colors.GREEN_OPACITY_LIGHT,
     borderBottomRightRadius: toBaseDesignPx(5),
     borderTopRightRadius: toBaseDesignPx(5),
   },
   inLineComponentStyle: {
+    ...spacers.ML_13,
+    ...spacers.MR_13,
+    flex: 1,
     justifyContent: 'space-between',
   },
   scheduleStyle: {
-    justifyContent: 'flex-end',
-    ...spacers.MR_8,
-    alignSelf: 'center',
     ...spacers.MT_14,
     ...spacers.MB_14,
     color: colors.GRAY,
   },
   subjectStyle: {
-    justifyContent: 'flex-start',
-    ...spacers.ML_13,
     alignSelf: 'center',
     color: colors.GRAY,
+    ...fonts.SIZE_XS,
     ...spacers.MT_14,
     ...spacers.MB_14,
-    width: toBaseDesignPx(220),
+    width: toBaseDesignPx(185),
   },
 });
 

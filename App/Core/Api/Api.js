@@ -60,6 +60,10 @@ const EditPost = (idPost, objForm) => {
   return MemoApi.put(`posts/${idPost}`, objForm);
 };
 
+const GetUserProfile = idUser => {
+  return MemoApi.get(`profile/${idUser}`);
+};
+
 const UploadProfilePicture = photo => {
   const formData = createFormDataPhoto(photo);
   return MemoApi.post('/upload/profile', formData, {
@@ -162,6 +166,7 @@ const Api = {
   DeleteComment,
   GetMyProfile,
   GetSectionResources,
+  GetUserProfile,
   GetEvents,
   UpvoteComment,
   DownvoteComment,

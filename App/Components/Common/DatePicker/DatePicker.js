@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react';
 import { View, ViewPropTypes, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
@@ -5,7 +6,6 @@ import Lodash from 'lodash';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { Appearance } from 'react-native-appearance';
-
 // Theme
 import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
@@ -127,6 +127,7 @@ class DatePickerComponent extends React.Component {
     if (colorScheme === 'dark') {
       darkMode = true;
     }
+
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}

@@ -1,9 +1,10 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react';
 import { View, ViewPropTypes, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-
+import { Appearance } from 'react-native-appearance';
 // Theme
 import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
@@ -120,6 +121,12 @@ class DatePickerComponent extends React.Component {
     const labelDate = `${DAYS[dateSelected.getDay()]} ${dateSelected.getDate()}, ${
       MONTHS[dateSelected.getMonth()]
     }`;
+    const colorScheme = Appearance.getColorScheme();
+    let darkMode = false;
+    if (colorScheme === 'dark') {
+      darkMode = true;
+    }
+
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
@@ -130,7 +137,7 @@ class DatePickerComponent extends React.Component {
             isVisible={visible}
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
-            isDarkModeEnabled
+            isDarkModeEnabled={darkMode}
             titleIOS={placeholder}
           />
           <Text.SemiBold text={labelDate} style={[this.getDatePickerStyle(), style]} />

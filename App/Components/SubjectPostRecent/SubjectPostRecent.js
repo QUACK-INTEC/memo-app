@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import Lodash from 'lodash';
 
 import InLineComponent from '../Common/InLineComponent';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
@@ -9,6 +8,18 @@ import Text from '../Common/Text';
 import { fonts, spacers, colors, toBaseDesignPx } from '../../Core/Theme';
 
 class SubjectPostRecent extends React.Component {
+  getTextSince = () => {
+    const { createdSince } = this.props;
+
+    if (createdSince === 0) {
+      return 'Creado hoy';
+    }
+    if (createdSince === 1) {
+      return `Hace ${createdSince} día`;
+    }
+    return `Hace ${createdSince} días`;
+  };
+
   renderSubjectInfo = () => {
     const { postTitle, postUser } = this.props;
     return (
@@ -30,14 +41,7 @@ class SubjectPostRecent extends React.Component {
   };
 
   renderTimeSinceText = () => {
-    const { createdSince } = this.props;
-
-    if (!Lodash.isNull(createdSince)) {
-      const sinceLabel = createdSince === 0 ? 'Creado hoy' : `Hace ${createdSince} días`;
-      return <Text.Light style={styles.dateCreatedText} text={sinceLabel} />;
-    }
-
-    return null;
+    return <Text.Light style={styles.dateCreatedText} text={this.getTextSince()} />;
   };
 
   renderSubjectDateInfo = () => {

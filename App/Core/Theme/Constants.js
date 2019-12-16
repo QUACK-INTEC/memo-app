@@ -33,5 +33,7 @@ const DEVICE = {
 const constants = {
   DEVICE,
   DESIGN_BASE_WIDTH,
+  isIOS,
+  isAndroid,
 };
 export default constants;

@@ -10,7 +10,7 @@ import ModalForm from '../ModalForm';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import Text from '../Common/Text';
-import { toBaseDesignPx, fonts, colors, spacers } from '../../Core/Theme';
+import { toBaseDesignPx, fonts, colors, spacers, constants } from '../../Core/Theme';
 import ToggleButton from '../Common/Toggle';
 
 class EventForm extends React.Component {
@@ -59,15 +59,17 @@ class EventForm extends React.Component {
     const titleText = isEditing ? 'Editar' : 'Crear';
     const hasADate = hasDate || (endDate && startDate);
     const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
+    const dinamicHeightAndroid = constants.isAndroid
+      ? { height: constants.DEVICE.HEIGHT / 2 }
+      : null;
     return (
       <>
         <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
         <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
           <ScrollView
             bounces={false}
-            alwaysBounceVertical={false}
-            automaticallyAdjustContentInsets={false}
-            contentInset={{ top: 0, bottom: contentInset }}
+            contentInset={{ bottom: contentInset }}
+            style={[{ flex: 1 }, dinamicHeightAndroid]}
           >
             <FormikInput
               type="dropdown"

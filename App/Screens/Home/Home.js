@@ -11,7 +11,7 @@ import Text from '../../Components/Common/Text';
 import Link from '../../Components/Common/Link';
 import HomeComponent from '../../Components/Home';
 import { colors, fonts, spacers } from '../../Core/Theme';
-import Api, { MemoApi } from '../../Core/Api';
+import Api, { MemoApi, RegisterForNotifications } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import ClassInfoCard from '../../Components/ClassInfoCard';
 import {
@@ -23,30 +23,78 @@ import {
   selectors as userManagerSelectors,
   actions as userActions,
 } from '../../Redux/Common/UserManager';
+import { selectors as EventFormSelectors } from '../EventForm/Redux';
 
-import { Classes } from '../../Models';
+import { Classes, Events } from '../../Models';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
+      isRefreshing: false,
     };
   }
 
-  componentDidMount() {
-    const { setMyClasses, logger, loggedIn, userToken } = this.props;
+  async componentDidMount() {
+    const { loggedIn, userToken } = this.props;
 
     if (loggedIn) {
       MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
     }
+    await RegisterForNotifications();
 
-    Promise.all([this.getMyClasses()])
+    this.fetchEventsAndClasses();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isModalVisible } = this.props;
+    if (prevProps.isModalVisible !== isModalVisible) {
+      return this.fetchEventsAndClasses();
+    }
+    return false;
+  }
+
+  getMyClasses = () => {
+    return Api.GetMyClasses();
+  };
+
+  getEventsForToday = () => {
+    const today = Moment().format('YYYYMMDD');
+    return Api.GetEvents(today, null, true);
+  };
+
+  getPrivatesEventsForToday = () => {
+    const today = Moment().format('YYYYMMDD');
+    return Api.GetEvents(today, null, false);
+  };
+
+  fetchEventsAndClasses = () => {
+    const { setMyClasses, logger } = this.props;
+
+    return Promise.all([
+      this.getMyClasses(),
+      this.getEventsForToday(),
+      this.getPrivatesEventsForToday(),
+    ])
       .then(listValues => {
-        this.setState({ isLoading: false });
-        const [objClassResponse] = listValues;
+        const [objClassResponse, objEventsResponse, objEventsPrivate] = listValues;
         const listMyClasses = Lodash.get(objClassResponse, ['data', 'data'], []);
+        const listEventsForToday = Lodash.get(objEventsResponse, ['data', 'events'], []);
+        const listPrivateEventsForToday = Lodash.get(objEventsPrivate, ['data', 'events'], []);
+        const listSubjectsForToday = Lodash.get(objEventsResponse, ['data', 'classes'], []);
         setMyClasses(listMyClasses);
+        const listPrivateEventFormatted = listPrivateEventsForToday.map(objEvent => {
+          return {
+            ...objEvent,
+            isPrivate: true,
+          };
+        });
+        this.setState({
+          isLoading: false,
+          subjects: listSubjectsForToday,
+          events: [...listEventsForToday, ...listPrivateEventFormatted],
+        });
         return logger.success({
           key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_SUCCESS,
           data: listValues,
@@ -61,18 +109,26 @@ class Home extends React.Component {
           });
         }, 800);
       });
-  }
-
-  getMyClasses = () => {
-    return Api.GetMyClasses();
   };
 
-  handleOnPressClassItem = (idSection, objSection) => {
+  handleOnPressClassItem = idSection => {
     const {
       navigation: { navigate },
     } = this.props;
 
-    return navigate('ClassHub', { id: idSection, sectionInfo: objSection });
+    return navigate('ClassHub', { id: idSection });
+  };
+
+  handleOnEventPress = objEvent => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const subjectName = Lodash.get(objEvent, ['subject'], null);
+
+    return navigate('PostInfo', {
+      id: Lodash.get(objEvent, ['id'], null),
+      subjectName,
+    });
   };
 
   handleOnMyCalendarPress = () => {
@@ -83,6 +139,108 @@ class Home extends React.Component {
     return navigate('Calendar');
   };
 
+  getEventsList = () => {
+    const { events } = this.state;
+    return Events.getEventsData(events);
+  };
+
+  getClassesList = () => {
+    const { subjects } = this.state;
+    return Events.getClassesData(subjects);
+  };
+
+  handleOnUpVote = postId => {
+    const { logger, toastRef } = this.props;
+    const currentToast = Lodash.get(toastRef, ['current'], null);
+    return Api.UpvotePost(postId)
+      .then(objResponse => {
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          currentToast.setToastVisible('Has votado exitosamente!', 1500);
+
+          logger.success({
+            key: MessagesKey.UPVOTE_POST_SUCCESS,
+            data: objResponse,
+          });
+          return true;
+        }
+        logger.error({
+          key: MessagesKey.UPVOTE_POST_FAILED,
+          data: objResponse,
+        });
+        return false;
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        setTimeout(() => {
+          logger.error({
+            key: MessagesKey.UPVOTE_POST_FAILED,
+            data: objError,
+          });
+        }, 800);
+        return false;
+      });
+  };
+
+  handleOnDownVote = postId => {
+    const { logger, toastRef } = this.props;
+    const currentToast = Lodash.get(toastRef, ['current'], null);
+    return Api.DownvotePost(postId)
+      .then(objResponse => {
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          currentToast.setToastVisible('Has votado exitosamente!', 1500);
+          logger.success({
+            key: MessagesKey.DOWNVOTE_POST_SUCCESS,
+            data: objResponse,
+          });
+          return true;
+        }
+        logger.error({
+          key: MessagesKey.DOWNVOTE_POST_FAILED,
+          data: objResponse,
+        });
+        return false;
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        setTimeout(() => {
+          logger.error({
+            key: MessagesKey.DOWNVOTE_POST_FAILED,
+            data: objError,
+          });
+        }, 800);
+        return false;
+      });
+  };
+
+  handleOnRefresh = () => {
+    return this.setState(
+      {
+        isRefreshing: true,
+      },
+      () => this.fetchEventsAndClasses().then(() => this.setState({ isRefreshing: false }))
+    );
+  };
+
+  handleOnSubjectPress = objSubject => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    const idSection = Lodash.get(objSubject, ['id'], null);
+    return navigate('ClassHub', { id: idSection });
+  };
+
+  handleOnEventUpVote = objEvent => {
+    const postId = Lodash.get(objEvent, ['id'], null);
+    return this.handleOnUpVote(postId);
+  };
+
+  handleOnEventDownVote = objEvent => {
+    const postId = Lodash.get(objEvent, ['id'], null);
+    return this.handleOnDownVote(postId);
+  };
+
   renderSubject = ({ item }) => {
     return (
       <View style={styles.myClassContainer}>
@@ -90,7 +248,7 @@ class Home extends React.Component {
           subject={item.subjectName}
           professor={item.professorName}
           schedule={item.classDays}
-          onPress={() => this.handleOnPressClassItem(item.id, item)}
+          onPress={() => this.handleOnPressClassItem(item.id)}
         />
       </View>
     );
@@ -109,6 +267,7 @@ class Home extends React.Component {
         numColumns={2}
         renderItem={this.renderSubject}
         keyExtractor={item => item.id}
+        scrollEnabled={false}
       />
     );
   };
@@ -133,14 +292,21 @@ class Home extends React.Component {
   };
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, isRefreshing } = this.state;
     return (
       <>
         <LoadingState.Modal isVisible={isLoading} />
         <HomeComponent
           actualMonth={Moment().format('MMMM YYYY')}
           renderSubjects={this.renderSubjects}
-          renderEvents={this.renderEvents}
+          events={this.getEventsList()}
+          subjects={this.getClassesList()}
+          refreshing={isRefreshing}
+          onRefresh={this.handleOnRefresh}
+          onEventPress={this.handleOnEventPress}
+          onSubjectPress={this.handleOnSubjectPress}
+          onEventDownVote={this.handleOnEventDownVote}
+          onEventUpVote={this.handleOnEventUpVote}
         />
       </>
     );
@@ -175,11 +341,13 @@ Home.propTypes = {
 const mapStateToProps = (state, props) => {
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
   const { isLogged, getUserToken } = userManagerSelectors;
+  const { getIsModalVisible } = EventFormSelectors;
   return {
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
     loggedIn: isLogged(state, props),
     userToken: getUserToken(state, props),
+    isModalVisible: getIsModalVisible(state, props),
   };
 };
 

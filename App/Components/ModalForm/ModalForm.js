@@ -19,10 +19,7 @@ class ModalForm extends React.Component {
       <Modal
         {...this.props}
         style={styles.modalContainer}
-        // onSwipeComplete={this.handleOnCloseModal}
         onBackdropPress={this.handleOnCloseModal}
-        // swipeDirection="down"
-        hideModalContentWhileAnimating
       >
         <View style={styles.modalViewContainer}>
           <Icon

@@ -11,6 +11,7 @@ import Event from '../SwipeableEventCalendar';
 import InLineComponent from '../Common/InLineComponent';
 import Subject from '../SubjectCalendar';
 import LoadingState from '../LoadingState';
+import Pill from '../FileInput/FilePill';
 
 class Calendar extends React.Component {
   leftText = () => {
@@ -155,12 +156,21 @@ class Calendar extends React.Component {
   };
 
   render() {
-    const { onGlobalPress, onPrivatePress, isLoading } = this.props;
+    const { onGlobalPress, onPrivatePress, isLoading, hasFilter, onQuitFilter } = this.props;
     return (
       <View style={styles.container}>
         {this.renderDatePicker()}
         <View style={{ ...spacers.ML_4, ...spacers.MR_4, flex: 1 }}>
-          <View style={{ alignItems: 'flex-end' }}>{this.renderInfoCalendar()}</View>
+          <View
+            style={{
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}
+          >
+            {hasFilter ? <Pill documentText="hola" onPress={onQuitFilter} /> : null}
+            <View style={{ alignItems: 'flex-end' }}>{this.renderInfoCalendar()}</View>
+          </View>
           {isLoading ? (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
               <LoadingState.Small />

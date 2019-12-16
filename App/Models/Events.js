@@ -31,7 +31,7 @@ const getEventsData = (listData = []) => {
     const strFirstName = Lodash.get(objAuthor, ['firstName'], '');
     const strLastName = Lodash.get(objAuthor, ['lastName'], '');
     const strAvatarURL = Lodash.get(objAuthor, ['avatarURL'], '');
-    const objSubject = Lodash.get(objEvent, ['subject'], {});
+    const objSubject = Lodash.get(objEvent, ['section', 'subject'], {});
     const strSubjectName = Lodash.get(objSubject, ['name'], '');
     const strAuthorName = Lodash.get(objAuthor, ['name'], '');
     const strTitle = Lodash.get(objEvent, ['title'], '');
@@ -47,6 +47,7 @@ const getEventsData = (listData = []) => {
     const strTimeEvent = `${startDateFormatted} ${strSeparator} ${endDateFormatted}`;
     const startTimeStamp = Moment(startDate).unix();
 
+    console.log({ objEvent });
     return {
       ...objEvent,
       startTimeStamp,

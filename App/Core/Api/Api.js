@@ -113,8 +113,11 @@ const GetSectionResources = idSubject => {
   return MemoApi.get(`subjects/${idSubject}/resources`);
 };
 
-const GetEvents = strDate => {
-  return MemoApi.get(`/calendar/${strDate}?isPublic=true`);
+const GetEvents = (strDate, sectionId, isPuplic) => {
+  if (sectionId) {
+    return MemoApi.get(`/calendar/${strDate}?isPublic=${isPuplic}&section=${sectionId}`);
+  }
+  return MemoApi.get(`/calendar/${strDate}?isPublic=${isPuplic}`);
 };
 
 const Api = {

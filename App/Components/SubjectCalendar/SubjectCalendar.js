@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 // Theme
-import { colors, spacers, toBaseDesignPx } from '../../Core/Theme';
+import { colors, spacers, toBaseDesignPx, fonts } from '../../Core/Theme';
 
 // Common
 import InLineComponent from '../Common/InLineComponent';
@@ -29,12 +29,7 @@ class SubjectCalendar extends React.Component {
         activeOpacity={disabled ? 1 : 0.2}
       >
         <InLineComponent viewStyle={styles.inLineComponentStyle}>
-          <Text.SemiBold
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            text={subjectName}
-            style={styles.subjectStyle}
-          />
+          <Text.SemiBold text={subjectName} style={styles.subjectStyle} />
           <Text.Light
             numberOfLines={2}
             ellipsizeMode="tail"
@@ -69,9 +64,10 @@ const styles = StyleSheet.create({
   subjectStyle: {
     alignSelf: 'center',
     color: colors.GRAY,
+    ...fonts.SIZE_XS,
     ...spacers.MT_14,
     ...spacers.MB_14,
-    width: toBaseDesignPx(180),
+    width: toBaseDesignPx(185),
   },
 });
 

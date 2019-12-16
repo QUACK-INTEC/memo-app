@@ -68,7 +68,7 @@ class Home extends React.Component {
 
   getEventsForToday = () => {
     const today = Moment().format('YYYYMMDD');
-    return Api.GetEvents(today);
+    return Api.GetEvents(today, null, true);
   };
 
   fetchEventsAndClasses = () => {
@@ -114,9 +114,11 @@ class Home extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
+    const subjectName = Lodash.get(objEvent, ['subject'], null);
+
     return navigate('PostInfo', {
       id: Lodash.get(objEvent, ['id'], null),
-      subjectName: 'Falta por mandar del API',
+      subjectName,
     });
   };
 
@@ -256,6 +258,7 @@ class Home extends React.Component {
         numColumns={2}
         renderItem={this.renderSubject}
         keyExtractor={item => item.id}
+        scrollEnabled={false}
       />
     );
   };

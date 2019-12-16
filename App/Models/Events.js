@@ -45,9 +45,10 @@ const getEventsData = (listData = []) => {
       .format('HH:mm');
     const strSeparator = startDate && endDate ? '-' : '';
     const strTimeEvent = `${startDateFormatted} ${strSeparator} ${endDateFormatted}`;
-    const startTimeStamp = Moment(startDate).unix();
+    const startTimeStamp = Moment(startDate)
+      .utc()
+      .unix();
 
-    console.log({ objEvent });
     return {
       ...objEvent,
       startTimeStamp,

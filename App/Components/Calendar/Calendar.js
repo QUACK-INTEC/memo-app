@@ -15,7 +15,7 @@ import Pill from '../FileInput/FilePill';
 
 class Calendar extends React.Component {
   leftText = () => {
-    return <Text.Medium text="Global" style={styles.textGlobal} />;
+    return <Text.Medium text="Publico" style={styles.textGlobal} />;
   };
 
   rightText = () => {
@@ -65,7 +65,7 @@ class Calendar extends React.Component {
   };
 
   renderEvent = ({ item }) => {
-    const { onEventPress, onEventDownVote, onEventUpVote } = this.props;
+    const { onEventPress, onEventDownVote, onEventUpVote, showingPrivate } = this.props;
 
     return (
       <Event
@@ -77,6 +77,7 @@ class Calendar extends React.Component {
         onLeftSwipe={() => onEventDownVote(item)}
         onRightSwipe={() => onEventUpVote(item)}
         avatarUri={item.avatarURL}
+        isPrivate={showingPrivate}
       />
     );
   };
@@ -156,7 +157,15 @@ class Calendar extends React.Component {
   };
 
   render() {
-    const { onGlobalPress, onPrivatePress, isLoading, hasFilter, onQuitFilter } = this.props;
+    const {
+      onGlobalPress,
+      onPrivatePress,
+      isLoading,
+      hasFilter,
+      onQuitFilter,
+      filterLabel,
+      showingPrivate,
+    } = this.props;
     return (
       <View style={styles.container}>
         {this.renderDatePicker()}
@@ -166,10 +175,11 @@ class Calendar extends React.Component {
               justifyContent: 'flex-end',
               alignItems: 'center',
               flexDirection: 'row',
+              ...spacers.MT_3,
             }}
           >
-            {hasFilter ? <Pill documentText="hola" onPress={onQuitFilter} /> : null}
-            <View style={{ alignItems: 'flex-end' }}>{this.renderInfoCalendar()}</View>
+            {hasFilter ? <Pill documentText={filterLabel} onPress={onQuitFilter} /> : null}
+            <View style={{ ...spacers.ML_10 }}>{this.renderInfoCalendar()}</View>
           </View>
           {isLoading ? (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
@@ -186,8 +196,10 @@ class Calendar extends React.Component {
             rightChild={this.rightText}
             onLeftPress={onGlobalPress}
             onRightPress={onPrivatePress}
-            leftButtonStyle={{ backgroundColor: colors.WHITE }}
-            rightButtonStyle={{ backgroundColor: colors.WHITE }}
+            leftButtonStyle={{ backgroundColor: showingPrivate ? colors.WHITE : colors.GRAY_LIGHT }}
+            rightButtonStyle={{
+              backgroundColor: showingPrivate ? colors.GRAY_LIGHT : colors.WHITE,
+            }}
           />
         </View>
       </View>
@@ -211,10 +223,10 @@ const styles = StyleSheet.create({
     ...spacers.MR_1,
   },
   textPrivate: {
-    color: colors.ORANGE_LIGHT,
+    color: colors.ORANGE,
   },
   textGlobal: {
-    color: colors.PURPLE_LIGHT,
+    color: colors.PURPLE,
   },
   biButtonContainer: {
     position: 'absolute',
@@ -242,6 +254,8 @@ const styles = StyleSheet.create({
 Calendar.defaultProps = {
   events: null,
   subjects: null,
+  filterLabel: '',
+  showingPrivate: false,
 };
 
 Calendar.propTypes = {
@@ -257,6 +271,10 @@ Calendar.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   refreshing: PropTypes.bool.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  hasFilter: PropTypes.bool.isRequired,
+  onQuitFilter: PropTypes.func.isRequired,
+  filterLabel: PropTypes.string,
+  showingPrivate: PropTypes.bool,
 };
 
 export default Calendar;

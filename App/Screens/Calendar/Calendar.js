@@ -8,9 +8,18 @@ import { Events } from '../../Models';
 import Api from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import { selectors as EventFormSelectors } from '../EventForm/Redux';
-import Pill from '../../Components/FileInput/FilePill';
 
 class Calendar extends React.Component {
+  static getDerivedStateFromProps(props) {
+    const sectionId = props.navigation.getParam('sectionId', null);
+    const subjectName = props.navigation.getParam('subjectName', null);
+
+    if (sectionId && props.navigation.state.params.sectionId) {
+      return { sectionId, subjectName };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -18,20 +27,21 @@ class Calendar extends React.Component {
       subjects: [],
       isLoading: true,
       isRefreshing: false,
-      selectedDate: null,
+      selectedDate: Moment().format('YYYYMMDD'),
       sectionId: null,
+      subjectName: null,
+      showingPrivateEvents: false,
+      isPublic: true,
     };
   }
 
   componentDidMount() {
     const {
-      navigation: { addListener, getParam },
+      navigation: { addListener },
     } = this.props;
 
-    const strSectionId = getParam('sectionId', null);
     const today = Moment().format('YYYYMMDD');
     this.setState({
-      selectedDate: Moment().format('YYYYMMDD'),
       isLoading: true,
       sectionId: null,
     });
@@ -39,43 +49,33 @@ class Calendar extends React.Component {
     this.focusListener = addListener('didFocus', () => {
       const { selectedDate } = this.state;
       if (selectedDate) {
-        return this.fetchEvents(selectedDate, strSectionId, true);
+        return this.fetchEvents(selectedDate);
       }
-      return this.fetchEvents(today, strSectionId, true);
+      return this.fetchEvents(today);
     });
   }
 
-  // TODO: Handle when you go to calendar from classhub filter
-  // TODO: Reset filter
-  // TODO: Check all user cases 
-  componentDidUpdate(prevProps) {
-    const { selectedDate, sectionId } = this.state;
-    const {
-      isModalVisible,
-      navigation: { getParam, addListener },
-    } = this.props;
-    const strSectionId = getParam('sectionId', null);
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedDate, isPublic } = this.state;
+    const { isModalVisible } = this.props;
 
-    if (prevProps.isModalVisible !== isModalVisible) {
-      return this.fetchEvents(selectedDate, strSectionId, false);
+    if (prevProps.isModalVisible !== isModalVisible || prevState.isPublic !== isPublic) {
+      return this.fetchEvents(selectedDate);
     }
-
-    this.focusListener = addListener('didFocus', () => {
-      const today = Moment().format('YYYYMMDD');
-      if (selectedDate) {
-        return this.fetchEvents(selectedDate, strSectionId, true);
-      }
-      return this.fetchEvents(today, strSectionId, true);
-    });
-    return false;
+    return null;
   }
 
-  getEvents = (strDate, sectionId, isPublic = true) => {
+  getEvents = strDate => {
+    const { isPublic, sectionId } = this.state;
     return Api.GetEvents(strDate, sectionId, isPublic);
   };
 
-  fetchEvents = (strDate, sectionId, isPublic = true) => {
+  fetchEvents = (strDate, isPublic = true) => {
     const { logger } = this.props;
+    const { sectionId } = this.state;
+    this.setState({
+      isLoading: true,
+    });
     return this.getEvents(strDate, sectionId, isPublic)
       .then(objResponse => {
         const listEvents = Lodash.get(objResponse, ['data', 'events'], []);
@@ -84,7 +84,6 @@ class Calendar extends React.Component {
           events: listEvents,
           subjects: listSubjects,
           isLoading: false,
-          sectionId,
         });
         return logger.success({
           key: MessagesKey.LOAD_EVENTS_SUCCESS,
@@ -124,6 +123,7 @@ class Calendar extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
+
     const idSection = Lodash.get(objSubject, ['id'], null);
     const subjectName = Lodash.get(objSubject, ['subject'], null);
     return navigate('ClassHub', { id: idSection, subjectName });
@@ -133,9 +133,11 @@ class Calendar extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
+    const subjectName = Lodash.get(objEvent, ['subject'], null);
+
     return navigate('PostInfo', {
       id: Lodash.get(objEvent, ['id'], null),
-      subjectName: 'Falta por mandar del API',
+      subjectName,
     });
   };
 
@@ -215,25 +217,53 @@ class Calendar extends React.Component {
   };
 
   handleOnRefresh = () => {
-    const { selectedDate, strSectionId, isPublic } = this.state;
+    const { selectedDate } = this.state;
     return this.setState(
       {
         isRefreshing: true,
+        sectionId: null,
       },
-      () =>
-        this.fetchEvents(selectedDate, strSectionId, isPublic).then(() =>
-          this.setState({ isRefreshing: false })
-        )
+      () => this.fetchEvents(selectedDate).then(() => this.setState({ isRefreshing: false }))
     );
   };
 
+  handleOnQuitFilter = () => {
+    const {
+      navigation: { setParams },
+    } = this.props;
+    const { selectedDate } = this.state;
+
+    setParams({ sectionId: null });
+    this.setState(
+      {
+        sectionId: null,
+      },
+      () => this.fetchEvents(selectedDate)
+    );
+  };
+
+  handleOnGlobalPress = () => {
+    this.setState({
+      isPublic: true,
+      showingPrivateEvents: false,
+    });
+  };
+
+  handleOnPrivatePress = () => {
+    this.setState({
+      isPublic: false,
+      showingPrivateEvents: true,
+    });
+  };
+
   render() {
-    const { isLoading, isRefreshing, sectionId } = this.state;
+    const { isLoading, isRefreshing, sectionId, subjectName, showingPrivateEvents } = this.state;
     return (
       <>
         <CalendarComponent
-          onGlobalPress={() => null}
-          onPrivatePress={() => null}
+          showingPrivate={showingPrivateEvents}
+          onGlobalPress={this.handleOnGlobalPress}
+          onPrivatePress={this.handleOnPrivatePress}
           onDateChange={this.handleOnDateChange}
           events={this.getEventsList()}
           subjects={this.getClassesList()}
@@ -244,8 +274,9 @@ class Calendar extends React.Component {
           onEventUpVote={this.handleOnEventUpVote}
           refreshing={isRefreshing}
           onRefresh={this.handleOnRefresh}
-          hasFilter={sectionId}
-          onQuitFilter={() => this.setState({ sectionId: null })}
+          hasFilter={!!sectionId}
+          onQuitFilter={this.handleOnQuitFilter}
+          filterLabel={subjectName}
         />
       </>
     );

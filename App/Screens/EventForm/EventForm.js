@@ -106,6 +106,7 @@ class EventForm extends React.Component {
       dateTime: new Date(),
       startDate: null,
       title: null,
+      attachments: [],
       type: 'public',
     });
     if (isEditing) {

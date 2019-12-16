@@ -37,19 +37,11 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      loggedIn,
-      userToken,
-      navigation: { addListener },
-    } = this.props;
+    const { loggedIn, userToken } = this.props;
 
     if (loggedIn) {
       MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
     }
-
-    this.focusListener = addListener('didFocus', () => {
-      return this.fetchEventsAndClasses();
-    });
 
     this.fetchEventsAndClasses();
   }
@@ -71,20 +63,36 @@ class Home extends React.Component {
     return Api.GetEvents(today, null, true);
   };
 
+  getPrivatesEventsForToday = () => {
+    const today = Moment().format('YYYYMMDD');
+    return Api.GetEvents(today, null, false);
+  };
+
   fetchEventsAndClasses = () => {
     const { setMyClasses, logger } = this.props;
 
-    return Promise.all([this.getMyClasses(), this.getEventsForToday()])
+    return Promise.all([
+      this.getMyClasses(),
+      this.getEventsForToday(),
+      this.getPrivatesEventsForToday(),
+    ])
       .then(listValues => {
-        const [objClassResponse, objEventsResponse] = listValues;
+        const [objClassResponse, objEventsResponse, objEventsPrivate] = listValues;
         const listMyClasses = Lodash.get(objClassResponse, ['data', 'data'], []);
         const listEventsForToday = Lodash.get(objEventsResponse, ['data', 'events'], []);
+        const listPrivateEventsForToday = Lodash.get(objEventsPrivate, ['data', 'events'], []);
         const listSubjectsForToday = Lodash.get(objEventsResponse, ['data', 'classes'], []);
         setMyClasses(listMyClasses);
+        const listPrivateEventFormatted = listPrivateEventsForToday.map(objEvent => {
+          return {
+            ...objEvent,
+            isPrivate: true,
+          };
+        });
         this.setState({
           isLoading: false,
           subjects: listSubjectsForToday,
-          events: listEventsForToday,
+          events: [...listEventsForToday, ...listPrivateEventFormatted],
         });
         return logger.success({
           key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_SUCCESS,

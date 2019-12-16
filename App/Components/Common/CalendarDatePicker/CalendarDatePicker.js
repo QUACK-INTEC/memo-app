@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import CalendarStrip from 'react-native-calendar-strip';
+// import CalendarStrip from 'react-native-slideable-calendar-strip';
 
 import Moment from 'moment';
 import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';

@@ -50,6 +50,7 @@ class Home extends React.Component {
         onRightSwipe={() => onEventUpVote(item)}
         onPress={() => onEventPress(item)}
         avatarUri={item.avatarURL}
+        isPrivate={item.isPrivate}
       />
     );
   };

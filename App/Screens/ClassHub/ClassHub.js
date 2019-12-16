@@ -144,11 +144,12 @@ class ClassHub extends React.Component {
   };
 
   handleOnPressGoToEvents = () => {
+    const { subjectName } = this.state;
     const {
       navigation: { navigate },
     } = this.props;
     const { idSection } = this.state;
-    navigate('Calendar', { sectionId: idSection });
+    navigate('Calendar', { sectionId: idSection, subjectName });
   };
 
   handleOnPressGoToParticipants = () => {

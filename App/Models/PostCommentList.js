@@ -7,7 +7,14 @@ const getPostCommentsData = listData => {
   return listData.map(objClass => {
     const AuthorFirstName = Lodash.get(objClass, ['author', 'firstName'], ' ');
     const AuthorLastName = Lodash.get(objClass, ['author', 'lastName'], ' ');
+    const AuthorFullName = Lodash.get(
+      objClass,
+      'authorFullName',
+      `${AuthorFirstName} ${AuthorLastName}`
+    );
     const authorId = Lodash.get(objClass, ['author', 'id'], ' ');
+    const avatarURL = Lodash.get(objClass, 'avatarUri', null);
+    const avatarUri = Lodash.get(objClass, ['author', 'avatarURL'], avatarURL);
     const authorBadgeUri = Lodash.get(
       objClass,
       ['author', 'badgeURL'],
@@ -17,11 +24,12 @@ const getPostCommentsData = listData => {
 
     return {
       ...objClass,
-      author: `${AuthorFirstName} ${AuthorLastName}`,
+      authorFullName: AuthorFullName,
       authorBadgeUri,
       currentUserReaction,
       authorInitials: `${AuthorFirstName[0]}${AuthorLastName[0]}`,
       authorId,
+      avatarUri,
     };
   });
 };

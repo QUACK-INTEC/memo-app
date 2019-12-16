@@ -120,6 +120,22 @@ const GetEvents = (strDate, sectionId, isPuplic) => {
   return MemoApi.get(`/calendar/${strDate}?isPublic=${isPuplic}`);
 };
 
+const UpvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/upvote`);
+};
+
+const DownvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/downvote`);
+};
+
+const ResetvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/resetvote`);
+};
+
+const RegisterForNotifications = pushToken => {
+  return MemoApi.post(`notifications/register`, { pushToken });
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -147,6 +163,10 @@ const Api = {
   GetMyProfile,
   GetSectionResources,
   GetEvents,
+  UpvoteComment,
+  DownvoteComment,
+  ResetvoteComment,
+  RegisterForNotifications,
 };
 
 export default Api;

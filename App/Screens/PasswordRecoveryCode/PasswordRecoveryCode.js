@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
+import Api, { MemoApi } from '../../Core/Api';
+import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 
 import PasswordRecoveryCodeForm from '../../Components/PasswordRecoveryCode';
 
@@ -9,42 +12,72 @@ class PasswordRecoveryCode extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      email: '',
     };
+  }
+
+  componentDidMount() {
+    const {
+      navigation: { getParam },
+    } = this.props;
+    const email = getParam('email', '');
+
+    this.setState({
+      email,
+    });
   }
 
   setLoading = isLoading => {
     return this.setState({ isLoading });
   };
 
-  handleSubmit = () => {
+  handleSubmit = objValues => {
     const {
       navigation: { navigate },
+      logger,
     } = this.props;
-    return navigate('ChangePassword');
+    const { email } = this.state;
+    let password = Lodash.get(objValues, 'password', '');
+    password = password.toLowerCase();
 
-    // USE THIS WHEN API READY
-    // const { logger, navitagion: { navigate } } = this.props;
-    // this.setLoading(true);
+    const otpObject = {
+      password,
+      email,
+    };
 
-    // return Api.ValidateRecoveryCode(objValues)
-    //   .then(objResponse => {
-    //     logger.success({
-    //       key: MessagesKey.RECOVERY_CODE_SUCCESS,
-    //       data: objResponse,
-    //     });
+    this.setLoading(true);
 
-    //     return navigate('PasswordRecoveryCode');
-    //   })
-    //   .catch(objError => {
-    //     this.setLoading(false);
+    return Api.ValidateRecoveryCode(otpObject)
+      .then(objResponse => {
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          const strToken = Lodash.get(objResponse, ['data', 'token'], null);
+          const objUserInfo = Lodash.get(objResponse, ['data', 'user'], null);
+          MemoApi.defaults.headers.common.Authorization = `Bearer ${strToken}`;
+          logger.success({
+            key: MessagesKey.RECOVERY_CODE_SUCCESS,
+            data: objResponse,
+          });
 
-    //     return setTimeout(() => {
-    //       logger.error({
-    //         key: MessagesKey.RECOVERY_CODE_FAIL,
-    //         data: objError,
-    //       });
-    //     }, 1000);
-    //   });
+          this.setLoading(false);
+          return navigate('ChangePassword', { token: strToken, userInfo: objUserInfo });
+        }
+        this.setLoading(false);
+        return logger.error({
+          key: MessagesKey.RECOVERY_CODE_FAIL,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setLoading(false);
+
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.RECOVERY_CODE_FAIL,
+            data: objError,
+          });
+        }, 1000);
+      });
   };
 
   handleOnPressGoBack = () => {
@@ -77,4 +110,4 @@ PasswordRecoveryCode.propTypes = {
   initialsValue: PropTypes.shape({}),
 };
 
-export default PasswordRecoveryCode;
+export default WithLogger(PasswordRecoveryCode);

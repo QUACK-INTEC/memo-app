@@ -78,6 +78,7 @@ class Calendar extends React.Component {
         avatarUri={item.avatarURL}
         isPrivate={showingPrivate}
         badgeUri={item.badgeUri}
+        initialsText={item.initials}
       />
     );
   };

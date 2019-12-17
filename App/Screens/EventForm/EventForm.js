@@ -20,13 +20,13 @@ class EventForm extends React.Component {
     this.state = {
       confirmationPopupVisible: false,
       confirmationPopupMessage: null,
+      isSubmiting: false,
     };
   }
 
   getValidation = objValues => {
     const errors = {};
     const section = Lodash.get(objValues, ['section'], null);
-    const description = Lodash.get(objValues, ['description'], null);
     const title = Lodash.get(objValues, ['title'], null);
     const endDate = Lodash.get(objValues, ['endDate'], null);
     const startDate = Lodash.get(objValues, ['startDate'], null);
@@ -36,10 +36,6 @@ class EventForm extends React.Component {
 
     if (!title) {
       errors.title = 'Campo obligatorio';
-    }
-
-    if (!description) {
-      errors.description = 'Campo obligatorio';
     }
 
     if (!section) {
@@ -119,7 +115,6 @@ class EventForm extends React.Component {
 
   handleOnSubmitForm = objValues => {
     const { isEditing } = this.props;
-
     const { logger, MessagesKey } = this.props;
 
     const {
@@ -141,7 +136,7 @@ class EventForm extends React.Component {
         : Moment(dateTime);
     const momentStartTime = Moment(startTime);
     const momentEndTime = Moment(endTime);
-
+    this.setState({ isSubmiting: true });
     const startDate = new Date(
       Date.UTC(
         momentDateSelected.year(),
@@ -168,8 +163,14 @@ class EventForm extends React.Component {
       if (Lodash.isNull(objFile.id)) {
         return objFile;
       }
+
+      if (isEditing && !Lodash.isNull(objFile.id)) {
+        return objFile;
+      }
+
       return null;
     });
+
     const objPayload = {
       title,
       description,
@@ -186,10 +187,16 @@ class EventForm extends React.Component {
           const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(
             file => file.id
           );
+
           objPayload.attachments = newAttachments;
-          return this.handleCreatePost(objPayload);
+
+          return isEditing
+            ? this.handleEditPost(postId, objPayload)
+            : this.handleCreatePost(objPayload);
         })
         .catch(objError => {
+          this.setState({ isSubmiting: false });
+
           return setTimeout(() => {
             logger.error({
               key: MessagesKey.CREATE_POST_FAILED,
@@ -209,6 +216,8 @@ class EventForm extends React.Component {
       .then(objResponse => {
         current.setToastVisible(GAMIFICATION_MSG(50));
         this.handleOnCloseModal();
+        this.setState({ isSubmiting: false });
+
         setTimeout(() => {
           this.setState({
             confirmationPopupMessage: 'Publicación creada exitosamente',
@@ -222,6 +231,8 @@ class EventForm extends React.Component {
       })
       .catch(objError => {
         this.handleOnCloseModal();
+        this.setState({ isSubmiting: false });
+
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.CREATE_POST_FAILED,
@@ -236,12 +247,15 @@ class EventForm extends React.Component {
     return Api.EditPost(idPost, objPayload)
       .then(objResponse => {
         this.handleOnCloseModal();
+        this.setState({ isSubmiting: false });
         return logger.success({
           key: MessagesKey.EDIT_POST_SUCCESS,
           data: objResponse,
         });
       })
       .catch(objError => {
+        this.setState({ isSubmiting: false });
+
         this.handleOnCloseModal();
         return setTimeout(() => {
           logger.error({
@@ -253,7 +267,7 @@ class EventForm extends React.Component {
   };
 
   renderEventForm = () => {
-    const { confirmationPopupVisible, confirmationPopupMessage } = this.state;
+    const { confirmationPopupVisible, confirmationPopupMessage, isSubmiting } = this.state;
     const { isModalVisible, isEditing } = this.props;
 
     if (confirmationPopupVisible) {
@@ -277,6 +291,7 @@ class EventForm extends React.Component {
           onCloseModal={this.handleOnCloseModal}
           isVisible={isModalVisible}
           onSubmit={this.handleOnSubmitForm}
+          isSubmiting={isSubmiting}
           initialValues={this.getInitialsValue()}
           validation={this.getValidation}
           isEditing={isEditing}

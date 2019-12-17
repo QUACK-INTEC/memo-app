@@ -55,7 +55,12 @@ class EventCalendar extends React.Component {
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
           />
-          <Text.Medium text={author} style={styles.authorStyle} />
+          <Text.Medium
+            text={author}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.authorStyle}
+          />
           <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
         </InLineComponent>
       </TouchableOpacity>

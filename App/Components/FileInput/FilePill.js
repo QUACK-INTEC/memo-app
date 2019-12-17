@@ -19,6 +19,9 @@ class FilePill extends React.Component {
     if (documentType && documentText.length > MAXLENGTH) {
       return `${documentText.substring(0, MAXLENGTH)}...${documentType}`;
     }
+    if (documentText.length > MAXLENGTH) {
+      return `${documentText.substring(0, MAXLENGTH)}...`;
+    }
     return `${documentText}`;
   };
 

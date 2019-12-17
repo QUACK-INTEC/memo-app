@@ -118,7 +118,11 @@ class DatePickerComponent extends React.Component {
     const { visible } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
     const today = new Date();
-    const dateSelected = value instanceof Date ? value : today;
+    const dateSelected =
+      value instanceof Date
+        ? new Date(value.getTime() + value.getTimezoneOffset() * 60 * 1000)
+        : today;
+    console.log(dateSelected);
     const labelDate = `${DAYS[dateSelected.getDay()]} ${dateSelected.getDate()}, ${
       MONTHS[dateSelected.getMonth()]
     }`;

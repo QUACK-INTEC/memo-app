@@ -66,7 +66,6 @@ class Calendar extends React.Component {
 
   renderEvent = ({ item }) => {
     const { onEventPress, onEventDownVote, onEventUpVote, showingPrivate } = this.props;
-
     return (
       <Event
         subjectName={item.subject}
@@ -78,6 +77,7 @@ class Calendar extends React.Component {
         onRightSwipe={() => onEventUpVote(item)}
         avatarUri={item.avatarURL}
         isPrivate={showingPrivate}
+        badgeUri={item.badgeUri}
       />
     );
   };

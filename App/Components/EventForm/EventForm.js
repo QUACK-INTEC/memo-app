@@ -11,13 +11,11 @@ import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import Text from '../Common/Text';
 import { toBaseDesignPx, fonts, colors, spacers, constants } from '../../Core/Theme';
-import ToggleButton from '../Common/Toggle';
 
 class EventForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      canAddFile: false,
       contentInsetBottom: 100,
     };
   }
@@ -31,7 +29,6 @@ class EventForm extends React.Component {
     const { setFieldValue } = objForm;
     setFieldValue('hasFile', isOn);
     this.setState(prevState => ({
-      canAddFile: isOn,
       contentInsetBottom: isOn
         ? prevState.contentInsetBottom + 50
         : prevState.contentInsetBottom - 50,
@@ -52,10 +49,10 @@ class EventForm extends React.Component {
   };
 
   renderForm = objForm => {
-    const { canAddFile, contentInsetBottom } = this.state;
+    const { contentInsetBottom } = this.state;
     const { optionsClasses, isEditing } = this.props;
     const { values } = objForm;
-    const { startDate, endDate, hasDate } = values;
+    const { startDate, endDate, hasDate, hasFile } = values;
     const titleText = isEditing ? 'Editar' : 'Crear';
     const hasADate = hasDate || (endDate && startDate);
     const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
@@ -147,14 +144,15 @@ class EventForm extends React.Component {
               </View>
             ) : null}
             <View style={styles.containerToggleInput}>
-              <ToggleButton
+              <FormikInput
+                type="toggle"
                 label="Anexar archivo?"
-                onChange={isOn => this.handleOnToggleAddFile(isOn, objForm)}
+                name="hasFile"
                 labelStyle={styles.labelToggleInput}
               />
             </View>
 
-            {canAddFile ? (
+            {hasFile ? (
               <FormikInput
                 type="fileinput"
                 labelStyle={styles.labelStyle}

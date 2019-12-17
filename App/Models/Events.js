@@ -33,9 +33,9 @@ const getEventsData = (listData = []) => {
     const strAvatarURL = Lodash.get(objAuthor, ['avatarURL'], '');
     const objSubject = Lodash.get(objEvent, ['section', 'subject'], {});
     const strSubjectName = Lodash.get(objSubject, ['name'], '');
-    const strAuthorName = Lodash.get(objAuthor, ['name'], '');
     const strTitle = Lodash.get(objEvent, ['title'], '');
     const startDate = Lodash.get(objEvent, ['startDate'], null);
+    const badgeUri = Lodash.get(objEvent, ['author', 'rank', 'badgeUrl'], '');
     const endDate = Lodash.get(objEvent, ['endDate'], null);
     const startDateFormatted = Moment(startDate)
       .utc()
@@ -56,8 +56,8 @@ const getEventsData = (listData = []) => {
       avatarURL: strAvatarURL,
       subject: toUpperCaseFirsLetter(strSubjectName),
       title: strTitle,
-      author: strAuthorName,
       time: strTimeEvent,
+      badgeUri,
     };
   });
   const listEventsOrdered = Lodash.orderBy(listEvents, ['startTimeStamp'], ['asc']);

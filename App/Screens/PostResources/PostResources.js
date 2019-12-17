@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import Lodash from 'lodash';
+import { Linking } from 'expo';
 import LoadingState from '../../Components/LoadingState';
 
 import PostResourcesComponent from '../../Components/PostResources';
 import PostResource from '../../Components/PostResourceRecent';
-import { spacers, colors } from '../../Core/Theme';
+import { spacers, colors, constants } from '../../Core/Theme';
 import { TeacherResources as PostResourcesList } from '../../Models';
 import Text from '../../Components/Common/Text';
 
@@ -36,14 +37,27 @@ class PostResources extends React.Component {
     });
   }
 
+  openFileOnWeb = resourceURI => {
+    Linking.canOpenURL(resourceURI).then(supported => {
+      if (supported) {
+        Linking.openURL(resourceURI);
+      }
+    });
+  };
+
   handleOnPressResourceItem = objResourceID => {
     const {
       navigation: { navigate },
     } = this.props;
+    const resourceURI = Lodash.get(objResourceID, ['fileURL'], null);
 
-    navigate('ViewResource', {
+    if (constants.isAndroid) {
+      return this.openFileOnWeb(resourceURI);
+    }
+
+    return navigate('ViewResource', {
       resourceName: Lodash.get(objResourceID, ['name'], null),
-      resourceURI: Lodash.get(objResourceID, ['fileURL'], null),
+      resourceURI,
     });
   };
 

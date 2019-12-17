@@ -38,14 +38,12 @@ class ViewProfile extends React.Component {
     this.getUserProfile(userId)
       .then(objClassResponse => {
         const userProfile = Lodash.get(objClassResponse, ['data', 'user'], {});
-        const studentName = `${Lodash.get(userProfile, 'firstName', '')} ${Lodash.get(
-          userProfile,
-          'lastName',
-          ''
-        )}`;
+        const firstName = Lodash.get(userProfile, 'firstName', '');
+        const lastName = Lodash.get(userProfile, 'lastName', '');
+        const studentName = `${firstName} ${lastName}`;
         const studentMail = Lodash.get(userProfile, 'email', '');
-        const avatarUri = Lodash.get(userProfile, 'avatarURL', {});
-        const avatarInitialsText = Lodash.get(userProfile, 'avatarInitialsText', {});
+        const avatarUri = Lodash.get(userProfile, 'avatarURL', null);
+        const avatarInitialsText = `${firstName[0]}${lastName[0]}`;
         const memoPoints = Lodash.get(userProfile, ['points'], 0);
         const badgeUri = Lodash.get(userProfile, ['rank', 'badgeUrl'], '');
         const rank = Lodash.get(userProfile, ['rank', 'name'], '');

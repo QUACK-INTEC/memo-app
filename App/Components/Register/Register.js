@@ -16,13 +16,13 @@ const validation = objValues => {
 
   if (!firstName) {
     errors.firstName = 'Campo obligatorio';
-  } else if (!/^[a-zA-Z]+$/.test(firstName)) {
+  } else if (!/^[a-zA-Z_ ]+$/.test(firstName)) {
     errors.firstName = 'Nombre invalido';
   }
 
   if (!lastName) {
     errors.lastName = 'Campo obligatorio';
-  } else if (!/^[a-zA-Z]+$/.test(lastName)) {
+  } else if (!/^[a-zA-Z_ ]+$/.test(lastName)) {
     errors.lastName = 'Apellido invalido';
   }
 

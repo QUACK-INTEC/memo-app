@@ -103,7 +103,7 @@ class ClassHub extends React.PureComponent {
     return (
       <View style={styles.centerEmptyContainer}>
         <Text.ItalicLight
-          text="No hay ningun post en creado para esta materia"
+          text="Todavia no se han registrado post para esta materia"
           style={{ color: colors.GRAY }}
         />
       </View>

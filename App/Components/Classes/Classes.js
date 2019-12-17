@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { colors, spacers, fonts } from '../../Core/Theme';
+import { colors, fonts } from '../../Core/Theme';
 import Section from '../Common/Section';
 
 class Classes extends React.Component {
@@ -13,31 +13,34 @@ class Classes extends React.Component {
   };
 
   render() {
+    const { label } = this.props;
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <>
         <Section
-          title="Clases"
+          title={label || 'Clases'}
           viewStyle={styles.classesContainer}
           titleStyle={styles.classesTitle}
         >
           {this.renderClasses()}
         </Section>
-      </SafeAreaView>
+      </>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  classesContainer: { ...spacers.MT_10, flex: 1 },
+  classesContainer: { flex: 1 },
   classesTitle: { ...fonts.SIZE_XXL, color: colors.GRAY },
 });
 
 Classes.defaultProps = {
   renderClasses: () => null,
+  label: null,
 };
 
 Classes.propTypes = {
   renderClasses: PropTypes.func,
+  label: PropTypes.string,
 };
 
 export default Classes;

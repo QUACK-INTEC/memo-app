@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -47,7 +47,11 @@ class ClassRooms extends React.Component {
   };
 
   render() {
-    return <ClassesComponent renderClasses={this.renderClasses} />;
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <ClassesComponent renderClasses={this.renderClasses} />
+      </SafeAreaView>
+    );
   }
 }
 const styles = StyleSheet.create({

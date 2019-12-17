@@ -10,10 +10,10 @@ import Text from '../Common/Text';
 
 const validation = objValues => {
   const errors = {};
-  const { recoveryCode } = objValues;
+  const { password } = objValues;
 
-  if (!recoveryCode) {
-    errors.recoveryCode = 'Campo obligatorio';
+  if (!password) {
+    errors.password = 'Campo obligatorio';
   }
 
   return errors;
@@ -50,7 +50,7 @@ class PasswordRecoveryCode extends Component {
             />
             <FormikInput
               label="Código"
-              name="recoveryCode"
+              name="password"
               containerStyle={styles.input}
               returnKeyType="done"
             />

@@ -140,6 +140,18 @@ const RegisterForNotifications = pushToken => {
   return MemoApi.post(`notifications/register`, { pushToken });
 };
 
+const SendRecoveryEmail = objUserEmailParam => {
+  return MemoApi.post(`auth/forgot`, objUserEmailParam);
+};
+
+const ChangePassword = objNewPasswordParam => {
+  return MemoApi.post(`auth/reset`, objNewPasswordParam);
+};
+
+const ValidateRecoveryCode = objUserOTPParam => {
+  return MemoApi.post(`auth/otp`, objUserOTPParam);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -172,6 +184,9 @@ const Api = {
   DownvoteComment,
   ResetvoteComment,
   RegisterForNotifications,
+  SendRecoveryEmail,
+  ChangePassword,
+  ValidateRecoveryCode,
 };
 
 export default Api;

@@ -12,6 +12,14 @@ import Api from '../../Core/Api';
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
 class SyncAccount extends Component {
+  static navigationOptions = ({ navigation }) => {
+    const { getParam } = navigation;
+    const canNavigate = getParam('canNavigate', false);
+    return {
+      gesturesEnabled: canNavigate,
+    };
+  };
+
   constructor(props) {
     super(props);
     this.state = {

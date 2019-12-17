@@ -174,7 +174,7 @@ class ClassHub extends React.Component {
   handleAddPublication = () => {
     const { idSection } = this.state;
     const { setModalVisible, setInitialFormValues } = this.props;
-    setInitialFormValues({ section: idSection });
+    setInitialFormValues({ section: idSection, fromClasHub: true });
     setModalVisible(true);
   };
 

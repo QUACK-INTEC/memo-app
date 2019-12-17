@@ -68,31 +68,32 @@ class Profile extends React.Component {
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={[styles.headerInfoContainer]}>
-          {this.renderHeader()}
-          <Avatar
-            initialsText={avatarInitialsText}
-            src={avatarSrc}
-            uri={avatarUri}
-            style={styles.avatar}
-          />
-          <InLineComponent viewStyle={styles.studentSection}>
-            <Text.Medium text={studentName} style={styles.studentName} />
-            <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
-          </InLineComponent>
-          <InLineComponent viewStyle={styles.memoPointsRow}>
-            <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
-            <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
-          </InLineComponent>
-          <ScrollView>
+        <ScrollView>
+          <View style={[styles.headerInfoContainer]}>
+            {this.renderHeader()}
+            <Avatar
+              initialsText={avatarInitialsText}
+              src={avatarSrc}
+              uri={avatarUri}
+              style={styles.avatar}
+            />
+            <InLineComponent viewStyle={styles.studentSection}>
+              <Text.Medium text={studentName} style={styles.studentName} />
+              <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
+            </InLineComponent>
+            <InLineComponent viewStyle={styles.memoPointsRow}>
+              <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
+              <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
+            </InLineComponent>
+
             <Section title="Clases" viewStyle={styles.sectionViewStyle}>
               {renderClasses()}
             </Section>
             <Section title="Mail" viewStyle={styles.sectionViewStyle}>
               {this.renderEmail()}
             </Section>
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }

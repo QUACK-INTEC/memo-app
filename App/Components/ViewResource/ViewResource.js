@@ -15,7 +15,7 @@ class ViewResource extends React.Component {
     onBackArrow();
   };
 
-  downloadFile = () => {
+  openFileOnWeb = () => {
     const { resourceURI } = this.props;
     Linking.canOpenURL(resourceURI).then(supported => {
       if (supported) {
@@ -41,7 +41,7 @@ class ViewResource extends React.Component {
             name="download"
             type={ICON_TYPE.FONT_AWESOME}
             size={ICON_SIZE.TINY}
-            onPress={this.downloadFile}
+            onPress={this.openFileOnWeb}
             color={colors.GRAY}
           />
         </View>
@@ -55,7 +55,20 @@ class ViewResource extends React.Component {
       <View style={styles.container}>
         <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>
         <Text.Medium text={resourceName} style={styles.titleStyle} />
-        <WebView source={{ uri: resourceURI }} style={{ marginTop: 20 }} />
+        {resourceURI ? (
+          <WebView
+            source={{
+              uri: resourceURI,
+            }}
+            style={{ marginTop: 20 }}
+            javaScriptEnabled
+            domStorageEnabled
+            allowFileAccessFromFileURLs
+            startInLoadingState
+            originWhitelist={['*']}
+            mixedContentMode="compatibility"
+          />
+        ) : null}
       </View>
     );
   }

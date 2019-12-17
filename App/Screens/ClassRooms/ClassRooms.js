@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+// TODO: Implement this SafeAreaView in all other screens
+import SafeAreaView from '../../Components/SafeAreaView';
 import ClassesComponent from '../../Components/Classes';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import ClassInfoCard from '../../Components/ClassInfoCard';
@@ -48,7 +50,7 @@ class ClassRooms extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView>
         <ClassesComponent renderClasses={this.renderClasses} />
       </SafeAreaView>
     );

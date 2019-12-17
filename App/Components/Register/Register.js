@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -78,8 +78,8 @@ class Register extends Component {
 
   renderForm = objForm => {
     return (
-      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
-        <SafeAreaView style={styles.container}>
+      <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
+        <View style={styles.container}>
           <ImagePicker
             style={styles.imagePicker}
             onChangeImage={strImageUri => {
@@ -133,7 +133,7 @@ class Register extends Component {
               <Link text="Ya tengo una cuenta!" onPress={this.handleBackToLogin} />
             </View>
           </View>
-        </SafeAreaView>
+        </View>
       </KeyboardAwareScrollView>
     );
   };

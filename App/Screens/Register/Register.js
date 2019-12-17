@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import Lodash from 'lodash';
 import { connect } from 'react-redux';
@@ -125,14 +126,14 @@ class Register extends Component {
     const { initialsValue } = this.props;
 
     return (
-      <>
+      <SafeAreaView>
         <LoadingState.Modal isVisible={isLoading} />
         <RegisterComponent
           onSubmit={this.handleSubmit}
           initialsValue={initialsValue}
           onBack={this.handleOnPressHasAnAccount}
         />
-      </>
+      </SafeAreaView>
     );
   }
 }

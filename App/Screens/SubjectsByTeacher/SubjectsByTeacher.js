@@ -22,15 +22,14 @@ class SubjectsByTeacher extends React.Component {
   }
 
   componentDidMount() {
-    // DEFAULT DATA FOR TESTING PURPOSES, TODO: RECEIVE REAL DATA, WILL USE WHEN CONNECT TO API
     const {
       navigation: { getParam },
       logger,
     } = this.props;
-    const sectionId = getParam('idSection', {});
+    const subjectId = getParam('subjectId', ' ');
     const subjectName = getParam('subjectName', {});
 
-    Promise.all([this.getTeacherResources(sectionId)])
+    Promise.all([this.getTeacherResources(subjectId)])
       .then(listValues => {
         const [objCommentResponse] = listValues;
         const listTeacherResources = Lodash.get(objCommentResponse, ['data', 'data'], []);
@@ -55,8 +54,8 @@ class SubjectsByTeacher extends React.Component {
       });
   }
 
-  getTeacherResources = sectionId => {
-    return Api.GetSectionResources(sectionId);
+  getTeacherResources = subjectId => {
+    return Api.GetSectionResources(subjectId);
   };
 
   handleOnPressProfessorItem = objTeacherResource => {

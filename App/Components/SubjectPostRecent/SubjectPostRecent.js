@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import Lodash from 'lodash';
 import PropTypes from 'prop-types';
 
 import InLineComponent from '../Common/InLineComponent';
@@ -11,13 +12,16 @@ class SubjectPostRecent extends React.Component {
   getTextSince = () => {
     const { createdSince } = this.props;
 
-    if (createdSince === 0) {
-      return 'Creado hoy';
+    if (!Lodash.isNull(createdSince)) {
+      if (createdSince === 0) {
+        return 'Creado hoy';
+      }
+      if (createdSince === 1) {
+        return `Hace ${createdSince} día`;
+      }
+      return `Hace ${createdSince} días`;
     }
-    if (createdSince === 1) {
-      return `Hace ${createdSince} día`;
-    }
-    return `Hace ${createdSince} días`;
+    return null;
   };
 
   renderSubjectInfo = () => {

@@ -37,7 +37,6 @@ class PostResources extends React.Component {
   }
 
   handleOnPressResourceItem = objResourceID => {
-    // TODO: showResource
     const {
       navigation: { navigate },
     } = this.props;

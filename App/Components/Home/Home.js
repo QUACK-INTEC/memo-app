@@ -51,6 +51,7 @@ class Home extends React.Component {
         onPress={() => onEventPress(item)}
         avatarUri={item.avatarURL}
         isPrivate={item.isPrivate}
+        badgeUri={item.badgeUri}
       />
     );
   };

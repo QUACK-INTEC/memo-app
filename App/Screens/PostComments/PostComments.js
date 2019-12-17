@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Alert, Keyboard, View, StyleSheet } from 'react-native';
+import { FlatList, Keyboard, View, StyleSheet } from 'react-native';
 import Lodash from 'lodash';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { connect } from 'react-redux';
@@ -15,6 +15,8 @@ import PostComment from '../../Components/PostComment';
 import PopUp from '../../Components/Common/PopUp';
 import { spacers, colors } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
+
+import { GAMIFICATION_MSG } from '../../Utils';
 
 class PostComments extends React.Component {
   constructor(props) {
@@ -78,24 +80,188 @@ class PostComments extends React.Component {
     pop();
   };
 
-  handleUpVote = (commentId, isUpVote) => {
+  handleUpVote = (commentId, isUpVote, commentObj) => {
+    const { logger, toastRef } = this.props;
+    const { postComments } = this.state;
+    const current = Lodash.get(toastRef, ['current'], null);
+    this.setState({ isLoading: true });
     if (isUpVote) {
-      // TODO : Send UpVote to API
-      return Alert.alert(`upvote: ${commentId}`);
-    }
+      return Api.UpvoteComment(commentId)
+        .then(objResponse => {
+          this.setState({ isLoading: false });
+          const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+          if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(1));
+            const modifiedCommentObj = { ...commentObj };
+            modifiedCommentObj.score =
+              commentObj.currentUserReaction !== 0 ? commentObj.score + 2 : commentObj.score + 1;
+            modifiedCommentObj.currentUserReaction = 1;
+            const modifiedPostComments = postComments.map(objComment => {
+              if (objComment.id === commentId) {
+                return modifiedCommentObj;
+              }
+              return objComment;
+            });
 
-    // TODO: Send remove UpVote to API
-    return Alert.alert(`remove upvote: ${commentId}`);
+            this.setState({
+              isLoading: false,
+              postComments: modifiedPostComments,
+            });
+            logger.success({
+              key: MessagesKey.UPVOTE_COMMENT_SUCCESS,
+              data: objResponse,
+            });
+            return true;
+          }
+          logger.error({
+            key: MessagesKey.UPVOTE_COMMENT_FAILED,
+            data: objResponse,
+          });
+          return false;
+        })
+        .catch(objError => {
+          this.setState({ isLoading: false });
+          setTimeout(() => {
+            logger.error({
+              key: MessagesKey.UPVOTE_COMMENT_FAILED,
+              data: objError,
+            });
+          }, 800);
+          return false;
+        });
+    }
+    return Api.ResetvoteComment(commentId)
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          const modifiedCommentObj = { ...commentObj };
+          modifiedCommentObj.score = commentObj.score - 1;
+          modifiedCommentObj.currentUserReaction = 0;
+          const modifiedPostComments = postComments.map(objComment => {
+            if (objComment.id === commentId) {
+              return modifiedCommentObj;
+            }
+            return objComment;
+          });
+          this.setState({
+            isLoading: false,
+            postComments: modifiedPostComments,
+          });
+          logger.success({
+            key: MessagesKey.RESETVOTE_COMMENT_SUCCESS,
+            data: objResponse,
+          });
+          return true;
+        }
+        logger.error({
+          key: MessagesKey.RESETVOTE_COMMENT_FAILED,
+          data: objResponse,
+        });
+        return false;
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        setTimeout(() => {
+          logger.error({
+            key: MessagesKey.RESETVOTE_COMMENT_FAILED,
+            data: objError,
+          });
+        }, 800);
+        return false;
+      });
   };
 
-  handleDownVote = (commentId, isDownVote) => {
-    if (isDownVote) {
-      // TODO : Send DownVote to API
-      return Alert.alert(`downVote: ${commentId}`);
-    }
+  handleDownVote = (commentId, isDownVote, commentObj) => {
+    const { logger, toastRef } = this.props;
+    const { postComments } = this.state;
+    const current = Lodash.get(toastRef, ['current'], null);
 
-    // TODO: Send remove DownVote to API
-    return Alert.alert(`remove downVote: ${commentId}`);
+    this.setState({ isLoading: true });
+    if (isDownVote) {
+      return Api.DownvoteComment(commentId)
+        .then(objResponse => {
+          this.setState({ isLoading: false });
+          const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+          if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(1));
+            const modifiedCommentObj = { ...commentObj };
+            modifiedCommentObj.score =
+              commentObj.currentUserReaction !== 0 ? commentObj.score - 2 : commentObj.score - 1;
+            modifiedCommentObj.currentUserReaction = -1;
+            const modifiedPostComments = postComments.map(objComment => {
+              if (objComment.id === commentId) {
+                return modifiedCommentObj;
+              }
+              return objComment;
+            });
+            this.setState({
+              isLoading: false,
+              postComments: modifiedPostComments,
+            });
+            logger.success({
+              key: MessagesKey.DOWNVOTE_COMMENT_SUCCESS,
+              data: objResponse,
+            });
+            return true;
+          }
+          logger.error({
+            key: MessagesKey.DOWNVOTE_COMMENT_FAILED,
+            data: objResponse,
+          });
+          return false;
+        })
+        .catch(objError => {
+          this.setState({ isLoading: false });
+          setTimeout(() => {
+            logger.error({
+              key: MessagesKey.DOWNVOTE_COMMENT_FAILED,
+              data: objError,
+            });
+          }, 800);
+          return false;
+        });
+    }
+    return Api.ResetvoteComment(commentId)
+      .then(objResponse => {
+        this.setState({ isLoading: false });
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          const modifiedCommentObj = { ...commentObj };
+          modifiedCommentObj.score = commentObj.score + 1;
+          modifiedCommentObj.currentUserReaction = 0;
+          const modifiedPostComments = postComments.map(objComment => {
+            if (objComment.id === commentId) {
+              return modifiedCommentObj;
+            }
+            return objComment;
+          });
+          this.setState({
+            isLoading: false,
+            postComments: modifiedPostComments,
+          });
+          logger.success({
+            key: MessagesKey.RESETVOTE_COMMENT_SUCCESS,
+            data: objResponse,
+          });
+          return true;
+        }
+        logger.error({
+          key: MessagesKey.RESETVOTE_COMMENT_FAILED,
+          data: objResponse,
+        });
+        return false;
+      })
+      .catch(objError => {
+        this.setState({ isLoading: false });
+        setTimeout(() => {
+          logger.error({
+            key: MessagesKey.RESETVOTE_COMMENT_FAILED,
+            data: objError,
+          });
+        }, 800);
+        return false;
+      });
   };
 
   deleteItemById = id => {
@@ -147,14 +313,24 @@ class PostComments extends React.Component {
   };
 
   handlePostComment = body => {
-    const { userFirstName, userLastName, logger, userId, userEmail } = this.props;
+    const {
+      userFirstName,
+      userLastName,
+      logger,
+      userId,
+      userEmail,
+      userAvatarURI,
+      toastRef,
+    } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], null);
     this.setLoading(true);
     Api.AddComment(postId, { body })
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
         if (isSuccess) {
+          current.setToastVisible(GAMIFICATION_MSG(10));
           this.setState({
             isLoading: false,
           });
@@ -164,6 +340,7 @@ class PostComments extends React.Component {
             email: `${userEmail}`,
             firstName: `${userFirstName}`,
             lastName: `${userLastName}`,
+            avatarURL: `${userAvatarURI}`,
             points: 0,
           };
           objCommentResponse.author = author;
@@ -204,12 +381,13 @@ class PostComments extends React.Component {
     return (
       <View style={styles.postCommentContainer}>
         <PostComment
-          author={item.author}
+          author={item.authorFullName}
           onAuthorPress={() => this.handleAuthorPress(item.authorId)}
-          onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote)}
-          onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote)}
+          onUpVote={isUpvote => this.handleUpVote(item.id, isUpvote, item)}
+          onDownVote={isDownVote => this.handleDownVote(item.id, isDownVote, item)}
           badgeUri={item.authorBadgeUri}
           initialsText={item.authorInitials}
+          avatarUri={item.avatarUri}
           comment={item.body}
           isAuthor={userId === item.authorId}
           score={item.score}
@@ -301,6 +479,7 @@ PostComments.defaultProps = {
   userFirstName: null,
   userLastName: null,
   userEmail: null,
+  userAvatarURI: null,
 };
 
 PostComments.propTypes = {
@@ -308,6 +487,8 @@ PostComments.propTypes = {
   userFirstName: PropTypes.string,
   userLastName: PropTypes.string,
   userEmail: PropTypes.string,
+  userAvatarURI: PropTypes.string,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {

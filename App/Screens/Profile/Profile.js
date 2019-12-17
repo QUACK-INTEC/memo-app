@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -8,9 +8,10 @@ import { bindActionCreators } from 'redux';
 
 import LoadingState from '../../Components/LoadingState';
 import ProfileComponent from '../../Components/Profile';
+import ClassInfoCard from '../../Components/ClassInfoCard';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
-
-import { toUpperCaseFirsLetter } from '../../Utils';
+import { Classes } from '../../Models';
+import { spacers } from '../../Core/Theme';
 
 import {
   actions as userActions,
@@ -25,7 +26,6 @@ class Profile extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      badgeUri: null,
     };
   }
 
@@ -51,18 +51,8 @@ class Profile extends Component {
           });
         }, 800);
       });
-
-    const {
-      navigation: { getParam },
-    } = this.props;
-    // MOCK DATA PARA FINES DE PRUEBA
-    const badgeUri = getParam(
-      'badgeUri',
-      'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png'
-    );
     this.setState({
       isLoading: true,
-      badgeUri,
     });
   }
 
@@ -83,16 +73,53 @@ class Profile extends Component {
       : null;
   };
 
+  handleOnPressClassItem = (idSection, objSection) => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+
+    return navigate('ClassHub', { id: idSection, sectionInfo: objSection });
+  };
+
+  renderSubject = ({ item }) => {
+    return (
+      <View style={styles.myClassContainer}>
+        <ClassInfoCard
+          subject={item.subjectName}
+          professor={item.professorName}
+          schedule={item.classDays}
+          onPress={() => this.handleOnPressClassItem(item.id, item)}
+        />
+      </View>
+    );
+  };
+
+  renderClasses = () => {
+    const { myClasses, myClassesLookup } = this.props;
+    const myClassesFormatted = Classes.getClassesData(myClasses, myClassesLookup);
+
+    return (
+      <FlatList
+        columnWrapperStyle={styles.classesContainer}
+        data={myClassesFormatted}
+        numColumns={2}
+        renderItem={this.renderSubject}
+        keyExtractor={item => item.id}
+        scrollEnabled={false}
+      />
+    );
+  };
+
   render() {
-    const { isLoading, avatarSrc, badgeUri, badgeSrc } = this.state;
+    const { isLoading, avatarSrc } = this.state;
     const {
       userFirstName,
       userLastName,
       userAvatarURI,
       userEmail,
       userPoints,
-      userRank,
-      userClasses,
+      userRankName,
+      badgeUrl,
     } = this.props;
     return (
       <View style={styles.container}>
@@ -100,14 +127,13 @@ class Profile extends Component {
         <ProfileComponent
           studentName={`${userFirstName} ${userLastName}`}
           studentMail={userEmail}
-          studentSubjects={userClasses}
+          renderClasses={this.renderClasses}
           avatarUri={userAvatarURI}
           avatarSrc={avatarSrc}
           avatarInitialsText={this.getInitials(userFirstName, userLastName)}
-          badgeUri={badgeUri}
-          badgeSrc={badgeSrc}
+          badgeUri={badgeUrl}
           memoPoints={userPoints}
-          rank={userRank}
+          rank={userRankName}
           onEditUser={this.handleGoToSettings}
         />
       </View>
@@ -117,6 +143,8 @@ class Profile extends Component {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  classesContainer: { justifyContent: 'space-between', flex: 1 },
+  myClassContainer: { ...spacers.MA_1 },
 });
 
 Profile.defaultProps = {
@@ -126,8 +154,10 @@ Profile.defaultProps = {
   userEmail: null,
   setUserInfo: () => null,
   userPoints: null,
-  userRank: null,
-  userClasses: null,
+  userRankName: '',
+  badgeUrl: '',
+  myClasses: [],
+  myClassesLookup: {},
 };
 
 Profile.propTypes = {
@@ -137,8 +167,10 @@ Profile.propTypes = {
   userEmail: PropTypes.string,
   setUserInfo: PropTypes.func,
   userPoints: PropTypes.number,
-  userRank: PropTypes.string,
-  userClasses: PropTypes.string,
+  userRankName: PropTypes.string,
+  badgeUrl: PropTypes.string,
+  myClasses: PropTypes.arrayOf(PropTypes.string),
+  myClassesLookup: PropTypes.shape({}),
 };
 
 const mapStateToProps = (state, props) => {
@@ -148,17 +180,20 @@ const mapStateToProps = (state, props) => {
     getAvatarUser,
     getEmail,
     getPoints,
-    getRank,
+    getRankName,
+    getBadgeUrl,
   } = userManagerSelectors;
-  const { getMyClassesString } = myClassesSelectors;
+  const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
   return {
     userFirstName: getFirstName(state, props),
     userLastName: getLastName(state, props),
     userAvatarURI: getAvatarUser(state, props),
     userEmail: getEmail(state, props),
     userPoints: getPoints(state, props),
-    userRank: getRank(state, props),
-    userClasses: toUpperCaseFirsLetter(getMyClassesString(state, props)),
+    userRankName: getRankName(state, props),
+    badgeUrl: getBadgeUrl(state, props),
+    myClasses: getMyClasses(state, props),
+    myClassesLookup: getMyClassesLookup(state, props),
   };
 };
 

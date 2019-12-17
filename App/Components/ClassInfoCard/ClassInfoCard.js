@@ -19,7 +19,12 @@ class ClassInfoCard extends React.Component {
   render() {
     const { subject, schedule, onPress, disabled, titleStyle } = this.props;
     return (
-      <InfoCard title={subject} onPress={onPress} disabled={disabled} titleStyle={titleStyle}>
+      <InfoCard
+        title={subject}
+        onPress={disabled ? null : onPress}
+        disabled={disabled}
+        titleStyle={titleStyle}
+      >
         <Text.Light text={this.getProfessorLabel()} style={styles.professorStyle} />
         <Text.Light text={schedule} style={styles.scheduleStyle} />
       </InfoCard>

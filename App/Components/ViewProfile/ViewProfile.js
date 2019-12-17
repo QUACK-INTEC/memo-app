@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Avatar from '../Common/Avatar';
@@ -11,15 +11,15 @@ import ImageWrapper from '../Common/ImageWrapper';
 
 import { fonts, spacers, constants, colors, toBaseDesignPx } from '../../Core/Theme';
 
-class Profile extends React.Component {
+class ViewProfile extends React.Component {
   renderEmail = () => {
     const { studentMail } = this.props;
     return <Text.SemiBold text={studentMail} style={styles.studentMail} />;
   };
 
-  renderSubjects = () => {
-    const { studentSubjects } = this.props;
-    return <Text.SemiBold text={studentSubjects} style={styles.studentSubjects} />;
+  handleBackArrow = () => {
+    const { onBackArrow } = this.props;
+    onBackArrow();
   };
 
   renderEditIcon = () => {
@@ -31,7 +31,7 @@ class Profile extends React.Component {
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.TINY}
           onPress={onEditUser}
-          color={colors.GRAY}
+          color={colors.TRANSPARENT}
         />
       </View>
     );
@@ -45,7 +45,7 @@ class Profile extends React.Component {
             name="chevron-circle-left"
             type={ICON_TYPE.FONT_AWESOME}
             size={ICON_SIZE.TINY}
-            color={colors.TRANSPARENT}
+            color={colors.GRAY}
             onPress={this.handleBackArrow}
           />
         </View>
@@ -67,39 +67,32 @@ class Profile extends React.Component {
       renderClasses,
     } = this.props;
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={[styles.headerInfoContainer]}>
-          {this.renderHeader()}
-          <Avatar
-            initialsText={avatarInitialsText}
-            src={avatarSrc}
-            uri={avatarUri}
-            style={styles.avatar}
-          />
-          <InLineComponent viewStyle={styles.studentSection}>
-            <Text.Medium text={studentName} style={styles.studentName} />
-            <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
-          </InLineComponent>
-          <InLineComponent viewStyle={styles.memoPointsRow}>
-            <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
-            <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
-          </InLineComponent>
-          <ScrollView>
-            <Section title="Clases" viewStyle={styles.sectionViewStyle}>
-              {renderClasses()}
-            </Section>
-            <Section title="Mail" viewStyle={styles.sectionViewStyle}>
-              {this.renderEmail()}
-            </Section>
-          </ScrollView>
-        </View>
-      </SafeAreaView>
+      <View style={styles.headerInfoContainer}>
+        {this.renderHeader()}
+        <Avatar
+          initialsText={avatarInitialsText}
+          src={avatarSrc}
+          uri={avatarUri}
+          style={styles.avatar}
+        />
+        <InLineComponent viewStyle={styles.studentSection}>
+          <Text.Medium text={studentName} style={styles.studentName} />
+          <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
+        </InLineComponent>
+        <InLineComponent viewStyle={styles.memoPointsRow}>
+          <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
+          <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
+        </InLineComponent>
+        <Section title="Mail" viewStyle={styles.sectionViewStyle}>
+          {this.renderEmail()}
+        </Section>
+        <Section title="Clases comunes">{renderClasses()}</Section>
+      </View>
     );
   }
 }
 
-Profile.defaultProps = {
-  studentSubjects: null,
+ViewProfile.defaultProps = {
   avatarSrc: null,
   avatarUri: null,
   avatarInitialsText: null,
@@ -109,14 +102,14 @@ Profile.defaultProps = {
   studentMail: null,
   memoPoints: null,
   rank: null,
-  onEditUser: () => null,
-  renderClasses: null,
+  onEditUser: null,
+  onBackArrow: () => null,
+  renderClasses: () => null,
 };
 
-Profile.propTypes = {
+ViewProfile.propTypes = {
   studentName: PropTypes.string,
   studentMail: PropTypes.string,
-  studentSubjects: PropTypes.string,
   avatarSrc: PropTypes.string,
   avatarUri: PropTypes.string,
   avatarInitialsText: PropTypes.string,
@@ -125,12 +118,13 @@ Profile.propTypes = {
   memoPoints: PropTypes.number,
   rank: PropTypes.string,
   onEditUser: PropTypes.func,
+  onBackArrow: PropTypes.func,
   renderClasses: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT },
+  headerInfoContainer: {},
   avatar: { alignSelf: 'center', justifyContent: 'center' },
   studentName: {
     ...fonts.SIZE_XL,
@@ -147,19 +141,16 @@ const styles = StyleSheet.create({
   sectionViewStyle: { ...spacers.MB_8 },
   editIconContainer: {
     ...spacers.MR_14,
-    ...spacers.MB_4,
     width: toBaseDesignPx(47),
     justifyContent: 'flex-end',
   },
   header: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    ...spacers.ML_14,
+    marginTop: constants.DEVICE.STATUS_BAR_HEIGHT,
   },
   headerBackIconContainer: {
-    ...spacers.ML_14,
     ...spacers.MB_4,
     width: toBaseDesignPx(47),
-    justifyContent: 'flex-start',
   },
   studentSection: {
     ...spacers.MT_3,
@@ -168,15 +159,12 @@ const styles = StyleSheet.create({
   studentMail: {
     color: colors.GRAY,
   },
-  studentSubjects: {
-    color: colors.GRAY,
-  },
   badgeStyle: {
-    width: toBaseDesignPx(12),
-    height: toBaseDesignPx(12),
+    width: toBaseDesignPx(18),
+    height: toBaseDesignPx(18),
     alignSelf: 'center',
     ...spacers.ML_2,
   },
 });
 
-export default Profile;
+export default ViewProfile;

@@ -14,8 +14,13 @@ import FormikInput from '../FormikInput';
 const validation = objValues => {
   const errors = {};
   const { comment } = objValues;
+  let commentString = comment;
 
-  if (!comment) {
+  if (comment && typeof comment === 'string') {
+    commentString = commentString.trim();
+  }
+
+  if (!commentString) {
     errors.comment = 'Comentario no puede ser vacio.';
   }
 
@@ -70,7 +75,8 @@ class PostComments extends React.Component {
   postComment = (objValues, { resetForm }) => {
     const { onCommentPost } = this.props;
     const comment = Lodash.get(objValues, 'comment', null);
-    onCommentPost(comment);
+    const commentString = comment.trim();
+    onCommentPost(commentString);
     this.textInput.clear();
     resetForm();
   };
@@ -108,7 +114,7 @@ class PostComments extends React.Component {
                 name="chevron-circle-up"
                 type={ICON_TYPE.FONT_AWESOME}
                 size={ICON_SIZE.SMALL}
-                color={colors.GREEN}
+                color={objForm.isValid ? colors.GREEN : colors.GRAY}
                 onPress={objForm.handleSubmit}
               />
             </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
@@ -37,8 +37,14 @@ class TeacherResources extends React.Component {
   }
 
   handleOnPressResourceItem = objResourceID => {
-    // TODO: showResource
-    Alert.alert(`showResource:${objResourceID}`);
+    const {
+      navigation: { navigate },
+    } = this.props;
+
+    navigate('ViewResource', {
+      resourceName: Lodash.get(objResourceID, ['name'], null),
+      resourceURI: Lodash.get(objResourceID, ['fileURL'], null),
+    });
   };
 
   handleBackArrow = () => {
@@ -50,9 +56,9 @@ class TeacherResources extends React.Component {
     return (
       <View style={styles.resourceContainer}>
         <SubjectPost
-          postTitle={item.title}
-          postUser={`${item.author.firstName} ${item.author.lastName}`}
-          onPress={() => this.handleOnPressResourceItem(item.id)}
+          postTitle={item.name}
+          postUser={`${item.uploadedBy.firstName} ${item.uploadedBy.lastName}`}
+          onPress={() => this.handleOnPressResourceItem(item)}
         />
       </View>
     );

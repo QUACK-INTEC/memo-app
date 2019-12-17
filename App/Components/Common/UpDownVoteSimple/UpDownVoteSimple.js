@@ -9,6 +9,17 @@ import { colors } from '../../../Core/Theme';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Icon';
 
 class UpDownVoteSimple extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if (state.score !== props.score) {
+      return {
+        isUpVote: props.score != null ? props.score > 0 : false,
+        isDownVote: props.score != null ? props.score < 0 : false,
+        score: props.score,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     const { score } = this.props;
@@ -20,25 +31,44 @@ class UpDownVoteSimple extends React.Component {
 
   handleUpVote = () => {
     const { onUpVote } = this.props;
-    this.setState(
-      prevState => ({ isUpVote: !prevState.isUpVote, isDownVote: false }),
-      () => {
-        const { isUpVote } = this.state;
-        return onUpVote(isUpVote);
+    const { isUpVote } = this.state;
+    const isReaction = !isUpVote;
+    onUpVote(isReaction).then(success => {
+      if (success) {
+        if (isReaction) {
+          this.setState({
+            isDownVote: false,
+            isUpVote: true,
+          });
+        } else {
+          this.setState({
+            isDownVote: false,
+            isUpVote: false,
+          });
+        }
       }
-    );
+    });
   };
 
   handleDownVote = () => {
     const { onDownVote } = this.props;
-
-    this.setState(
-      prevState => ({ isUpVote: false, isDownVote: !prevState.isDownVote }),
-      () => {
-        const { isDownVote } = this.state;
-        return onDownVote(isDownVote);
+    const { isDownVote } = this.state;
+    const isReaction = !isDownVote;
+    onDownVote(isReaction).then(success => {
+      if (success) {
+        if (isReaction) {
+          this.setState({
+            isDownVote: true,
+            isUpVote: false,
+          });
+        } else {
+          this.setState({
+            isDownVote: false,
+            isUpVote: false,
+          });
+        }
       }
-    );
+    });
   };
 
   render() {

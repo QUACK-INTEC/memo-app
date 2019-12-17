@@ -13,7 +13,7 @@ import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { fonts, colors } from '../../Core/Theme';
 import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
 
-import { Posts } from '../../Models';
+import { Posts, Classes } from '../../Models';
 
 class ClassHub extends React.Component {
   constructor(props) {
@@ -28,6 +28,8 @@ class ClassHub extends React.Component {
       idSection: null,
       isLoadingPosts: false,
       isFetchingPost: false,
+      sectionInfo: {},
+      subjectId: '',
     };
   }
 
@@ -35,13 +37,20 @@ class ClassHub extends React.Component {
     const {
       navigation: { getParam, pop, addListener },
       logger,
+      myClasses,
+      myClassesLookup,
     } = this.props;
+    const myClassesFormatted = Classes.getClassesData(myClasses, myClassesLookup);
+
     const objSectionInfo = getParam('sectionInfo', {});
     const idSection = getParam('id', {});
-    const professorName = Lodash.get(objSectionInfo, ['professorName'], '');
-    const classRoom = Lodash.get(objSectionInfo, ['classRoom'], '');
-    const code = Lodash.get(objSectionInfo, ['code'], '');
-    const subjectName = Lodash.get(objSectionInfo, ['subjectName'], '');
+    const objClassInfo = Lodash.find(myClassesFormatted, objClass => objClass.id === idSection);
+    const objClass = Lodash.isEmpty(objSectionInfo) ? objClassInfo : objSectionInfo;
+    const professorName = Lodash.get(objClass, ['professorName'], '');
+    const classRoom = Lodash.get(objClass, ['classRoom'], '');
+    const code = Lodash.get(objClass, ['code'], '');
+    const subjectName = Lodash.get(objClass, ['subjectName'], '');
+    const subjectId = Lodash.get(objClass, ['subject', 'id'], '');
     this.setState({
       professorName,
       classRoom,
@@ -49,6 +58,8 @@ class ClassHub extends React.Component {
       subjectName,
       idSection,
       isLoadingPosts: true,
+      sectionInfo: objClass,
+      subjectId,
     });
     this.focusListener = addListener('didFocus', () => {
       return this.fetchPosts();
@@ -132,14 +143,16 @@ class ClassHub extends React.Component {
     const {
       navigation: { pop },
     } = this.props;
-    pop();
+    return pop();
   };
 
   handleOnPressGoToEvents = () => {
+    const { subjectName } = this.state;
     const {
       navigation: { navigate },
     } = this.props;
-    navigate('Calendar');
+    const { idSection } = this.state;
+    navigate('Calendar', { sectionId: idSection, subjectName });
   };
 
   handleOnPressGoToParticipants = () => {
@@ -154,8 +167,8 @@ class ClassHub extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
-    const { subjectName, idSection } = this.state;
-    navigate('SubjectsByTeacher', { subjectName, idSection });
+    const { subjectName, subjectId } = this.state;
+    navigate('SubjectsByTeacher', { subjectName, subjectId });
   };
 
   handleAddPublication = () => {
@@ -196,11 +209,9 @@ class ClassHub extends React.Component {
   };
 
   renderScheduleClass = () => {
-    const {
-      navigation: { getParam },
-    } = this.props;
-    const objSectionInfo = getParam('sectionInfo', {});
-    const objScheduleSection = Lodash.get(objSectionInfo, ['schedule'], {});
+    const { sectionInfo } = this.state;
+
+    const objScheduleSection = Lodash.get(sectionInfo, ['schedule'], {});
 
     return Object.keys(objScheduleSection).map(strScheduleKey => {
       const { from, to } = objScheduleSection[strScheduleKey];
@@ -270,10 +281,11 @@ ClassHub.propTypes = {
   setInitialFormValues: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state, props) => {
-  const { getMyClassesLookup } = myClassesSelectors;
+  const { getMyClassesLookup, getMyClasses } = myClassesSelectors;
   const { getIsModalVisible } = EventFormSelectors;
 
   return {
+    myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
     isModalVisible: getIsModalVisible(state, props),
   };

@@ -17,6 +17,7 @@ import { SubTasks } from '../../Models';
 import { spacers } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
+import { GAMIFICATION_MSG } from '../../Utils';
 
 class PostInfo extends React.Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class PostInfo extends React.Component {
       logger,
     } = this.props;
     const id = getParam('id', {});
-    const subjectName = getParam('subjectName', {});
+    const subjectName = getParam('subjectName', '');
 
     this.setState({
       subjectName,
@@ -73,7 +74,7 @@ class PostInfo extends React.Component {
           const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
           const postAuthor = Lodash.get(objPostInfo, ['author'], {});
           const title = Lodash.get(objPostInfo, ['title'], '');
-          const section = Lodash.get(objPostInfo, ['section'], null);
+          const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const score = Lodash.get(objPostInfo, ['score'], 0);
           const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
@@ -90,6 +91,7 @@ class PostInfo extends React.Component {
           const formattedDate = startDate
             ? Moment(startDate)
                 .locale('es')
+                .utc()
                 .format('dddd DD, MMMM')
             : null;
           const formattedStartDate = startDate
@@ -175,7 +177,7 @@ class PostInfo extends React.Component {
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
-          const section = Lodash.get(objPostInfo, ['section'], null);
+          const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
 
           const authorName = `${authorFirstName} ${authorLastName}`;
@@ -311,8 +313,9 @@ class PostInfo extends React.Component {
   };
 
   handleUpVote = value => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], {});
     this.setState({ isLoading: true });
     if (value) {
       return Api.UpvotePost(postId)
@@ -320,6 +323,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(10));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -384,8 +388,9 @@ class PostInfo extends React.Component {
   };
 
   handleDownVote = value => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], {});
     this.setState({ isLoading: true });
 
     if (value) {
@@ -394,6 +399,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(10));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -687,6 +693,7 @@ PostInfo.propTypes = {
   setEditingModal: PropTypes.func.isRequired,
   setInitialFormValues: PropTypes.func.isRequired,
   setModalVisible: PropTypes.func.isRequired,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {

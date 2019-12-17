@@ -1,11 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView, FlatList, RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
+import Lodash from 'lodash';
 
 import { colors, spacers, fonts, toBaseDesignPx } from '../../Core/Theme';
 import Text from '../Common/Text';
 import InLineComponent from '../Common/InLineComponent';
 import Section from '../Common/Section';
+import LoadingState from '../LoadingState';
+import Link from '../Common/Link';
+import Event from '../SwipeableEventCalendar';
+import Subject from '../SubjectCalendar';
 
 class Home extends React.Component {
   renderTodayTitle = () => {
@@ -33,8 +38,101 @@ class Home extends React.Component {
     );
   };
 
+  renderEvent = ({ item }) => {
+    const { onEventPress, onEventDownVote, onEventUpVote } = this.props;
+    return (
+      <Event
+        subjectName={item.subject}
+        eventTitle={item.title}
+        eventStartTime={item.time}
+        author={item.name}
+        onLeftSwipe={() => onEventDownVote(item)}
+        onRightSwipe={() => onEventUpVote(item)}
+        onPress={() => onEventPress(item)}
+        avatarUri={item.avatarURL}
+        isPrivate={item.isPrivate}
+        badgeUri={item.badgeUri}
+      />
+    );
+  };
+
+  renderListEvents = () => {
+    const { events } = this.props;
+
+    if (!Lodash.isEmpty(events)) {
+      return (
+        <FlatList
+          data={events}
+          extraData={events}
+          renderItem={this.renderEvent}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  renderSubject = ({ item }) => {
+    const { onSubjectPress } = this.props;
+    return (
+      <Subject
+        subjectName={item.name}
+        subjectSchedule={item.schedule}
+        onPress={() => onSubjectPress(item)}
+      />
+    );
+  };
+
+  renderListSubjects = () => {
+    const { subjects } = this.props;
+
+    if (!Lodash.isEmpty(subjects)) {
+      return (
+        <FlatList
+          data={subjects}
+          extraData={subjects}
+          renderItem={this.renderSubject}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
+          ListFooterComponent={() => <View style={{ ...spacers.MA_14 }} />}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  renderEvents = () => {
+    const { events, subjects } = this.props;
+
+    if (Lodash.isEmpty(events) && Lodash.isEmpty(subjects)) {
+      return (
+        <View style={styles.noEventsContainer}>
+          <LoadingState.NoEvents />
+
+          <Text.Medium text="Nada para hoy" style={styles.noEventsText} />
+          <Link
+            text="Ver mi calendario"
+            textStyle={styles.goToCalendarText}
+            onPress={this.handleOnMyCalendarPress}
+          />
+        </View>
+      );
+    }
+    return (
+      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={false}>
+        {this.renderListSubjects()}
+        {this.renderListEvents()}
+      </ScrollView>
+    );
+  };
+
   render() {
-    const { renderEvents, renderSubjects } = this.props;
+    const { renderSubjects, refreshing, onRefresh } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <Section>
@@ -46,8 +144,11 @@ class Home extends React.Component {
             />
           </View>
         </Section>
-        <ScrollView style={styles.container}>
-          <Section>{renderEvents()}</Section>
+        <ScrollView
+          style={styles.container}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
+          <Section>{this.renderEvents()}</Section>
           <Section
             title="Clases"
             viewStyle={styles.classesContainer}
@@ -62,6 +163,13 @@ class Home extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  noEventsText: { color: colors.GRAY, ...spacers.MT_16, ...spacers.MB_2 },
+  noEventsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...spacers.MB_4,
+    ...spacers.MT_15,
+  },
   container: {
     flex: 1,
   },
@@ -90,10 +198,22 @@ const styles = StyleSheet.create({
   infoText: { color: colors.GRAY },
 });
 
+Home.defaultProps = {
+  events: null,
+  subjects: null,
+};
+
 Home.propTypes = {
-  renderEvents: PropTypes.func.isRequired,
+  onEventPress: PropTypes.func.isRequired,
+  onEventUpVote: PropTypes.func.isRequired,
+  onEventDownVote: PropTypes.func.isRequired,
+  onSubjectPress: PropTypes.func.isRequired,
   renderSubjects: PropTypes.func.isRequired,
   actualMonth: PropTypes.string.isRequired,
+  events: PropTypes.arrayOf(PropTypes.shape()),
+  subjects: PropTypes.arrayOf(PropTypes.shape()),
+  refreshing: PropTypes.bool.isRequired,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 export default Home;

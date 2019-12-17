@@ -36,6 +36,7 @@
     "lint-staged": "^9.4.2",
     "lodash": "^4.17.15",
     "lottie-react-native": "~2.6.1",
+    "memoize-one": "^5.1.1",
     "moment": "^2.24.0",
     "normalizr": "^3.4.1",
     "prop-types": "^15.7.2",

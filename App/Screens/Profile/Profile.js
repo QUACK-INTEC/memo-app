@@ -26,7 +26,6 @@ class Profile extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      badgeUri: null,
     };
   }
 
@@ -52,18 +51,8 @@ class Profile extends Component {
           });
         }, 800);
       });
-
-    const {
-      navigation: { getParam },
-    } = this.props;
-    // MOCK DATA PARA FINES DE PRUEBA
-    const badgeUri = getParam(
-      'badgeUri',
-      'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png'
-    );
     this.setState({
       isLoading: true,
-      badgeUri,
     });
   }
 
@@ -122,14 +111,15 @@ class Profile extends Component {
   };
 
   render() {
-    const { isLoading, avatarSrc, badgeUri, badgeSrc } = this.state;
+    const { isLoading, avatarSrc } = this.state;
     const {
       userFirstName,
       userLastName,
       userAvatarURI,
       userEmail,
       userPoints,
-      userRank,
+      userRankName,
+      badgeUrl,
     } = this.props;
     return (
       <View style={styles.container}>
@@ -141,10 +131,9 @@ class Profile extends Component {
           avatarUri={userAvatarURI}
           avatarSrc={avatarSrc}
           avatarInitialsText={this.getInitials(userFirstName, userLastName)}
-          badgeUri={badgeUri}
-          badgeSrc={badgeSrc}
+          badgeUri={badgeUrl}
           memoPoints={userPoints}
-          rank={userRank}
+          rank={userRankName}
           onEditUser={this.handleGoToSettings}
         />
       </View>
@@ -165,7 +154,8 @@ Profile.defaultProps = {
   userEmail: null,
   setUserInfo: () => null,
   userPoints: null,
-  userRank: null,
+  userRankName: '',
+  badgeUrl: '',
   myClasses: [],
   myClassesLookup: {},
 };
@@ -177,7 +167,8 @@ Profile.propTypes = {
   userEmail: PropTypes.string,
   setUserInfo: PropTypes.func,
   userPoints: PropTypes.number,
-  userRank: PropTypes.string,
+  userRankName: PropTypes.string,
+  badgeUrl: PropTypes.string,
   myClasses: PropTypes.arrayOf(PropTypes.string),
   myClassesLookup: PropTypes.shape({}),
 };
@@ -189,7 +180,8 @@ const mapStateToProps = (state, props) => {
     getAvatarUser,
     getEmail,
     getPoints,
-    getRank,
+    getRankName,
+    getBadgeUrl,
   } = userManagerSelectors;
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
   return {
@@ -198,7 +190,8 @@ const mapStateToProps = (state, props) => {
     userAvatarURI: getAvatarUser(state, props),
     userEmail: getEmail(state, props),
     userPoints: getPoints(state, props),
-    userRank: getRank(state, props),
+    userRankName: getRankName(state, props),
+    badgeUrl: getBadgeUrl(state, props),
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
   };

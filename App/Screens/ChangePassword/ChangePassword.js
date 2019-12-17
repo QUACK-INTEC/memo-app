@@ -16,6 +16,10 @@ class ChangePassword extends Component {
       isLoading: false,
       token: '',
       userInfo: {},
+      canNavigate: false,
+      nextScreen: 'Home',
+      setUserData: true,
+      hasLogInOption: true,
     };
   }
 
@@ -25,15 +29,28 @@ class ChangePassword extends Component {
     } = this.props;
     const token = getParam('token', '');
     const userInfo = getParam('userInfo', {});
+    const canNavigate = getParam('canNavigate', false);
+    const nextScreen = getParam('nextScreen', 'Home');
+    const setUserData = getParam('setUserData', true);
+    const hasLogInOption = getParam('hasLogInOption', true);
 
     this.setState({
       token,
       userInfo,
+      canNavigate,
+      nextScreen,
+      setUserData,
+      hasLogInOption,
     });
   }
 
   setLoading = isLoading => {
     return this.setState({ isLoading });
+  };
+
+  handleBackArrow = () => {
+    const { navigation } = this.props;
+    return navigation.goBack();
   };
 
   handleSubmit = objValues => {
@@ -43,7 +60,7 @@ class ChangePassword extends Component {
       logger,
       setUserInfo,
     } = this.props;
-    const { token, userInfo } = this.state;
+    const { token, userInfo, nextScreen, setUserData } = this.state;
 
     this.setLoading(true);
 
@@ -53,10 +70,12 @@ class ChangePassword extends Component {
           key: MessagesKey.CHANGE_PASSWORD_SUCCESS,
           data: objResponse,
         });
-        setUserToken(token);
-        setUserInfo(userInfo);
+        if (setUserData) {
+          setUserToken(token);
+          setUserInfo(userInfo);
+        }
         this.setLoading(false);
-        return navigate('Home');
+        return navigate(nextScreen);
       })
       .catch(objError => {
         this.setLoading(false);
@@ -78,7 +97,7 @@ class ChangePassword extends Component {
   };
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, canNavigate, hasLogInOption } = this.state;
     const { initialsValue } = this.props;
 
     return (
@@ -88,6 +107,9 @@ class ChangePassword extends Component {
           onSubmit={this.handleSubmit}
           initialsValue={initialsValue}
           onBack={this.handleonPressLogIn}
+          canNavigate={canNavigate}
+          hasLogInOption={hasLogInOption}
+          onBackArrow={this.handleBackArrow}
         />
       </>
     );

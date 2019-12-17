@@ -35,6 +35,7 @@ class ClassInfoCard extends React.Component {
 const styles = StyleSheet.create({
   professorStyle: {
     fontSize: RFValue(7),
+    textAlign: 'center',
   },
   scheduleStyle: {
     ...spacers.MT_9,

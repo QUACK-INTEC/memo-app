@@ -264,15 +264,22 @@ class PostInfo extends React.Component {
     );
   };
 
+  renderResourceSection = () => {
+    const { hasResources, goToResources } = this.props;
+
+    if (hasResources) {
+      return (
+        <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
+          <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
+        </Section>
+      );
+    }
+
+    return null;
+  };
+
   render() {
-    const {
-      postTitle,
-      postDescription,
-      className,
-      goToComments,
-      goToResources,
-      renderSubTasks,
-    } = this.props;
+    const { postTitle, postDescription, className, goToComments, renderSubTasks } = this.props;
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -291,9 +298,7 @@ class PostInfo extends React.Component {
             <Section title="Comentarios" viewStyle={styles.sectionViewStyle}>
               <Link text="Ver Comentarios" style={styles.linkStyle} onPress={goToComments} />
             </Section>
-            <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
-              <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
-            </Section>
+            {this.renderResourceSection()}
             {renderSubTasks()}
           </ScrollView>
           {this.renderUpVoteSection()}
@@ -402,6 +407,7 @@ PostInfo.defaultProps = {
   postTime: null,
   postDescription: null,
   personalScore: null,
+  hasResources: false,
 };
 
 PostInfo.propTypes = {
@@ -428,6 +434,7 @@ PostInfo.propTypes = {
   className: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   personalScore: PropTypes.number,
+  hasResources: PropTypes.bool,
 };
 
 const ConnectedPostInfo = connectActionSheet(PostInfo);

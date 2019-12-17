@@ -12,11 +12,7 @@ const getParticipantsData = listData => {
       fullName: `${FirstName} ${LastName}`,
       avatarUri: Lodash.get(objParticipant, ['avatarURL'], null),
       initials: `${FirstName[0]}${LastName[0]}`,
-      badgeUri: Lodash.get(
-        objParticipant,
-        ['badgeURL'],
-        'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png'
-      ),
+      badgeUri: Lodash.get(objParticipant, ['rank', 'badgeUrl'], ''),
     };
   });
 };

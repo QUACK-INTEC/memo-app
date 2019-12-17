@@ -34,7 +34,7 @@ const WithLogger = WrappedComponent => {
     render() {
       return (
         <>
-          <EventForm logger={this.logger} MessagesKey={MessagesKey} />
+          <EventForm logger={this.logger} MessagesKey={MessagesKey} toastRef={this.toastRef} />
           <WrappedComponent {...this.props} logger={this.logger} toastRef={this.toastRef} />
           {this.renderToastWithoutAction()}
         </>

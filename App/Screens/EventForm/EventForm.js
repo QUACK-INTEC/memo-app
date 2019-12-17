@@ -12,6 +12,8 @@ import { Classes } from '../../Models';
 import Api from '../../Core/Api';
 import PopUp from '../../Components/Common/PopUp';
 
+import { GAMIFICATION_MSG } from '../../Utils';
+
 class EventForm extends React.Component {
   constructor(props) {
     super(props);
@@ -178,10 +180,14 @@ class EventForm extends React.Component {
   };
 
   handleCreatePost = objPayload => {
-    const { setModalVisible, logger, MessagesKey } = this.props;
+    const { setModalVisible, logger, MessagesKey, toastRef } = this.props;
+
+    const current = Lodash.get(toastRef, ['current'], null);
     return Api.CreatePost(objPayload)
       .then(objResponse => {
         setModalVisible(false);
+
+        current.setToastVisible(GAMIFICATION_MSG(50));
         setTimeout(() => {
           this.setState({
             confirmationPopupMessage: 'Publicación creada exitosamente',
@@ -270,6 +276,7 @@ EventForm.propTypes = {
   myClassesLookup: PropTypes.shape({}).isRequired,
   isEditing: PropTypes.bool.isRequired,
   setEditingModal: PropTypes.func.isRequired,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {

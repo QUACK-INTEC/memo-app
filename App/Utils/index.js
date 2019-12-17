@@ -22,3 +22,9 @@ export const createFormDataPhoto = photo => {
 
   return data;
 };
+
+export const GAMIFICATION_MSG = pnt => {
+  if (pnt > 1) return `Acabas de obtener ${pnt} MemoPoints`;
+  if (pnt < 0) return `Acabas de perder ${pnt} MemoPoints`;
+  return `Acabas de obtener ${pnt} MemoPoint`;
+};

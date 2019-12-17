@@ -226,6 +226,7 @@ class PostInfo extends React.Component {
     const { onUpVote } = this.props;
     const { isUpVote } = this.state;
     const isReaction = !isUpVote;
+
     onUpVote(isReaction).then(success => {
       if (success) {
         if (isReaction) {

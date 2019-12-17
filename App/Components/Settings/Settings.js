@@ -16,7 +16,14 @@ class Settings extends React.Component {
   };
 
   render() {
-    const { onBackArrowPress, onChangeProfilePicture } = this.props;
+    const {
+      onBackArrowPress,
+      onChangeProfilePicture,
+      onLogoutPress,
+      onSyncPress,
+      onNotificationPress,
+      imageUri,
+    } = this.props;
 
     return (
       <SafeAreaView style={styles.container}>
@@ -30,11 +37,20 @@ class Settings extends React.Component {
               onPress={onBackArrowPress}
             />
           </View>
-          <SettingsItem label="Sincronizar cuenta" style={styles.separatorItems} />
-          <SettingsItem label="Notificaciones" style={styles.separatorItems} />
+          <SettingsItem
+            label="Sincronizar cuenta"
+            style={styles.separatorItems}
+            onPress={onSyncPress}
+          />
+          <SettingsItem
+            label="Notificaciones"
+            style={styles.separatorItems}
+            onPress={onNotificationPress}
+          />
           <SettingsItemImagePicker
             onChangeProfilePicture={onChangeProfilePicture}
             label="Cambiar foto de perfil"
+            imageUri={imageUri}
             style={styles.separatorItemImageProfile}
           />
           <SettingsItem
@@ -45,7 +61,13 @@ class Settings extends React.Component {
           />
         </View>
         <View style={styles.containerLogOut}>
-          <SettingsItem label="Cerrar sesión" style={styles.separatorItems} />
+          <SettingsItem
+            label="Cerrar sesión"
+            style={[styles.separatorItems, styles.logoutItem]}
+            onPress={onLogoutPress}
+            labelStyle={styles.logoutItem}
+            iconColor={colors.RED}
+          />
         </View>
       </SafeAreaView>
     );
@@ -53,6 +75,7 @@ class Settings extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  logoutItem: { borderColor: colors.RED, color: colors.RED },
   container: { justifyContent: 'space-between', alignContent: 'space-between', flex: 1 },
   separatorItemImageProfile: { ...spacers.MB_5 },
   containerLogOut: { ...spacers.MB_4 },
@@ -65,10 +88,18 @@ const styles = StyleSheet.create({
   },
 });
 
+Settings.defaultProps = {
+  imageUri: null,
+};
+
 Settings.propTypes = {
   userName: PropTypes.string.isRequired,
   onBackArrowPress: PropTypes.func.isRequired,
   onChangeProfilePicture: PropTypes.func.isRequired,
+  onLogoutPress: PropTypes.func.isRequired,
+  onSyncPress: PropTypes.func.isRequired,
+  onNotificationPress: PropTypes.func.isRequired,
+  imageUri: PropTypes.string,
 };
 
 export default Settings;

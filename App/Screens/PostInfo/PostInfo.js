@@ -40,6 +40,7 @@ class PostInfo extends React.Component {
       attachments: [],
       score: 0,
       currentUserReaction: 0,
+      authorURL: '',
     };
   }
 
@@ -49,7 +50,7 @@ class PostInfo extends React.Component {
       logger,
     } = this.props;
     const id = getParam('id', {});
-    const subjectName = getParam('subjectName', {});
+    const subjectName = getParam('subjectName', '');
 
     this.setState({
       subjectName,
@@ -70,13 +71,14 @@ class PostInfo extends React.Component {
           const postComments = Lodash.get(objPostInfo, ['comments'], []);
           const postDescription = Lodash.get(objPostInfo, ['description'], '');
           const postAttachments = Lodash.get(objPostInfo, ['attachments'], []);
-          const postAuthor = Lodash.get(objPostInfo, ['author'], '');
+          const postAuthor = Lodash.get(objPostInfo, ['author'], {});
           const title = Lodash.get(objPostInfo, ['title'], '');
-          const section = Lodash.get(objPostInfo, ['section'], null);
+          const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const score = Lodash.get(objPostInfo, ['score'], 0);
           const currentUserReaction = Lodash.get(objPostInfo, ['currentUserReaction'], 0);
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
           const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
+          const authorURL = Lodash.get(postAuthor, ['avatarURL'], '');
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
@@ -88,6 +90,7 @@ class PostInfo extends React.Component {
           const formattedDate = startDate
             ? Moment(startDate)
                 .locale('es')
+                .utc()
                 .format('dddd DD, MMMM')
             : null;
           const formattedStartDate = startDate
@@ -118,6 +121,7 @@ class PostInfo extends React.Component {
             currentUserReaction,
             postSectionId: section,
             isPublic,
+            authorURL,
           });
 
           return logger.success({
@@ -172,7 +176,7 @@ class PostInfo extends React.Component {
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
-          const section = Lodash.get(objPostInfo, ['section'], null);
+          const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
 
           const authorName = `${authorFirstName} ${authorLastName}`;
@@ -222,7 +226,7 @@ class PostInfo extends React.Component {
         }
 
         return logger.error({
-          key: MessagesKey.LOAD_POST_INFO_FAILEDv,
+          key: MessagesKey.LOAD_POST_INFO_FAILED,
           data: objPostInfoResponse,
         });
       })
@@ -250,9 +254,9 @@ class PostInfo extends React.Component {
       section: postSectionId,
       type: isPublic ? 'public' : 'private',
       postId,
-      endDate: Moment(endDate).utc(),
-      startDate: Moment(startDate).utc(),
-      dateTime: Moment(startDate).toDate(),
+      endDate: endDate ? Moment(endDate).utc() : null,
+      startDate: startDate ? Moment(startDate).utc() : null,
+      dateTime: startDate ? Moment(startDate).toDate() : new Date(),
     };
     setInitialFormValues(objFormValues);
     setEditingModal(true);
@@ -615,6 +619,7 @@ class PostInfo extends React.Component {
       postAuthorId,
       currentUserReaction,
       score,
+      authorURL,
     } = this.state;
     return (
       <PostInfoForm
@@ -634,6 +639,7 @@ class PostInfo extends React.Component {
         className={subjectName}
         postTitle={title}
         postDescription={description}
+        avatarUri={authorURL}
         postDate={formattedDate}
         postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
         author={postedBy}

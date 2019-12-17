@@ -8,6 +8,18 @@ import Text from '../Common/Text';
 import { fonts, spacers, colors, toBaseDesignPx } from '../../Core/Theme';
 
 class SubjectPostRecent extends React.Component {
+  getTextSince = () => {
+    const { createdSince } = this.props;
+
+    if (createdSince === 0) {
+      return 'Creado hoy';
+    }
+    if (createdSince === 1) {
+      return `Hace ${createdSince} día`;
+    }
+    return `Hace ${createdSince} días`;
+  };
+
   renderSubjectInfo = () => {
     const { postTitle, postUser } = this.props;
     return (
@@ -29,13 +41,7 @@ class SubjectPostRecent extends React.Component {
   };
 
   renderTimeSinceText = () => {
-    const { createdSince } = this.props;
-
-    if (createdSince) {
-      return <Text.Light style={styles.dateCreatedText} text={`Hace ${createdSince} días`} />;
-    }
-
-    return null;
+    return <Text.Light style={styles.dateCreatedText} text={this.getTextSince()} />;
   };
 
   renderSubjectDateInfo = () => {

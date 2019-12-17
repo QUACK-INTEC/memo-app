@@ -1,34 +1,12 @@
-// TODO: Api
 import axios from 'axios';
 import { createFormDataPhoto } from '../../Utils';
-// import Lodash from 'lodash';
 
-// const HTTP_STATUS = {
-//   BAD_REQUEST: 400,
-//   UNAUTHORIZED: 401,
-//   CONFLICT: 409,
-// };
 const API_VERSION = 1;
 const API_HOST = `https://memo-staging.herokuapp.com/v${API_VERSION}`;
 
 export const MemoApi = axios.create({
   baseURL: API_HOST,
 });
-
-// TODO: Interceptor ?? to handle token??
-// MemoApi.interceptors.response.use(null, error => {
-//   const { response } = error;
-//   const status = Lodash.get(response, ['status'], null);
-//   // if (status === HTTP_STATUS.UNAUTHORIZED) {
-//   TokenRefresh()
-//     .then(objResponseToken => {
-//       console.log({ objResponseToken });
-//     })
-//     .catch(objError => {
-//       console.log({ objError });
-//     });
-//   // }
-// });
 
 const AuthCheck = () => {
   return MemoApi.get(`auth/check`);
@@ -54,6 +32,10 @@ const GetSupportedUniversities = () => {
   return MemoApi.get(`sync/universities`);
 };
 
+const GetMyProfile = () => {
+  return MemoApi.get(`profile`);
+};
+
 const GetMyClasses = () => {
   return MemoApi.get(`sections`);
 };
@@ -76,6 +58,10 @@ const CreatePost = objForm => {
 
 const EditPost = (idPost, objForm) => {
   return MemoApi.put(`posts/${idPost}`, objForm);
+};
+
+const GetUserProfile = idUser => {
+  return MemoApi.get(`profile/${idUser}`);
 };
 
 const UploadProfilePicture = photo => {
@@ -127,6 +113,45 @@ const DeleteComment = (idPost, idComment) => {
   return MemoApi.delete(`posts/${idPost}/comment/${idComment}`);
 };
 
+const GetSectionResources = idSubject => {
+  return MemoApi.get(`subjects/${idSubject}/resources`);
+};
+
+const GetEvents = (strDate, sectionId, isPuplic) => {
+  if (sectionId) {
+    return MemoApi.get(`/calendar/${strDate}?isPublic=${isPuplic}&section=${sectionId}`);
+  }
+  return MemoApi.get(`/calendar/${strDate}?isPublic=${isPuplic}`);
+};
+
+const UpvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/upvote`);
+};
+
+const DownvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/downvote`);
+};
+
+const ResetvoteComment = idComment => {
+  return MemoApi.post(`posts/comments/${idComment}/resetvote`);
+};
+
+const RegisterForNotifications = pushToken => {
+  return MemoApi.post(`notifications/register`, { pushToken });
+};
+
+const SendRecoveryEmail = objUserEmailParam => {
+  return MemoApi.post(`auth/forgot`, objUserEmailParam);
+};
+
+const ChangePassword = objNewPasswordParam => {
+  return MemoApi.post(`auth/reset`, objNewPasswordParam);
+};
+
+const ValidateRecoveryCode = objUserOTPParam => {
+  return MemoApi.post(`auth/otp`, objUserOTPParam);
+};
+
 const Api = {
   AuthCheck,
   TokenRefresh,
@@ -151,6 +176,17 @@ const Api = {
   DeleteSubTask,
   AddComment,
   DeleteComment,
+  GetMyProfile,
+  GetSectionResources,
+  GetUserProfile,
+  GetEvents,
+  UpvoteComment,
+  DownvoteComment,
+  ResetvoteComment,
+  RegisterForNotifications,
+  SendRecoveryEmail,
+  ChangePassword,
+  ValidateRecoveryCode,
 };
 
 export default Api;

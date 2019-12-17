@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Avatar from '../Common/Avatar';
@@ -11,15 +11,15 @@ import ImageWrapper from '../Common/ImageWrapper';
 
 import { fonts, spacers, constants, colors, toBaseDesignPx } from '../../Core/Theme';
 
-class Profile extends React.Component {
+class ViewProfile extends React.Component {
   renderEmail = () => {
     const { studentMail } = this.props;
     return <Text.SemiBold text={studentMail} style={styles.studentMail} />;
   };
 
-  renderSubjects = () => {
-    const { studentSubjects } = this.props;
-    return <Text.SemiBold text={studentSubjects} style={styles.studentSubjects} />;
+  handleBackArrow = () => {
+    const { onBackArrow } = this.props;
+    onBackArrow();
   };
 
   renderEditIcon = () => {
@@ -31,7 +31,7 @@ class Profile extends React.Component {
           type={ICON_TYPE.MEMO_ICONS}
           size={ICON_SIZE.TINY}
           onPress={onEditUser}
-          color={colors.GRAY}
+          color={colors.TRANSPARENT}
         />
       </View>
     );
@@ -45,7 +45,7 @@ class Profile extends React.Component {
             name="chevron-circle-left"
             type={ICON_TYPE.FONT_AWESOME}
             size={ICON_SIZE.TINY}
-            color={colors.TRANSPARENT}
+            color={colors.GRAY}
             onPress={this.handleBackArrow}
           />
         </View>
@@ -64,11 +64,10 @@ class Profile extends React.Component {
       memoPoints,
       rank,
       studentName,
-      renderClasses,
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={[styles.headerInfoContainer]}>
+        <View style={styles.headerInfoContainer}>
           {this.renderHeader()}
           <Avatar
             initialsText={avatarInitialsText}
@@ -84,22 +83,16 @@ class Profile extends React.Component {
             <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
             <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
           </InLineComponent>
-          <ScrollView>
-            <Section title="Clases" viewStyle={styles.sectionViewStyle}>
-              {renderClasses()}
-            </Section>
-            <Section title="Mail" viewStyle={styles.sectionViewStyle}>
-              {this.renderEmail()}
-            </Section>
-          </ScrollView>
+          <Section title="Mail" viewStyle={styles.sectionViewStyle}>
+            {this.renderEmail()}
+          </Section>
         </View>
       </SafeAreaView>
     );
   }
 }
 
-Profile.defaultProps = {
-  studentSubjects: null,
+ViewProfile.defaultProps = {
   avatarSrc: null,
   avatarUri: null,
   avatarInitialsText: null,
@@ -109,14 +102,13 @@ Profile.defaultProps = {
   studentMail: null,
   memoPoints: null,
   rank: null,
-  onEditUser: () => null,
-  renderClasses: null,
+  onEditUser: null,
+  onBackArrow: () => null,
 };
 
-Profile.propTypes = {
+ViewProfile.propTypes = {
   studentName: PropTypes.string,
   studentMail: PropTypes.string,
-  studentSubjects: PropTypes.string,
   avatarSrc: PropTypes.string,
   avatarUri: PropTypes.string,
   avatarInitialsText: PropTypes.string,
@@ -125,7 +117,7 @@ Profile.propTypes = {
   memoPoints: PropTypes.number,
   rank: PropTypes.string,
   onEditUser: PropTypes.func,
-  renderClasses: PropTypes.func,
+  onBackArrow: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -156,19 +148,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerBackIconContainer: {
-    ...spacers.ML_14,
     ...spacers.MB_4,
     width: toBaseDesignPx(47),
-    justifyContent: 'flex-start',
   },
   studentSection: {
     ...spacers.MT_3,
     alignSelf: 'center',
   },
   studentMail: {
-    color: colors.GRAY,
-  },
-  studentSubjects: {
     color: colors.GRAY,
   },
   badgeStyle: {
@@ -179,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default ViewProfile;

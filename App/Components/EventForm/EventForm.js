@@ -10,7 +10,7 @@ import ModalForm from '../ModalForm';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import Text from '../Common/Text';
-import { toBaseDesignPx, fonts, colors, spacers } from '../../Core/Theme';
+import { toBaseDesignPx, fonts, colors, spacers, constants } from '../../Core/Theme';
 import ToggleButton from '../Common/Toggle';
 
 class EventForm extends React.Component {
@@ -18,7 +18,6 @@ class EventForm extends React.Component {
     super(props);
     this.state = {
       canAddFile: false,
-      hasDate: false,
       contentInsetBottom: 100,
     };
   }
@@ -28,7 +27,9 @@ class EventForm extends React.Component {
     onCloseModal();
   };
 
-  handleOnToggleAddFile = isOn => {
+  handleOnToggleAddFile = (isOn, objForm) => {
+    const { setFieldValue } = objForm;
+    setFieldValue('hasFile', isOn);
     this.setState(prevState => ({
       canAddFile: isOn,
       contentInsetBottom: isOn
@@ -44,7 +45,6 @@ class EventForm extends React.Component {
 
   handleOnToggleHasDate = isOn => {
     this.setState(prevState => ({
-      hasDate: isOn,
       contentInsetBottom: isOn
         ? prevState.contentInsetBottom + 120
         : prevState.contentInsetBottom - 120,
@@ -52,23 +52,24 @@ class EventForm extends React.Component {
   };
 
   renderForm = objForm => {
-    const { canAddFile, hasDate, contentInsetBottom } = this.state;
-    const { optionsClasses } = this.props;
+    const { canAddFile, contentInsetBottom } = this.state;
+    const { optionsClasses, isEditing } = this.props;
     const { values } = objForm;
-    const { startDate, endDate, title } = values;
-    const isEditing = !!title;
+    const { startDate, endDate, hasDate } = values;
     const titleText = isEditing ? 'Editar' : 'Crear';
     const hasADate = hasDate || (endDate && startDate);
     const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
+    const dinamicHeightAndroid = constants.isAndroid
+      ? { height: constants.DEVICE.HEIGHT / 2 }
+      : null;
     return (
       <>
         <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
         <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
           <ScrollView
             bounces={false}
-            alwaysBounceVertical={false}
-            automaticallyAdjustContentInsets={false}
-            contentInset={{ top: 0, bottom: contentInset }}
+            contentInset={{ bottom: contentInset }}
+            style={[{ flex: 1 }, dinamicHeightAndroid]}
           >
             <FormikInput
               type="dropdown"
@@ -76,6 +77,7 @@ class EventForm extends React.Component {
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
               name="section"
+              disabled={isEditing}
               labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
@@ -108,13 +110,14 @@ class EventForm extends React.Component {
               enablesReturnKeyAutomatically
             />
             <View style={styles.containerToggleInput}>
-              <ToggleButton
+              <FormikInput
+                type="toggle"
                 label="Tiene fecha?"
-                onChange={this.handleOnToggleHasDate}
+                name="hasDate"
                 labelStyle={styles.labelToggleInput}
               />
             </View>
-            {hasADate ? (
+            {hasDate ? (
               <View style={styles.containerTimePicker}>
                 <FormikInput
                   type="datepicker"
@@ -146,22 +149,18 @@ class EventForm extends React.Component {
             <View style={styles.containerToggleInput}>
               <ToggleButton
                 label="Anexar archivo?"
-                onChange={this.handleOnToggleAddFile}
+                onChange={isOn => this.handleOnToggleAddFile(isOn, objForm)}
                 labelStyle={styles.labelToggleInput}
               />
             </View>
 
             {canAddFile ? (
               <FormikInput
-                type="dropdown"
-                options={[
-                  { value: 'public', label: 'Publico' },
-                  { value: 'privado', label: 'Privado' },
-                ]}
+                type="fileinput"
                 labelStyle={styles.labelStyle}
-                label="Tipo de evento"
-                name="type"
-                containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
+                label="Archivos adjuntos"
+                name="attachments"
+                containerStyle={{ ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
             ) : null}
@@ -239,6 +238,7 @@ EventForm.propTypes = {
   validation: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool.isRequired,
 };
 
 export default EventForm;

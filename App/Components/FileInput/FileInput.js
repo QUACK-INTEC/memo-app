@@ -13,7 +13,7 @@ import InLineComponent from '../Common/InLineComponent';
 
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
-import FilePile from './FilePill';
+import FilePill from './FilePill';
 
 class FileInput extends React.Component {
   constructor(props) {
@@ -148,7 +148,7 @@ class FileInput extends React.Component {
             style={style}
             data={value}
             renderItem={({ item }) => (
-              <FilePile
+              <FilePill
                 id={item.uri}
                 documentText={item.name}
                 documentType={item.type}

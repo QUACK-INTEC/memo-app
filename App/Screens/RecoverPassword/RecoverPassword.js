@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
+import Api from '../../Core/Api';
+import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 
 import RecoverPasswordForm from '../../Components/RecoverPassword';
 
@@ -16,35 +19,43 @@ class RecoverPassWord extends Component {
     return this.setState({ isLoading });
   };
 
-  handleSubmit = () => {
+  handleSubmit = objValues => {
     const {
       navigation: { navigate },
+      logger,
     } = this.props;
-    return navigate('PasswordRecoveryCode');
+    const email = Lodash.get(objValues, ['email'], '');
 
-    // USE THIS WHEN API READY
-    // const { logger, navitagion: { navigate } } = this.props;
-    // this.setLoading(true);
+    this.setLoading(true);
 
-    // return Api.SendRecoveryEmail(objValues)
-    //   .then(objResponse => {
-    //     logger.success({
-    //       key: MessagesKey.SEND_EMAIL_SUCCESS,
-    //       data: objResponse,
-    //     });
+    return Api.SendRecoveryEmail(objValues)
+      .then(objResponse => {
+        const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
+        if (isSuccess) {
+          logger.success({
+            key: MessagesKey.SEND_EMAIL_SUCCESS,
+            data: objResponse,
+          });
 
-    //     return navigate('PasswordRecoveryCode');
-    //   })
-    //   .catch(objError => {
-    //     this.setLoading(false);
+          this.setLoading(false);
+          return navigate('PasswordRecoveryCode', { email });
+        }
+        this.setLoading(false);
+        return logger.error({
+          key: MessagesKey.SEND_EMAIL_FAIL,
+          data: objResponse,
+        });
+      })
+      .catch(objError => {
+        this.setLoading(false);
 
-    //     return setTimeout(() => {
-    //       logger.error({
-    //         key: MessagesKey.SEND_EMAIL_FAIL,
-    //         data: objError,
-    //       });
-    //     }, 1000);
-    //   });
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SEND_EMAIL_FAIL,
+            data: objError,
+          });
+        }, 1000);
+      });
   };
 
   handleOnPressGoBack = () => {
@@ -77,4 +88,4 @@ RecoverPassWord.propTypes = {
   initialsValue: PropTypes.shape({}),
 };
 
-export default RecoverPassWord;
+export default WithLogger(RecoverPassWord);

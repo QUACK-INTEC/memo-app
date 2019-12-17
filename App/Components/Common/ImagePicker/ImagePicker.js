@@ -12,6 +12,15 @@ import { colors, toBaseDesignPx } from '../../../Core/Theme';
 import Avatar from '../Avatar';
 
 class ImagePicker extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if (props.imageUri !== state.imageUri) {
+      return {
+        imageUri: state.imageUri || props.imageUri,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {

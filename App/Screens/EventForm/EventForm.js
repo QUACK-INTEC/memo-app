@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
+import Lodash from 'lodash';
 
 import EventFormComponent from '../../Components/EventForm';
 import { selectors as EventFormSelectors, actions as EventFormActions } from './Redux';
@@ -10,25 +11,6 @@ import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
 import { Classes } from '../../Models';
 import Api from '../../Core/Api';
 import PopUp from '../../Components/Common/PopUp';
-
-const validation = objValues => {
-  const errors = {};
-  const { section, description, title } = objValues;
-
-  if (!title) {
-    errors.title = 'Campo obligatorio';
-  }
-
-  if (!description) {
-    errors.description = 'Campo obligatorio';
-  }
-
-  if (!section) {
-    errors.section = 'Campo obligatorio';
-  }
-
-  return errors;
-};
 
 class EventForm extends React.Component {
   constructor(props) {
@@ -39,8 +21,50 @@ class EventForm extends React.Component {
     };
   }
 
+  getValidation = objValues => {
+    const errors = {};
+    const section = Lodash.get(objValues, ['section'], null);
+    const description = Lodash.get(objValues, ['description'], null);
+    const title = Lodash.get(objValues, ['title'], null);
+    const endDate = Lodash.get(objValues, ['endDate'], null);
+    const startDate = Lodash.get(objValues, ['startDate'], null);
+    const hasDate = Lodash.get(objValues, ['hasDate'], null);
+    const hasFile = Lodash.get(objValues, ['hasFile'], null);
+    const attachments = Lodash.get(objValues, ['attachments'], null);
+
+    if (!title) {
+      errors.title = 'Campo obligatorio';
+    }
+
+    if (!description) {
+      errors.description = 'Campo obligatorio';
+    }
+
+    if (!section) {
+      errors.section = 'Campo obligatorio';
+    }
+
+    if (hasDate) {
+      if (!endDate || !startDate) {
+        errors.startDate = 'Necesita una fecha';
+        errors.endDate = 'Necesita una fecha';
+      }
+    }
+
+    if (hasFile) {
+      if (attachments && attachments.length <= 0) {
+        errors.attachments = 'Necesita almenos un documento';
+      }
+    }
+
+    return errors;
+  };
+
   getInitialsValue = () => {
     const { initialsValue } = this.props;
+    const startDate = Lodash.get(initialsValue, ['startDate'], null);
+    const endDate = Lodash.get(initialsValue, ['endDate'], null);
+
     return {
       section: null,
       description: null,
@@ -49,6 +73,9 @@ class EventForm extends React.Component {
       startDate: null,
       title: null,
       type: 'public',
+      hasFile: false,
+      hasDate: startDate && endDate,
+      attachments: [],
       ...initialsValue,
     };
   };
@@ -79,6 +106,7 @@ class EventForm extends React.Component {
       dateTime: new Date(),
       startDate: null,
       title: null,
+      attachments: [],
       type: 'public',
     });
     if (isEditing) {
@@ -110,6 +138,7 @@ class EventForm extends React.Component {
       title,
       type,
       postId,
+      hasDate,
     } = objValues;
     const momentDateSelected = Moment(dateTime);
     const momentStartTime = Moment(startTime);
@@ -140,13 +169,12 @@ class EventForm extends React.Component {
     const objPayload = {
       title,
       description,
-      startDate,
-      endDate,
+      startDate: hasDate ? startDate : null,
+      endDate: hasDate ? endDate : null,
       section,
       type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
-
     return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
   };
 
@@ -222,7 +250,7 @@ class EventForm extends React.Component {
           isVisible={isModalVisible}
           onSubmit={this.handleOnSubmitForm}
           initialValues={this.getInitialsValue()}
-          validation={validation}
+          validation={this.getValidation}
           isEditing={isEditing}
           optionsClasses={this.getMyClassesOptions()}
         />

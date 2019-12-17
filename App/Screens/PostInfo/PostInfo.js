@@ -42,6 +42,8 @@ class PostInfo extends React.Component {
       score: 0,
       currentUserReaction: 0,
       authorURL: '',
+      badgeURI: '',
+      hasAttachments: false,
     };
   }
 
@@ -81,9 +83,11 @@ class PostInfo extends React.Component {
           const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
           const authorURL = Lodash.get(postAuthor, ['avatarURL'], '');
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+          const badgeURI = Lodash.get(objPostInfo, ['author', 'rank', 'badgeUrl'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
+          const hasAttachments = !Lodash.isNull(postComments) && postComments.length > 0;
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -111,7 +115,7 @@ class PostInfo extends React.Component {
             description: postDescription,
             comments: postComments,
             attachments: postAttachments,
-            postAuthorId,
+            authorId: postAuthorId,
             formattedDate,
             formattedStartDate,
             formattedEndDate,
@@ -123,6 +127,8 @@ class PostInfo extends React.Component {
             postSectionId: section,
             isPublic,
             authorURL,
+            badgeURI,
+            hasAttachments,
           });
 
           return logger.success({
@@ -175,10 +181,12 @@ class PostInfo extends React.Component {
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
           const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+          const badgeURI = Lodash.get(objPostInfo, ['author', 'rank', 'badgeUrl'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
+          const hasAttachments = !Lodash.isNull(postComments) && postComments.length > 0;
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -206,7 +214,7 @@ class PostInfo extends React.Component {
             description: postDescription,
             comments: postComments,
             attachments: postAttachments,
-            postAuthorId,
+            authorId: postAuthorId,
             formattedDate,
             formattedStartDate,
             formattedEndDate,
@@ -219,6 +227,8 @@ class PostInfo extends React.Component {
             isPublic,
             startDate,
             endDate,
+            badgeURI,
+            hasAttachments,
           });
 
           return logger.success({
@@ -483,7 +493,7 @@ class PostInfo extends React.Component {
       navigation: { navigate },
     } = this.props;
     const { authorId } = this.state;
-    return navigate('UserProfile', { authorId });
+    return navigate('ViewProfile', { userId: authorId });
   };
 
   handleBackArrow = () => {
@@ -636,10 +646,12 @@ class PostInfo extends React.Component {
       formattedStartDate,
       formattedEndDate,
       authorInitials,
-      postAuthorId,
+      authorId,
       currentUserReaction,
       score,
       authorURL,
+      badgeURI,
+      hasAttachments,
     } = this.state;
     return (
       <PostInfoForm
@@ -652,8 +664,8 @@ class PostInfo extends React.Component {
         goToComments={this.goToComments}
         goToResources={this.goToResources}
         renderSubTasks={this.renderSubTasks}
-        isAuthor={userId === postAuthorId}
-        badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
+        isAuthor={userId === authorId}
+        badgeUri={badgeURI}
         initialsText={authorInitials}
         score={score}
         className={subjectName}
@@ -664,6 +676,7 @@ class PostInfo extends React.Component {
         postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
         author={postedBy}
         personalScore={currentUserReaction}
+        hasResources={hasAttachments}
       />
     );
   };

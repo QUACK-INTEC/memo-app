@@ -27,6 +27,18 @@ class Settings extends React.Component {
     return this.handleSetProfileImage(strImageUri);
   };
 
+  handleOnChangePassword = () => {
+    const {
+      navigation: { navigate },
+    } = this.props;
+    return navigate('ChangePassword', {
+      setUserData: false,
+      nextScreen: 'Settings',
+      canNavigate: true,
+      hasLogInOption: false,
+    });
+  };
+
   handleSetProfileImage = strImageUri => {
     const { logger, setUserInfo } = this.props;
     return Api.UploadProfilePicture(strImageUri)
@@ -58,7 +70,7 @@ class Settings extends React.Component {
       navigation: { navigate },
     } = this.props;
 
-    return navigate('Sync');
+    return navigate('Sync', { canNavigate: true, nextScreen: 'Settings' });
   };
 
   handleGoToSettingsDevice = () => {
@@ -79,6 +91,7 @@ class Settings extends React.Component {
         onSyncPress={this.handleOnSyncPress}
         onNotificationPress={this.handleGoToSettingsDevice}
         imageUri={userAvatarURI}
+        onChangePasswordPress={this.handleOnChangePassword}
       />
     );
   }

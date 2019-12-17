@@ -17,12 +17,19 @@ class SyncAccount extends Component {
     this.state = {
       isLoading: false,
       universities: [],
+      canNavigate: false,
+      nextScreen: 'Home',
     };
   }
 
   componentDidMount() {
-    const { logger } = this.props;
+    const {
+      navigation: { getParam },
+      logger,
+    } = this.props;
     this.setLoading(true);
+    const canNavigate = getParam('canNavigate', false);
+    const nextScreen = getParam('nextScreen', 'Home');
 
     this.getSupportedUniversities()
       .then(objSupportedResponse => {
@@ -38,7 +45,7 @@ class SyncAccount extends Component {
             value: objUniversity.syncCode,
           };
         });
-        this.setState({ universities: universitiesFormatted });
+        this.setState({ universities: universitiesFormatted, canNavigate, nextScreen });
         return logger.success({
           key: MessagesKey.LOAD_SUPPORTED_UNIVERSITIES_SUCCESS,
           data: listSupportedUniversities,
@@ -52,6 +59,11 @@ class SyncAccount extends Component {
         });
       });
   }
+
+  handleBackArrow = () => {
+    const { navigation } = this.props;
+    return navigation.goBack();
+  };
 
   getSupportedUniversities = () => {
     return Api.GetSupportedUniversities();
@@ -98,6 +110,7 @@ class SyncAccount extends Component {
       setUserToken,
       navigation: { getParam, navigate },
     } = this.props;
+    const { nextScreen } = this.state;
     this.setLoading(false);
 
     const userToken = getParam('userToken', null);
@@ -107,14 +120,14 @@ class SyncAccount extends Component {
       if (userToken) {
         return setUserToken(userToken);
       }
-      return navigate('Home');
+      return navigate(nextScreen);
     }
 
     return null;
   };
 
   render() {
-    const { isLoading, universities } = this.state;
+    const { isLoading, universities, canNavigate } = this.state;
     const { initialsValue } = this.props;
 
     return (
@@ -124,6 +137,8 @@ class SyncAccount extends Component {
           onSubmit={this.handleSubmit}
           initialsValue={initialsValue}
           universities={universities}
+          canNavigate={canNavigate}
+          onBackArrow={this.handleBackArrow}
         />
       </SafeAreaView>
     );

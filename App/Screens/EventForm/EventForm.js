@@ -69,7 +69,7 @@ class EventForm extends React.Component {
       section: null,
       description: null,
       endDate: null,
-      dateTime: new Date(),
+      dateTime: new Date().setHours(7),
       startDate: null,
       title: null,
       type: 'public',
@@ -103,7 +103,7 @@ class EventForm extends React.Component {
       section: null,
       description: null,
       endDate: null,
-      dateTime: new Date(),
+      dateTime: new Date().setHours(7),
       startDate: null,
       title: null,
       attachments: [],
@@ -113,17 +113,6 @@ class EventForm extends React.Component {
       setEditingModal(false);
     }
     setModalVisible(false);
-  };
-
-  changeTimezone = date => {
-    const invdate = new Date(
-      date.toLocaleString('en-US', {
-        timeZone: 'America/Santo_Domingo',
-      })
-    );
-    const diff = date.getTime() - invdate.getTime();
-
-    return new Date(date.getTime() + diff);
   };
 
   handleOnSubmitForm = objValues => {
@@ -140,7 +129,11 @@ class EventForm extends React.Component {
       postId,
       hasDate,
     } = objValues;
-    const momentDateSelected = Moment(dateTime);
+
+    const momentDateSelected =
+      dateTime instanceof Date
+        ? Moment(new Date(dateTime.getTime() + dateTime.getTimezoneOffset() * 60 * 1000))
+        : Moment(dateTime);
     const momentStartTime = Moment(startTime);
     const momentEndTime = Moment(endTime);
 

@@ -185,6 +185,7 @@ class PostInfo extends React.Component {
           const formattedDate = startDate
             ? Moment(startDate)
                 .locale('es')
+                .utc()
                 .format('dddd DD, MMMM')
             : null;
           const formattedStartDate = startDate
@@ -256,7 +257,11 @@ class PostInfo extends React.Component {
       postId,
       endDate: endDate ? Moment(endDate).utc() : null,
       startDate: startDate ? Moment(startDate).utc() : null,
-      dateTime: startDate ? Moment(startDate).toDate() : new Date(),
+      dateTime: startDate
+        ? Moment(startDate)
+            .utc()
+            .toDate()
+        : new Date(),
     };
     setInitialFormValues(objFormValues);
     setEditingModal(true);

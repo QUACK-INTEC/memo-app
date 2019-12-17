@@ -3,10 +3,11 @@ import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-nati
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 
-import { spacers, colors, fonts } from '../../Core/Theme';
+import { spacers, colors, fonts, constants } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import Text from '../Common/Text';
+import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
 const validation = objValues => {
   const errors = {};
@@ -39,6 +40,29 @@ class ChangePassword extends Component {
     onSubmit(objValues);
   };
 
+  handleBackArrow = () => {
+    const { onBackArrow } = this.props;
+    onBackArrow();
+  };
+
+  renderHeader = () => {
+    const { canNavigate } = this.props;
+    if (canNavigate) {
+      return (
+        <View style={styles.headerBackIconContainer}>
+          <Icon
+            name="chevron-circle-left"
+            type={ICON_TYPE.FONT_AWESOME}
+            size={ICON_SIZE.TINY}
+            color={colors.GRAY}
+            onPress={this.handleBackArrow}
+          />
+        </View>
+      );
+    }
+    return null;
+  };
+
   handleGoBackToLogIn = () => {
     const { onBack } = this.props;
     onBack();
@@ -51,6 +75,16 @@ class ChangePassword extends Component {
       recoveryCode: null,
       ...initialsValue,
     };
+  };
+
+  renderGoToLogInButton = () => {
+    const { hasLogInOption } = this.props;
+    if (hasLogInOption) {
+      return (
+        <Button label="Volver a iniciar sesión" secondary onPress={this.handleGoBackToLogIn} />
+      );
+    }
+    return null;
   };
 
   renderForm = objForm => {
@@ -81,7 +115,6 @@ class ChangePassword extends Component {
               onPress={objForm.handleSubmit}
               disabled={!objForm.isValid}
             />
-            <Button label="Volver a iniciar sesión" secondary onPress={this.handleGoBackToLogIn} />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -90,12 +123,15 @@ class ChangePassword extends Component {
 
   render() {
     return (
-      <Formik
-        validate={validation}
-        onSubmit={this.handleOnSubmit}
-        initialValues={this.getInitialsValue()}
-        component={this.renderForm}
-      />
+      <>
+        <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>
+        <Formik
+          validate={validation}
+          onSubmit={this.handleOnSubmit}
+          initialValues={this.getInitialsValue()}
+          component={this.renderForm}
+        />
+      </>
     );
   }
 }
@@ -115,12 +151,20 @@ const styles = StyleSheet.create({
   continueButton: {
     ...spacers.MB_7,
   },
+  headerBackIconContainer: {
+    ...spacers.ML_14,
+    ...spacers.MB_4,
+  },
+  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT },
 });
 
 ChangePassword.defaultProps = {
   onSubmit: () => null,
   onBack: () => null,
+  onBackArrow: () => null,
   initialsValue: null,
+  hasLogInOption: false,
+  canNavigate: false,
 };
 
 ChangePassword.propTypes = {
@@ -130,6 +174,9 @@ ChangePassword.propTypes = {
     password: PropTypes.string,
     passwordVerify: PropTypes.string,
   }),
+  hasLogInOption: PropTypes.bool,
+  onBackArrow: PropTypes.func,
+  canNavigate: PropTypes.bool,
 };
 
 export default ChangePassword;

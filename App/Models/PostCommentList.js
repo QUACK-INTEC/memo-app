@@ -15,11 +15,7 @@ const getPostCommentsData = listData => {
     const authorId = Lodash.get(objClass, ['author', 'id'], ' ');
     const avatarURL = Lodash.get(objClass, 'avatarUri', null);
     const avatarUri = Lodash.get(objClass, ['author', 'avatarURL'], avatarURL);
-    const authorBadgeUri = Lodash.get(
-      objClass,
-      ['author', 'badgeURL'],
-      'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png'
-    );
+    const authorBadgeUri = Lodash.get(objClass, ['author', 'rank', 'badgeUrl'], '');
     const currentUserReaction = Lodash.get(objClass, ['currentUserReaction'], 0);
 
     return {

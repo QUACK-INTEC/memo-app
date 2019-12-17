@@ -3,9 +3,10 @@ import { View, StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-nati
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 
-import { spacers, toBaseDesignPx } from '../../Core/Theme';
+import { spacers, toBaseDesignPx, colors, constants } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
+import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 
 const validation = objValues => {
   const errors = {};
@@ -29,6 +30,29 @@ class SyncForm extends Component {
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
+  };
+
+  handleBackArrow = () => {
+    const { onBackArrow } = this.props;
+    onBackArrow();
+  };
+
+  renderHeader = () => {
+    const { canNavigate } = this.props;
+    if (canNavigate) {
+      return (
+        <View style={styles.headerBackIconContainer}>
+          <Icon
+            name="chevron-circle-left"
+            type={ICON_TYPE.FONT_AWESOME}
+            size={ICON_SIZE.TINY}
+            color={colors.GRAY}
+            onPress={this.handleBackArrow}
+          />
+        </View>
+      );
+    }
+    return null;
   };
 
   getInitialsValue = () => {
@@ -89,19 +113,24 @@ class SyncForm extends Component {
 
   render() {
     return (
-      <Formik
-        validate={validation}
-        onSubmit={this.handleOnSubmit}
-        initialValues={this.getInitialsValue()}
-        component={this.renderForm}
-      />
+      <>
+        <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>
+        <Formik
+          validate={validation}
+          onSubmit={this.handleOnSubmit}
+          initialValues={this.getInitialsValue()}
+          component={this.renderForm}
+        />
+      </>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    ...spacers.MA_10,
+    ...spacers.MR_10,
+    ...spacers.ML_10,
+    ...spacers.MB_10,
     flex: 1,
     justifyContent: 'center',
   },
@@ -120,15 +149,24 @@ const styles = StyleSheet.create({
   createAccountButton: {
     ...spacers.MB_7,
   },
+  headerBackIconContainer: {
+    ...spacers.ML_14,
+    ...spacers.MB_4,
+  },
+  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT },
 });
 
 SyncForm.defaultProps = {
   onSubmit: () => null,
+  onBackArrow: () => null,
   initialsValue: null,
+  canNavigate: false,
 };
 
 SyncForm.propTypes = {
   onSubmit: PropTypes.func,
+  onBackArrow: PropTypes.func,
+  canNavigate: PropTypes.bool,
   initialsValue: PropTypes.shape({
     user: PropTypes.string,
     claveUniversidad: PropTypes.string,

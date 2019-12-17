@@ -60,7 +60,13 @@ class PasswordRecoveryCode extends Component {
           });
 
           this.setLoading(false);
-          return navigate('ChangePassword', { token: strToken, userInfo: objUserInfo });
+          return navigate('ChangePassword', {
+            token: strToken,
+            userInfo: objUserInfo,
+            setUserData: true,
+            canNavigate: false,
+            hasLogInOption: true,
+          });
         }
         this.setLoading(false);
         return logger.error({

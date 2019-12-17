@@ -17,6 +17,7 @@ import { SubTasks } from '../../Models';
 import { spacers } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
+import { GAMIFICATION_MSG } from '../../Utils';
 
 class PostInfo extends React.Component {
   constructor(props) {
@@ -312,8 +313,9 @@ class PostInfo extends React.Component {
   };
 
   handleUpVote = value => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], {});
     this.setState({ isLoading: true });
     if (value) {
       return Api.UpvotePost(postId)
@@ -321,6 +323,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(10));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -385,8 +388,9 @@ class PostInfo extends React.Component {
   };
 
   handleDownVote = value => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], {});
     this.setState({ isLoading: true });
 
     if (value) {
@@ -395,6 +399,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(10));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -688,6 +693,7 @@ PostInfo.propTypes = {
   setEditingModal: PropTypes.func.isRequired,
   setInitialFormValues: PropTypes.func.isRequired,
   setModalVisible: PropTypes.func.isRequired,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {

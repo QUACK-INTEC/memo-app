@@ -50,8 +50,8 @@ class TeacherResources extends React.Component {
     return (
       <View style={styles.resourceContainer}>
         <SubjectPost
-          postTitle={item.title}
-          postUser={`${item.author.firstName} ${item.author.lastName}`}
+          postTitle={item.name}
+          postUser={`${item.uploadedBy.firstName} ${item.uploadedBy.lastName}`}
           onPress={() => this.handleOnPressResourceItem(item.id)}
         />
       </View>

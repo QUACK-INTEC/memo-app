@@ -13,6 +13,7 @@ const initialState = {
     startTime: null,
     endTime: null,
     section: null,
+    attachments: [],
   },
 };
 
@@ -20,7 +21,7 @@ const initialState = {
 
 // SET_INITIAL_FORM_VALUES
 const onSetInitialValues = (state, action) => {
-  const objInitialValues = Lodash.get(action, ['payload'], '');
+  const objInitialValues = Lodash.get(action, ['payload'], initialState.values);
   return {
     ...state,
     values: {

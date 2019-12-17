@@ -247,7 +247,16 @@ class PostInfo extends React.Component {
   };
 
   handleEdit = () => {
-    const { title, description, postSectionId, isPublic, postId, endDate, startDate } = this.state;
+    const {
+      title,
+      description,
+      postSectionId,
+      isPublic,
+      postId,
+      endDate,
+      startDate,
+      attachments,
+    } = this.state;
     const { setEditingModal, setInitialFormValues, setModalVisible } = this.props;
     const objFormValues = {
       title,
@@ -258,6 +267,7 @@ class PostInfo extends React.Component {
       endDate: endDate ? Moment(endDate).utc() : null,
       startDate: startDate ? Moment(startDate).utc() : null,
       dateTime: startDate ? Moment(startDate).toDate() : new Date(),
+      attachments,
     };
     setInitialFormValues(objFormValues);
     setEditingModal(true);

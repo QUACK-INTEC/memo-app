@@ -2,6 +2,8 @@ import React from 'react';
 import { View, ViewPropTypes, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 
+import * as mime from 'react-native-mime-types';
+
 import * as DocumentPicker from 'expo-document-picker';
 
 // Theme
@@ -16,6 +18,15 @@ import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import FilePill from './FilePill';
 
 class FileInput extends React.Component {
+  static getDerivedStateFromProps(props) {
+    if (props.value) {
+      return {
+        value: props.value,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,14 +64,17 @@ class FileInput extends React.Component {
 
     const { uri, name } = result;
     const nameseparator = name.split('.');
-    const [resultName, resultType] = nameseparator;
+    const [resultName, resultExtension] = nameseparator;
 
     const index = newData.findIndex(x => x.name === resultName);
     if (index < 0) {
       const item = {};
-      item.name = resultName;
-      item.type = resultType;
-      item.uri = uri;
+      item.id = null;
+      item.name = name;
+      item.fileURL = uri;
+      item.type = mime.lookup(resultExtension);
+      item.extension = resultExtension;
+      item.alias = resultName;
       newData.push(item);
       this.setState({ value: newData });
       onChange(newData);
@@ -147,16 +161,18 @@ class FileInput extends React.Component {
             }}
             style={style}
             data={value}
-            renderItem={({ item }) => (
-              <FilePill
-                id={item.uri}
-                documentText={item.name}
-                documentType={item.type}
-                onPress={this.handleAlert}
-              />
-            )}
+            renderItem={({ item }) => {
+              return (
+                <FilePill
+                  id={item.uri}
+                  documentText={item.name}
+                  documentType={item.extension}
+                  onPress={this.handleAlert}
+                />
+              );
+            }}
             horizontal
-            keyExtractor={item => `${item.uri}`}
+            keyExtractor={item => `${item.uri + item.alias}`}
             extraData={this.state}
             showsHorizontalScrollIndicator={false}
           />

@@ -15,10 +15,11 @@ const MAXLENGTH = 12;
 class FilePill extends React.Component {
   trimText = () => {
     const { documentType, documentText } = this.props;
-    if (documentText.length > MAXLENGTH) {
+
+    if (documentType && documentText.length > MAXLENGTH) {
       return `${documentText.substring(0, MAXLENGTH)}...${documentType}`;
     }
-    return `${documentText}.${documentType}`;
+    return `${documentText}`;
   };
 
   handlePress = () => {

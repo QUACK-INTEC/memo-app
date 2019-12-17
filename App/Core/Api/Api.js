@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { createFormDataPhoto } from '../../Utils';
+import { createFormDataPhoto, createFormDataFile } from '../../Utils';
+// import Lodash from 'lodash';
 
 const API_VERSION = 1;
 const API_HOST = `https://memo-staging.herokuapp.com/v${API_VERSION}`;
@@ -67,6 +68,15 @@ const GetUserProfile = idUser => {
 const UploadProfilePicture = photo => {
   const formData = createFormDataPhoto(photo);
   return MemoApi.post('/upload/profile', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+const UploadFile = file => {
+  const formData = createFormDataFile(file);
+  return MemoApi.post('/upload/attachments', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -187,6 +197,7 @@ const Api = {
   SendRecoveryEmail,
   ChangePassword,
   ValidateRecoveryCode,
+  UploadFile,
 };
 
 export default Api;

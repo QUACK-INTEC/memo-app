@@ -66,7 +66,7 @@ class EventForm extends React.Component {
     const { initialsValue } = this.props;
     const startDate = Lodash.get(initialsValue, ['startDate'], null);
     const endDate = Lodash.get(initialsValue, ['endDate'], null);
-
+    const attachments = Lodash.get(initialsValue, ['attachments'], []);
     return {
       section: null,
       description: null,
@@ -75,7 +75,7 @@ class EventForm extends React.Component {
       startDate: null,
       title: null,
       type: 'public',
-      hasFile: false,
+      hasFile: attachments.length > 0,
       hasDate: startDate && endDate,
       attachments: [],
       ...initialsValue,
@@ -209,14 +209,13 @@ class EventForm extends React.Component {
   };
 
   handleCreatePost = objPayload => {
-    const { setModalVisible, logger, MessagesKey, toastRef } = this.props;
+    const { logger, MessagesKey, toastRef } = this.props;
 
     const current = Lodash.get(toastRef, ['current'], null);
     return Api.CreatePost(objPayload)
       .then(objResponse => {
-        setModalVisible(false);
-
         current.setToastVisible(GAMIFICATION_MSG(50));
+        this.handleOnCloseModal();
         setTimeout(() => {
           this.setState({
             confirmationPopupMessage: 'Publicación creada exitosamente',
@@ -229,6 +228,7 @@ class EventForm extends React.Component {
         });
       })
       .catch(objError => {
+        this.handleOnCloseModal();
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.CREATE_POST_FAILED,
@@ -239,16 +239,17 @@ class EventForm extends React.Component {
   };
 
   handleEditPost = (idPost, objPayload) => {
-    const { logger, MessagesKey, setModalVisible } = this.props;
+    const { logger, MessagesKey } = this.props;
     return Api.EditPost(idPost, objPayload)
       .then(objResponse => {
-        setModalVisible(false);
+        this.handleOnCloseModal();
         return logger.success({
           key: MessagesKey.EDIT_POST_SUCCESS,
           data: objResponse,
         });
       })
       .catch(objError => {
+        this.handleOnCloseModal();
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.EDIT_POST_SUCCESS,

@@ -18,6 +18,15 @@ import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
 import FilePill from './FilePill';
 
 class FileInput extends React.Component {
+  static getDerivedStateFromProps(props) {
+    if (props.value) {
+      return {
+        value: props.value,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -152,14 +161,16 @@ class FileInput extends React.Component {
             }}
             style={style}
             data={value}
-            renderItem={({ item }) => (
-              <FilePill
-                id={item.uri}
-                documentText={item.alias}
-                documentType={item.extension}
-                onPress={this.handleAlert}
-              />
-            )}
+            renderItem={({ item }) => {
+              return (
+                <FilePill
+                  id={item.uri}
+                  documentText={item.name}
+                  documentType={item.extension}
+                  onPress={this.handleAlert}
+                />
+              );
+            }}
             horizontal
             keyExtractor={item => `${item.uri + item.alias}`}
             extraData={this.state}

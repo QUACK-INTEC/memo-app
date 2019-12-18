@@ -52,6 +52,7 @@ class Home extends React.Component {
         avatarUri={item.avatarURL}
         isPrivate={item.isPrivate}
         badgeUri={item.badgeUri}
+        initialsText={item.initials}
       />
     );
   };

@@ -70,7 +70,7 @@ class TimePicker extends React.Component {
 
   render() {
     const { date, isDateTimePickerVisible, timePicked } = this.state;
-    const { style } = this.props;
+    const { style, placeholder } = this.props;
     const colorScheme = Appearance.getColorScheme();
     let darkMode = false;
 
@@ -90,6 +90,7 @@ class TimePicker extends React.Component {
             isDarkModeEnabled={darkMode}
             onConfirm={this.handleDatePicked}
             onCancel={this.hideDateTimePicker}
+            titleIOS={placeholder}
           />
           <Text.SemiBold text={date} style={style} />
         </TouchableOpacity>
@@ -102,12 +103,14 @@ TimePicker.defaultProps = {
   time: null,
   textStyle: null,
   onChange: () => null,
+  placeholder: 'Seleccione una hora',
 };
 
 TimePicker.propTypes = {
   time: PropTypes.string,
   textStyle: PropTypes.shape({}),
   onChange: PropTypes.func,
+  placeholder: PropTypes.string,
 };
 
 export default TimePicker;

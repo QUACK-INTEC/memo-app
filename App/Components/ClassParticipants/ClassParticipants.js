@@ -27,13 +27,14 @@ class ClassParticipants extends React.Component {
   };
 
   render() {
-    const { renderParticipants } = this.props;
+    const { renderParticipants, subjectName } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.headerInfoContainer}>
           {this.renderHeader()}
           <View style={styles.centeredChildren}>
             <Text.SemiBold text="Participantes" style={styles.titleStyle} />
+            <Text.Medium text={`Participantes de: ${subjectName}`} style={styles.subjectStyle} />
           </View>
         </View>
         <View style={styles.container}>{renderParticipants()}</View>
@@ -60,7 +61,6 @@ const styles = StyleSheet.create({
     ...fonts.SIZE_XXL,
     ...spacers.MR_15,
     ...spacers.ML_15,
-    ...spacers.MB_11,
     alignSelf: 'center',
     color: colors.GRAY,
   },
@@ -70,16 +70,28 @@ const styles = StyleSheet.create({
   centered: {
     alignItems: 'center',
   },
+  subjectStyle: {
+    ...fonts.SIZE_XXS,
+    ...spacers.MR_15,
+    ...spacers.ML_15,
+    ...spacers.MT_1,
+    ...spacers.MB_11,
+    alignSelf: 'center',
+    color: colors.GRAY,
+    textAlign: 'center',
+  },
 });
 
 ClassParticipants.defaultProps = {
   onBackArrow: () => null,
   renderParticipants: () => null,
+  subjectName: null,
 };
 
 ClassParticipants.propTypes = {
   onBackArrow: PropTypes.func,
   renderParticipants: PropTypes.func,
+  subjectName: PropTypes.string,
 };
 
 export default ClassParticipants;

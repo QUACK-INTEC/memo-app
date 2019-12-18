@@ -159,8 +159,8 @@ class ClassHub extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
-    const { participants } = this.state;
-    navigate('Participants', { participants });
+    const { participants, subjectName } = this.state;
+    navigate('Participants', { participants, subjectName });
   };
 
   handleOnPressGoToResources = () => {

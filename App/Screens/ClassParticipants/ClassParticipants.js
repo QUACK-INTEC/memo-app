@@ -16,6 +16,7 @@ class ClassParticipants extends React.Component {
     this.state = {
       isLoading: false,
       participants: [],
+      subjectName: '',
     };
   }
 
@@ -24,7 +25,8 @@ class ClassParticipants extends React.Component {
       navigation: { getParam },
     } = this.props;
     const participants = getParam('participants', {});
-    this.setState({ participants });
+    const subjectName = getParam('subjectName', '');
+    this.setState({ participants, subjectName });
   }
 
   handleOnPressParticipantItem = objParticipant => {
@@ -85,12 +87,13 @@ class ClassParticipants extends React.Component {
   };
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, subjectName } = this.state;
     return (
       <View style={styles.container}>
         <ClassParticipantsComponent
           renderParticipants={this.renderParticipants}
           onBackArrow={this.handleBackArrow}
+          subjectName={subjectName}
         />
         <LoadingState.Modal isVisible={isLoading} />
       </View>

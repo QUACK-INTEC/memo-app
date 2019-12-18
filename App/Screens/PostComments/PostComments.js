@@ -321,6 +321,7 @@ class PostComments extends React.Component {
       userEmail,
       userAvatarURI,
       toastRef,
+      userBadgeUri,
     } = this.props;
     const { postId } = this.state;
     const current = Lodash.get(toastRef, ['current'], null);
@@ -340,14 +341,15 @@ class PostComments extends React.Component {
             email: `${userEmail}`,
             firstName: `${userFirstName}`,
             lastName: `${userLastName}`,
-            avatarURL: `${userAvatarURI}`,
+            avatarURL: Lodash.isNull(userAvatarURI) ? null : `${userAvatarURI}`,
             points: 0,
+            BadgeUri: userBadgeUri,
           };
           objCommentResponse.author = author;
           this.setState(prevState => ({
             postComments: [...prevState.postComments, objCommentResponse],
           }));
-          logger.success({
+          return logger.success({
             key: MessagesKey.CREATE_COMMENT_SUCCESS,
             data: objResponse,
           });
@@ -480,6 +482,7 @@ PostComments.defaultProps = {
   userLastName: null,
   userEmail: null,
   userAvatarURI: null,
+  userBadgeUri: null,
 };
 
 PostComments.propTypes = {
@@ -488,17 +491,26 @@ PostComments.propTypes = {
   userLastName: PropTypes.string,
   userEmail: PropTypes.string,
   userAvatarURI: PropTypes.string,
+  userBadgeUri: PropTypes.string,
   toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {
-  const { getFirstName, getLastName, getAvatarUser, getEmail, getUserId } = userManagerSelectors;
+  const {
+    getFirstName,
+    getLastName,
+    getAvatarUser,
+    getEmail,
+    getUserId,
+    getBadgeUrl,
+  } = userManagerSelectors;
   return {
     userFirstName: getFirstName(state, props),
     userLastName: getLastName(state, props),
     userAvatarURI: getAvatarUser(state, props),
     userEmail: getEmail(state, props),
     userId: getUserId(state, props),
+    userBadgeUri: getBadgeUrl(state, props),
   };
 };
 

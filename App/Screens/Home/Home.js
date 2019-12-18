@@ -113,19 +113,19 @@ class Home extends React.Component {
 
   handleOnPressClassItem = idSection => {
     const {
-      navigation: { navigate },
+      navigation: { push },
     } = this.props;
 
-    return navigate('ClassHub', { id: idSection });
+    return push('ClassHub', { id: idSection });
   };
 
   handleOnEventPress = objEvent => {
     const {
-      navigation: { navigate },
+      navigation: { push },
     } = this.props;
     const subjectName = Lodash.get(objEvent, ['subject'], null);
 
-    return navigate('PostInfo', {
+    return push('PostInfo', {
       id: Lodash.get(objEvent, ['id'], null),
       subjectName,
     });
@@ -225,10 +225,10 @@ class Home extends React.Component {
 
   handleOnSubjectPress = objSubject => {
     const {
-      navigation: { navigate },
+      navigation: { push },
     } = this.props;
     const idSection = Lodash.get(objSubject, ['id'], null);
-    return navigate('ClassHub', { id: idSection });
+    return push('ClassHub', { id: idSection });
   };
 
   handleOnEventUpVote = objEvent => {

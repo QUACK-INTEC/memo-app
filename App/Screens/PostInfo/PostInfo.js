@@ -87,7 +87,7 @@ class PostInfo extends React.Component {
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
-          const hasAttachments = !Lodash.isNull(postComments) && postComments.length > 0;
+          const hasAttachments = !Lodash.isNull(postAttachments) && postAttachments.length > 0;
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;

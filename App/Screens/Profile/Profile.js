@@ -26,19 +26,40 @@ class Profile extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      isRefreshing: false,
     };
   }
 
   componentDidMount() {
+    this.setState({
+      isLoading: true,
+    });
+    return this.fetchProfile();
+  }
+
+  componentDidUpdate() {
+    return this.fetchProfile();
+  }
+
+  handleOnRefresh = () => {
+    return this.setState(
+      {
+        isRefreshing: true,
+      },
+      () => this.fetchProfile().then(() => this.setState({ isRefreshing: false }))
+    );
+  };
+
+  fetchProfile = () => {
     const { logger, setUserInfo } = this.props;
-    Promise.all([this.getMyProfile()])
+    return Promise.all([this.getMyProfile()])
       .then(listValues => {
         this.setState({ isLoading: false });
         const [objUser] = listValues;
         const myUser = Lodash.get(objUser, ['data', 'user'], []);
         setUserInfo(myUser);
         return logger.success({
-          key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_SUCCESS,
+          key: MessagesKey.LOAD_MY_PROFILE_SUCCESS,
           data: listValues,
         });
       })
@@ -46,15 +67,12 @@ class Profile extends Component {
         this.setState({ isLoading: false });
         return setTimeout(() => {
           logger.error({
-            key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_FAILED,
+            key: MessagesKey.LOAD_MY_PROFILE_FAILED,
             data: objError,
           });
         }, 800);
       });
-    this.setState({
-      isLoading: true,
-    });
-  }
+  };
 
   getMyProfile = () => {
     return Api.GetMyProfile();
@@ -111,7 +129,7 @@ class Profile extends Component {
   };
 
   render() {
-    const { isLoading, avatarSrc } = this.state;
+    const { isLoading, avatarSrc, isRefreshing } = this.state;
     const {
       userFirstName,
       userLastName,
@@ -135,6 +153,8 @@ class Profile extends Component {
           memoPoints={userPoints}
           rank={userRankName}
           onEditUser={this.handleGoToSettings}
+          refreshing={isRefreshing}
+          onRefresh={this.handleOnRefresh}
         />
       </View>
     );

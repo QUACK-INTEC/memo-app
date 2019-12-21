@@ -516,7 +516,7 @@ class PostInfo extends React.Component {
     const { logger } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
-    Api.UpdateSubTask(postId, subTaskId, { isDone })
+    return Api.UpdateSubTask(postId, subTaskId, { isDone })
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
@@ -524,7 +524,7 @@ class PostInfo extends React.Component {
           this.setState({
             isLoading: false,
           });
-          logger.success({
+          return logger.success({
             key: MessagesKey.UPDATE_SUBTASK_SUCCESS,
             data: objResponse,
           });
@@ -555,7 +555,7 @@ class PostInfo extends React.Component {
     const { logger } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
-    Api.DeleteSubTask(postId, subTaskId)
+    return Api.DeleteSubTask(postId, subTaskId)
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
@@ -564,7 +564,7 @@ class PostInfo extends React.Component {
             isLoading: false,
           });
           this.RemoveSubTaskById(subTaskId);
-          logger.success({
+          return logger.success({
             key: MessagesKey.DELETE_SUBTASK_SUCCESS,
             data: objResponse,
           });
@@ -589,7 +589,7 @@ class PostInfo extends React.Component {
     const { logger } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
-    Api.AddSubTask(postId, { name })
+    return Api.AddSubTask(postId, { name })
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
@@ -599,7 +599,7 @@ class PostInfo extends React.Component {
           });
           const objSubTask = Lodash.get(objResponse, ['data', 'task'], false);
           this.setState(prevState => ({ userSubTasks: [...prevState.userSubTasks, objSubTask] }));
-          logger.success({
+          return logger.success({
             key: MessagesKey.CREATE_SUBTASK_SUCCESS,
             data: objResponse,
           });

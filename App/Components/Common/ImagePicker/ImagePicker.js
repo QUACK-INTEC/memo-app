@@ -7,6 +7,7 @@ import * as ImagePickerExpo from 'expo-image-picker';
 
 // Theme
 import { colors, toBaseDesignPx } from '../../../Core/Theme';
+import ImageWrapper, { MEMO_ASSETS } from '../ImageWrapper';
 
 // Common
 import Avatar from '../Avatar';
@@ -73,12 +74,25 @@ class ImagePicker extends React.Component {
       });
   };
 
-  render() {
+  renderImage = () => {
     const { imageUri } = this.state;
+    const { style, iconStyle } = this.props;
+    if (imageUri) {
+      return <Avatar uri={imageUri} style={[styles.avatarStyle, style]} />;
+    }
+    return (
+      <ImageWrapper
+        memoSrc={MEMO_ASSETS.CAMERA_PLACEHOLDER}
+        style={[styles.iconContainer, iconStyle]}
+      />
+    );
+  };
+
+  render() {
     const { style } = this.props;
     return (
       <TouchableOpacity onPress={this.handleOnPress} style={[styles.avatarStyle, style]}>
-        <Avatar uri={imageUri} style={[styles.avatarStyle, style]} />
+        {this.renderImage()}
       </TouchableOpacity>
     );
   }
@@ -93,18 +107,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconContainer: {
+    alignSelf: 'center',
+    height: toBaseDesignPx(80),
+    width: toBaseDesignPx(80),
+  },
 });
 
 ImagePicker.defaultProps = {
   disabled: null,
   onChangeImage: () => null,
   style: null,
+  iconStyle: null,
 };
 
 ImagePicker.propTypes = {
   disabled: PropTypes.bool,
   onChangeImage: PropTypes.func,
   style: ViewPropTypes.style,
+  iconStyle: ViewPropTypes.style,
 };
 
 export default ImagePicker;

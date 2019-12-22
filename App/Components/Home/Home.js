@@ -108,7 +108,7 @@ class Home extends React.Component {
   };
 
   renderEvents = () => {
-    const { events, subjects } = this.props;
+    const { events, subjects, onMyCalendarPress } = this.props;
 
     if (Lodash.isEmpty(events) && Lodash.isEmpty(subjects)) {
       return (
@@ -119,7 +119,7 @@ class Home extends React.Component {
           <Link
             text="Ver mi calendario"
             textStyle={styles.goToCalendarText}
-            onPress={this.handleOnMyCalendarPress}
+            onPress={onMyCalendarPress}
           />
         </View>
       );
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
 Home.defaultProps = {
   events: null,
   subjects: null,
+  onMyCalendarPress: () => null,
 };
 
 Home.propTypes = {
@@ -209,6 +210,7 @@ Home.propTypes = {
   onEventUpVote: PropTypes.func.isRequired,
   onEventDownVote: PropTypes.func.isRequired,
   onSubjectPress: PropTypes.func.isRequired,
+  onMyCalendarPress: PropTypes.func,
   renderSubjects: PropTypes.func.isRequired,
   actualMonth: PropTypes.string.isRequired,
   events: PropTypes.arrayOf(PropTypes.shape()),

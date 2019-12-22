@@ -16,13 +16,13 @@ const validation = objValues => {
 
   if (!firstName) {
     errors.firstName = 'Campo obligatorio';
-  } else if (!/^[a-zA-Z_ ]+$/.test(firstName)) {
+  } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/.test(firstName)) {
     errors.firstName = 'Nombre inválido';
   }
 
   if (!lastName) {
     errors.lastName = 'Campo obligatorio';
-  } else if (!/^[a-zA-Z_ ]+$/.test(lastName)) {
+  } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ  ]+$/.test(lastName)) {
     errors.lastName = 'Apellido inválido';
   }
 
@@ -46,7 +46,7 @@ const validation = objValues => {
   if (!email) {
     errors.email = 'Campo obligatorio';
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-    errors.email = 'Correo electronico inválido';
+    errors.email = 'Correo electrónico inválido';
   }
 
   return errors;

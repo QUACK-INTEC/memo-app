@@ -7,8 +7,6 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import LoadingState from '../../Components/LoadingState';
-import Text from '../../Components/Common/Text';
-import Link from '../../Components/Common/Link';
 import HomeComponent from '../../Components/Home';
 import { colors, fonts, spacers } from '../../Core/Theme';
 import Api, { MemoApi, RegisterForNotifications } from '../../Core/Api';
@@ -272,25 +270,6 @@ class Home extends React.Component {
     );
   };
 
-  renderEvents = () => {
-    const { isLoading } = this.state;
-
-    if (isLoading) return <></>;
-
-    return (
-      <View style={styles.noEventsContainer}>
-        <LoadingState.NoEvents />
-
-        <Text.Medium text="Nada para hoy" style={styles.noEventsText} />
-        <Link
-          text="Ver mi calendario"
-          textStyle={styles.goToCalendarText}
-          onPress={this.handleOnMyCalendarPress}
-        />
-      </View>
-    );
-  };
-
   render() {
     const { isLoading, isRefreshing } = this.state;
     return (
@@ -307,6 +286,7 @@ class Home extends React.Component {
           onSubjectPress={this.handleOnSubjectPress}
           onEventDownVote={this.handleOnEventDownVote}
           onEventUpVote={this.handleOnEventUpVote}
+          onMyCalendarPress={this.handleOnMyCalendarPress}
         />
       </>
     );

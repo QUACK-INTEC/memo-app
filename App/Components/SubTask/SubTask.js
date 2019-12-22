@@ -46,23 +46,6 @@ class SubTaskComponent extends React.Component {
     );
   };
 
-  // Hay un bug ahora mismo dejame eso comentado.
-  /* scrollToIndex = () => {
-        /*const {inverted, data} = this.props;
-        if(data.length > 0)
-        {      
-            let index = data.length - 1;
-            this.flatListRef.scrollToIndex({animated: true, index: index});
-        }
-      }
-      componentDidUpdate(prevProps) {
-        if(this.props != prevProps)
-        {
-            this.scrollToIndex();
-        }
-    } 
-      */
-
   handleAddSubtask = () => {
     const { inputValue } = this.state;
     const { onSubTaskAdd } = this.props;
@@ -111,20 +94,21 @@ class SubTaskComponent extends React.Component {
 
         {error ? <Text.SemiBold text={error} style={styles.error} /> : null}
         <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={this.handleAddSubtask}>
-            <Icon
-              name="add"
-              type={ICON_TYPE.MEMO_ICONS}
-              size={ICON_SIZE.TINY}
-              color={colors.GRAY}
-            />
-          </TouchableOpacity>
           <TextInput
             onChangeText={text => this.setState({ inputValue: text })}
             value={inputValue}
             placeholder={placeholder}
             style={styles.inputStyle}
           />
+          <TouchableOpacity onPress={this.handleAddSubtask}>
+            <Icon
+              name="add"
+              type={ICON_TYPE.MEMO_ICONS}
+              size={ICON_SIZE.TINY}
+              color={colors.GRAY}
+              style={styles.addButtonStyle}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -155,6 +139,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  addButtonStyle: { ...spacers.MR_3 },
 });
 
 SubTaskComponent.defaultProps = {

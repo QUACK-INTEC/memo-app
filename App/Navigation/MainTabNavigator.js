@@ -23,6 +23,7 @@ import PostInfo from '../Screens/PostInfo';
 import PostResourcesScreen from '../Screens/PostResources';
 import SettingsScreen from '../Screens/Settings';
 import ViewResourceScreen from '../Screens/ViewResource';
+import SyncScreen from '../Screens/SyncAccount';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -35,6 +36,18 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+    Clases: ClassRoomScreen,
+    ClassHub: {
+      screen: ClassHubScreen,
+    },
+    PostInfo,
+    Participants: ClassParticipantsScreen,
+    ViewProfile: ViewProfileScreen,
+    SubjectsByTeacher: SubjectsByTeacherScreen,
+    TeacherResources: TeacherResourcesScreen,
+    PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
+    ViewResource: ViewResourceScreen,
   },
   config
 );
@@ -139,6 +152,7 @@ const ProfileStack = createStackNavigator(
   {
     Profile: ProfileScreen,
     Settings: SettingsScreen,
+    Sync: SyncScreen,
   },
   config
 );

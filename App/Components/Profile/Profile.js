@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Avatar from '../Common/Avatar';
@@ -65,10 +65,15 @@ class Profile extends React.Component {
       rank,
       studentName,
       renderClasses,
+      refreshing,
+      onRefresh,
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
           <View style={[styles.headerInfoContainer]}>
             {this.renderHeader()}
             <Avatar
@@ -127,6 +132,8 @@ Profile.propTypes = {
   rank: PropTypes.string,
   onEditUser: PropTypes.func,
   renderClasses: PropTypes.func,
+  refreshing: PropTypes.bool.isRequired,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({

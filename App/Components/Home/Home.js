@@ -25,16 +25,30 @@ class Home extends React.Component {
 
   renderInfoCalendar = () => {
     return (
-      <View>
-        <InLineComponent>
-          <View style={styles.infoSubjectCalendar} />
-          <Text.Light text="Clases" style={styles.infoText} />
-        </InLineComponent>
-        <InLineComponent>
-          <View style={styles.infoEventCalendar} />
-          <Text.Light text="Eventos" style={styles.infoText} />
-        </InLineComponent>
-      </View>
+      <InLineComponent>
+        <View>
+          <InLineComponent>
+            <View style={styles.infoSubjectCalendar} />
+            <Text.Light text="Clases" style={styles.infoText} />
+          </InLineComponent>
+
+          <InLineComponent>
+            <View style={styles.infoTransparentCalendar} />
+            <Text.Light text="Eventos" style={styles.transparentInfo} />
+          </InLineComponent>
+        </View>
+
+        <View>
+          <InLineComponent>
+            <View style={styles.infoEventCalendar} />
+            <Text.Light text="Eventos" style={styles.infoText} />
+          </InLineComponent>
+          <InLineComponent>
+            <View style={styles.privateInfoSubjectCalendar} />
+            <Text.Light text="Privado" style={styles.infoPrivateText} />
+          </InLineComponent>
+        </View>
+      </InLineComponent>
     );
   };
 
@@ -52,6 +66,7 @@ class Home extends React.Component {
         avatarUri={item.avatarURL}
         isPrivate={item.isPrivate}
         badgeUri={item.badgeUri}
+        initialsText={item.initials}
       />
     );
   };
@@ -107,7 +122,7 @@ class Home extends React.Component {
   };
 
   renderEvents = () => {
-    const { events, subjects } = this.props;
+    const { events, subjects, onMyCalendarPress } = this.props;
 
     if (Lodash.isEmpty(events) && Lodash.isEmpty(subjects)) {
       return (
@@ -118,7 +133,7 @@ class Home extends React.Component {
           <Link
             text="Ver mi calendario"
             textStyle={styles.goToCalendarText}
-            onPress={this.handleOnMyCalendarPress}
+            onPress={onMyCalendarPress}
           />
         </View>
       );
@@ -182,6 +197,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GREEN_OPACITY_LIGHT,
     ...spacers.MR_1,
   },
+  privateInfoSubjectCalendar: {
+    height: toBaseDesignPx(7),
+    width: toBaseDesignPx(7),
+    borderRadius: toBaseDesignPx(3.5),
+    backgroundColor: colors.ORANGE_LIGHT,
+    ...spacers.MR_2,
+  },
+  infoTransparentCalendar: {
+    height: toBaseDesignPx(7),
+    width: toBaseDesignPx(7),
+    borderRadius: toBaseDesignPx(3.5),
+    backgroundColor: colors.TRANSPARENT,
+    ...spacers.MR_1,
+  },
   infoEventCalendar: {
     height: toBaseDesignPx(7),
     width: toBaseDesignPx(7),
@@ -196,11 +225,14 @@ const styles = StyleSheet.create({
   classesContainer: { ...spacers.MT_10 },
   classesTitle: { ...fonts.SIZE_XXL, color: colors.GRAY },
   infoText: { color: colors.GRAY },
+  infoPrivateText: { color: colors.GRAY, ...spacers.MR_1 },
+  transparentInfo: { color: colors.TRANSPARENT },
 });
 
 Home.defaultProps = {
   events: null,
   subjects: null,
+  onMyCalendarPress: () => null,
 };
 
 Home.propTypes = {
@@ -208,6 +240,7 @@ Home.propTypes = {
   onEventUpVote: PropTypes.func.isRequired,
   onEventDownVote: PropTypes.func.isRequired,
   onSubjectPress: PropTypes.func.isRequired,
+  onMyCalendarPress: PropTypes.func,
   renderSubjects: PropTypes.func.isRequired,
   actualMonth: PropTypes.string.isRequired,
   events: PropTypes.arrayOf(PropTypes.shape()),

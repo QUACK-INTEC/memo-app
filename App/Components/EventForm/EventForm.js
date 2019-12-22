@@ -17,6 +17,7 @@ class EventForm extends React.Component {
     this.state = {
       contentInsetBottom: 120,
     };
+    this.descriptionInput = React.createRef();
   }
 
   handleCloseEventForm = () => {
@@ -95,9 +96,15 @@ class EventForm extends React.Component {
               containerStyle={styles.containerTextInput}
               enablesReturnKeyAutomatically
               disabled={isSubmiting}
-              returnKeyType="done"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                this.descriptionInput.focus();
+              }}
             />
             <FormikInput
+              inputRef={input => {
+                this.descriptionInput = input;
+              }}
               label="Descripción"
               name="description"
               disabled={isSubmiting}

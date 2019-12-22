@@ -25,16 +25,30 @@ class Home extends React.Component {
 
   renderInfoCalendar = () => {
     return (
-      <View>
-        <InLineComponent>
-          <View style={styles.infoSubjectCalendar} />
-          <Text.Light text="Clases" style={styles.infoText} />
-        </InLineComponent>
-        <InLineComponent>
-          <View style={styles.infoEventCalendar} />
-          <Text.Light text="Eventos" style={styles.infoText} />
-        </InLineComponent>
-      </View>
+      <InLineComponent>
+        <View>
+          <InLineComponent>
+            <View style={styles.infoSubjectCalendar} />
+            <Text.Light text="Clases" style={styles.infoText} />
+          </InLineComponent>
+
+          <InLineComponent>
+            <View style={styles.infoTransparentCalendar} />
+            <Text.Light text="Eventos" style={styles.transparentInfo} />
+          </InLineComponent>
+        </View>
+
+        <View>
+          <InLineComponent>
+            <View style={styles.infoEventCalendar} />
+            <Text.Light text="Eventos" style={styles.infoText} />
+          </InLineComponent>
+          <InLineComponent>
+            <View style={styles.privateInfoSubjectCalendar} />
+            <Text.Light text="Privado" style={styles.infoPrivateText} />
+          </InLineComponent>
+        </View>
+      </InLineComponent>
     );
   };
 
@@ -183,6 +197,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GREEN_OPACITY_LIGHT,
     ...spacers.MR_1,
   },
+  privateInfoSubjectCalendar: {
+    height: toBaseDesignPx(7),
+    width: toBaseDesignPx(7),
+    borderRadius: toBaseDesignPx(3.5),
+    backgroundColor: colors.ORANGE_LIGHT,
+    ...spacers.MR_2,
+  },
+  infoTransparentCalendar: {
+    height: toBaseDesignPx(7),
+    width: toBaseDesignPx(7),
+    borderRadius: toBaseDesignPx(3.5),
+    backgroundColor: colors.TRANSPARENT,
+    ...spacers.MR_1,
+  },
   infoEventCalendar: {
     height: toBaseDesignPx(7),
     width: toBaseDesignPx(7),
@@ -197,6 +225,8 @@ const styles = StyleSheet.create({
   classesContainer: { ...spacers.MT_10 },
   classesTitle: { ...fonts.SIZE_XXL, color: colors.GRAY },
   infoText: { color: colors.GRAY },
+  infoPrivateText: { color: colors.GRAY, ...spacers.MR_1 },
+  transparentInfo: { color: colors.TRANSPARENT },
 });
 
 Home.defaultProps = {

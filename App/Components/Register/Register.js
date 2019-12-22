@@ -53,6 +53,14 @@ const validation = objValues => {
 };
 
 class Register extends Component {
+  constructor(props) {
+    super(props);
+    this.lastNameInput = React.createRef();
+    this.emailInput = React.createRef();
+    this.passwordInput = React.createRef();
+    this.passwordVerifyInput = React.createRef();
+  }
+
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -63,7 +71,6 @@ class Register extends Component {
     onBack();
   };
 
-  // TODO: add field for profileImage when backend support image
   getInitialsValue = () => {
     const { initialsValue } = this.props;
 
@@ -91,30 +98,54 @@ class Register extends Component {
             name="firstName"
             containerStyle={styles.input}
             enablesReturnKeyAutomatically
-            returnKeyType="done"
+            returnKeyType="next"
+            onSubmitEditing={() => {
+              this.lastNameInput.focus();
+            }}
           />
           <FormikInput
+            inputRef={input => {
+              this.lastNameInput = input;
+            }}
             label="Apellido"
             name="lastName"
             containerStyle={styles.input}
-            returnKeyType="done"
+            returnKeyType="next"
+            onSubmitEditing={() => {
+              this.emailInput.focus();
+            }}
           />
           <FormikInput
+            inputRef={input => {
+              this.emailInput = input;
+            }}
             label="Email"
             name="email"
             containerStyle={styles.input}
             keyboardType="email-address"
-            returnKeyType="done"
+            returnKeyType="next"
             autoCapitalize="none"
+            onSubmitEditing={() => {
+              this.passwordInput.focus();
+            }}
           />
           <FormikInput
+            inputRef={input => {
+              this.passwordInput = input;
+            }}
             label="Contraseña"
             name="password"
             containerStyle={styles.input}
-            returnKeyType="done"
+            returnKeyType="next"
             secureTextEntry
+            onSubmitEditing={() => {
+              this.passwordVerifyInput.focus();
+            }}
           />
           <FormikInput
+            inputRef={input => {
+              this.passwordVerifyInput = input;
+            }}
             label="Confirmar contraseña"
             name="passwordVerify"
             containerStyle={styles.input}

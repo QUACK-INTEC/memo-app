@@ -18,4 +18,5 @@ jobs:
           expo-version: 3.x
           expo-username: beyondx
           expo-password: beyondthex
+      - run: npm ci
       - run: expo publish

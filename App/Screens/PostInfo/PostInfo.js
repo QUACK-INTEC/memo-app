@@ -43,6 +43,7 @@ class PostInfo extends React.Component {
       authorURL: '',
       badgeURI: '',
       hasAttachments: false,
+      isPublic: true,
     };
   }
 
@@ -185,7 +186,7 @@ class PostInfo extends React.Component {
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
-          const hasAttachments = !Lodash.isNull(postComments) && postComments.length > 0;
+          const hasAttachments = !Lodash.isNull(postAttachments) && postAttachments.length > 0;
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -651,6 +652,7 @@ class PostInfo extends React.Component {
       authorURL,
       badgeURI,
       hasAttachments,
+      isPublic,
     } = this.state;
     return (
       <PostInfoForm
@@ -676,6 +678,7 @@ class PostInfo extends React.Component {
         author={postedBy}
         personalScore={currentUserReaction}
         hasResources={hasAttachments}
+        isPrivate={!isPublic}
       />
     );
   };

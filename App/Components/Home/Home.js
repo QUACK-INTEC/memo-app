@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, SafeAreaView, ScrollView, FlatList, RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
+import Moment from 'moment/min/moment-with-locales';
 import Lodash from 'lodash';
 
 import { colors, spacers, fonts, toBaseDesignPx } from '../../Core/Theme';
@@ -17,7 +18,7 @@ class Home extends React.Component {
     const { actualMonth } = this.props;
     return (
       <View>
-        <Text.Bold text="Hoy," style={styles.textToday} />
+        <Text.Bold text={`${Moment().format('DD dddd,')}`} style={styles.textToday} />
         <Text.Medium text={actualMonth} style={styles.textMonthActual} />
       </View>
     );

@@ -19,5 +19,4 @@ jobs:
           expo-username: beyondx
           expo-password: beyondthex
       - run: yarn install
-      - run: yarn install --frozen-lockfile
       - run: expo publish

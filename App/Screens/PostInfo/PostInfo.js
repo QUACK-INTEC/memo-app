@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import Lodash from 'lodash';
-import Moment from 'moment';
+import Moment from 'moment/min/moment-with-locales';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -747,9 +747,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PostInfo)
-);
+export default WithLogger(connect(mapStateToProps, mapDispatchToProps)(PostInfo));

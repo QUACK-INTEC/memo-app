@@ -1,7 +1,6 @@
 import React from 'react';
 import { FlatList, Keyboard, View, StyleSheet } from 'react-native';
 import Lodash from 'lodash';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
@@ -452,7 +451,7 @@ class PostComments extends React.Component {
           onLeftPress={() => this.setState({ confirmationPopUpVisible: false })}
         />
         <LoadingState.Modal isVisible={isLoading} />
-        <ActionSheetProvider>{this.renderPostCommentsComponent()}</ActionSheetProvider>
+        {this.renderPostCommentsComponent()}
       </View>
     );
   }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import Lodash from 'lodash';
 import Moment from 'moment';
 import { bindActionCreators } from 'redux';
@@ -700,7 +699,7 @@ class PostInfo extends React.Component {
           onLeftPress={() => this.setState({ confirmationPopUpVisible: false })}
         />
         <LoadingState.Modal isVisible={isLoading} />
-        <ActionSheetProvider>{this.renderPostInfo()}</ActionSheetProvider>
+        {this.renderPostInfo()}
       </SafeAreaView>
     );
   }

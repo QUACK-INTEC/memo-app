@@ -10,6 +10,7 @@ import * as Font from 'expo-font';
 import { enableScreens } from 'react-native-screens';
 
 import { PersistGate } from 'redux-persist/integration/react';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import FontList from './Core/Assets/Fonts';
 import Navigator from './Navigation/AppToken';
 import { store, persistor } from './Redux/RootReducer';
@@ -43,11 +44,13 @@ class App extends Component {
       );
     }
     return (
-      <Provider store={store}>
-        <PersistGate persistor={persistor} loading={<LoadingState.Medium />}>
-          <Navigator />
-        </PersistGate>
-      </Provider>
+      <ActionSheetProvider>
+        <Provider store={store}>
+          <PersistGate persistor={persistor} loading={<LoadingState.Medium />}>
+            <Navigator />
+          </PersistGate>
+        </Provider>
+      </ActionSheetProvider>
     );
   }
 }

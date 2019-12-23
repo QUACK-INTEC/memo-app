@@ -6,7 +6,9 @@ import { Formik } from 'formik';
 import { spacers, toBaseDesignPx, colors, constants } from '../../Core/Theme';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
+import Link from '../Common/Link';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
+import PopUp from '../Common/PopUp';
 
 const validation = objValues => {
   const errors = {};
@@ -27,6 +29,14 @@ const validation = objValues => {
 };
 
 class SyncForm extends Component {
+  constructor(props) {
+    super(props);
+    this.passwordInput = React.createRef();
+    this.state = {
+      modalVisible: false,
+    };
+  }
+
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -83,19 +93,27 @@ class SyncForm extends Component {
               returnKeyType="next"
             />
             <FormikInput
-              label="Usuario"
+              label="Usuario (ID)"
               name="user"
               keyboardType="email-address"
               containerStyle={styles.input}
               enablesReturnKeyAutomatically
               returnKeyType="next"
+              placeholder="Credenciales Universitarias"
+              onSubmitEditing={() => {
+                this.passwordInput.focus();
+              }}
             />
             <FormikInput
+              inputRef={input => {
+                this.passwordInput = input;
+              }}
               label="Contraseña"
               name="claveUniversidad"
               containerStyle={styles.input}
               returnKeyType="done"
               secureTextEntry
+              placeholder="Credenciales Universitarias"
             />
           </View>
           <View style={styles.buttonsContainer}>
@@ -105,6 +123,15 @@ class SyncForm extends Component {
               onPress={objForm.handleSubmit}
               disabled={!objForm.isValid}
             />
+            <Link
+              text="No Guardamos Tus Credenciales!"
+              textStyle={{
+                alignSelf: 'center',
+                textAlign: 'center',
+                flex: 1,
+              }}
+              onPress={() => this.setState({ modalVisible: true })}
+            />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -112,16 +139,25 @@ class SyncForm extends Component {
   };
 
   render() {
+    const { modalVisible } = this.state;
     return (
-      <>
+      <View style={{ flex: 1 }}>
         <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>
+        <PopUp.Info
+          title="Utiliza tus credenciales universitarias, MEMO solo las usará una vez para obtener tus clases. 
+          No guardaremos tu usuario o contraseña."
+          buttonText="OK"
+          onButtonPress={() => this.setState({ modalVisible: false })}
+          isVisible={modalVisible}
+          titleStyle={{ ...spacers.ML_11, ...spacers.MR_11 }}
+        />
         <Formik
           validate={validation}
           onSubmit={this.handleOnSubmit}
           initialValues={this.getInitialsValue()}
           component={this.renderForm}
         />
-      </>
+      </View>
     );
   }
 }

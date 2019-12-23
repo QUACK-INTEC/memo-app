@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import Moment from 'moment';
+import Moment from 'moment/min/moment-with-locales';
 import Lodash from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -341,9 +341,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Home)
-);
+export default WithLogger(connect(mapStateToProps, mapDispatchToProps)(Home));

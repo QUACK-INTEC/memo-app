@@ -55,7 +55,12 @@ class EventCalendar extends React.Component {
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
           />
-          <Text.Medium text={author} style={styles.authorStyle} />
+          <Text.Medium
+            text={author}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.authorStyle}
+          />
           <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
         </InLineComponent>
       </TouchableOpacity>
@@ -104,19 +109,16 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(16),
     width: toBaseDesignPx(16),
     borderRadius: toBaseDesignPx(8),
-    justifyContent: 'flex-end',
     ...spacers.MR_1,
   },
   authorStyle: {
     ...fonts.SIZE_XS,
     color: colors.GRAY,
-    justifyContent: 'flex-end',
     ...spacers.MR_1,
   },
   badgeStyle: {
     width: toBaseDesignPx(11.5),
     height: toBaseDesignPx(11.5),
-    justifyContent: 'flex-end',
     ...spacers.MR_2,
   },
   avatarTextStyle: {

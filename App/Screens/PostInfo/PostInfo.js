@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import Lodash from 'lodash';
 import Moment from 'moment';
 import { bindActionCreators } from 'redux';
@@ -17,6 +16,7 @@ import { SubTasks } from '../../Models';
 import { spacers } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
+import { GAMIFICATION_MSG } from '../../Utils';
 
 class PostInfo extends React.Component {
   constructor(props) {
@@ -41,6 +41,9 @@ class PostInfo extends React.Component {
       score: 0,
       currentUserReaction: 0,
       authorURL: '',
+      badgeURI: '',
+      hasAttachments: false,
+      isPublic: true,
     };
   }
 
@@ -80,9 +83,11 @@ class PostInfo extends React.Component {
           const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
           const authorURL = Lodash.get(postAuthor, ['avatarURL'], '');
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+          const badgeURI = Lodash.get(objPostInfo, ['author', 'rank', 'badgeUrl'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
+          const hasAttachments = !Lodash.isNull(postAttachments) && postAttachments.length > 0;
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -110,7 +115,7 @@ class PostInfo extends React.Component {
             description: postDescription,
             comments: postComments,
             attachments: postAttachments,
-            postAuthorId,
+            authorId: postAuthorId,
             formattedDate,
             formattedStartDate,
             formattedEndDate,
@@ -122,6 +127,8 @@ class PostInfo extends React.Component {
             postSectionId: section,
             isPublic,
             authorURL,
+            badgeURI,
+            hasAttachments,
           });
 
           return logger.success({
@@ -174,10 +181,12 @@ class PostInfo extends React.Component {
           const authorFirstName = Lodash.get(postAuthor, ['firstName'], ' ');
           const authorLastName = Lodash.get(postAuthor, ['lastName'], ' ');
           const postAuthorId = Lodash.get(objPostInfo, ['author', 'id'], '');
+          const badgeURI = Lodash.get(objPostInfo, ['author', 'rank', 'badgeUrl'], '');
           const startDate = Lodash.get(objPostInfo, ['startDate'], null);
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
+          const hasAttachments = !Lodash.isNull(postAttachments) && postAttachments.length > 0;
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -185,6 +194,7 @@ class PostInfo extends React.Component {
           const formattedDate = startDate
             ? Moment(startDate)
                 .locale('es')
+                .utc()
                 .format('dddd DD, MMMM')
             : null;
           const formattedStartDate = startDate
@@ -204,7 +214,7 @@ class PostInfo extends React.Component {
             description: postDescription,
             comments: postComments,
             attachments: postAttachments,
-            postAuthorId,
+            authorId: postAuthorId,
             formattedDate,
             formattedStartDate,
             formattedEndDate,
@@ -217,6 +227,8 @@ class PostInfo extends React.Component {
             isPublic,
             startDate,
             endDate,
+            badgeURI,
+            hasAttachments,
           });
 
           return logger.success({
@@ -246,7 +258,16 @@ class PostInfo extends React.Component {
   };
 
   handleEdit = () => {
-    const { title, description, postSectionId, isPublic, postId, endDate, startDate } = this.state;
+    const {
+      title,
+      description,
+      postSectionId,
+      isPublic,
+      postId,
+      endDate,
+      startDate,
+      attachments,
+    } = this.state;
     const { setEditingModal, setInitialFormValues, setModalVisible } = this.props;
     const objFormValues = {
       title,
@@ -256,7 +277,12 @@ class PostInfo extends React.Component {
       postId,
       endDate: endDate ? Moment(endDate).utc() : null,
       startDate: startDate ? Moment(startDate).utc() : null,
-      dateTime: startDate ? Moment(startDate).toDate() : new Date(),
+      dateTime: startDate
+        ? Moment(startDate)
+            .utc()
+            .toDate()
+        : new Date(),
+      attachments,
     };
     setInitialFormValues(objFormValues);
     setEditingModal(true);
@@ -312,8 +338,9 @@ class PostInfo extends React.Component {
   };
 
   handleUpVote = value => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], {});
     this.setState({ isLoading: true });
     if (value) {
       return Api.UpvotePost(postId)
@@ -321,6 +348,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(10));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -385,8 +413,9 @@ class PostInfo extends React.Component {
   };
 
   handleDownVote = value => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], {});
     this.setState({ isLoading: true });
 
     if (value) {
@@ -395,6 +424,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(10));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -463,7 +493,7 @@ class PostInfo extends React.Component {
       navigation: { navigate },
     } = this.props;
     const { authorId } = this.state;
-    return navigate('UserProfile', { authorId });
+    return navigate('ViewProfile', { userId: authorId });
   };
 
   handleBackArrow = () => {
@@ -486,7 +516,7 @@ class PostInfo extends React.Component {
     const { logger } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
-    Api.UpdateSubTask(postId, subTaskId, { isDone })
+    return Api.UpdateSubTask(postId, subTaskId, { isDone })
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
@@ -494,7 +524,7 @@ class PostInfo extends React.Component {
           this.setState({
             isLoading: false,
           });
-          logger.success({
+          return logger.success({
             key: MessagesKey.UPDATE_SUBTASK_SUCCESS,
             data: objResponse,
           });
@@ -525,7 +555,7 @@ class PostInfo extends React.Component {
     const { logger } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
-    Api.DeleteSubTask(postId, subTaskId)
+    return Api.DeleteSubTask(postId, subTaskId)
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
@@ -534,7 +564,7 @@ class PostInfo extends React.Component {
             isLoading: false,
           });
           this.RemoveSubTaskById(subTaskId);
-          logger.success({
+          return logger.success({
             key: MessagesKey.DELETE_SUBTASK_SUCCESS,
             data: objResponse,
           });
@@ -559,7 +589,7 @@ class PostInfo extends React.Component {
     const { logger } = this.props;
     const { postId } = this.state;
     this.setLoading(true);
-    Api.AddSubTask(postId, { name })
+    return Api.AddSubTask(postId, { name })
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
@@ -569,7 +599,7 @@ class PostInfo extends React.Component {
           });
           const objSubTask = Lodash.get(objResponse, ['data', 'task'], false);
           this.setState(prevState => ({ userSubTasks: [...prevState.userSubTasks, objSubTask] }));
-          logger.success({
+          return logger.success({
             key: MessagesKey.CREATE_SUBTASK_SUCCESS,
             data: objResponse,
           });
@@ -616,10 +646,13 @@ class PostInfo extends React.Component {
       formattedStartDate,
       formattedEndDate,
       authorInitials,
-      postAuthorId,
+      authorId,
       currentUserReaction,
       score,
       authorURL,
+      badgeURI,
+      hasAttachments,
+      isPublic,
     } = this.state;
     return (
       <PostInfoForm
@@ -632,8 +665,8 @@ class PostInfo extends React.Component {
         goToComments={this.goToComments}
         goToResources={this.goToResources}
         renderSubTasks={this.renderSubTasks}
-        isAuthor={userId === postAuthorId}
-        badgeUri="https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png"
+        isAuthor={userId === authorId}
+        badgeUri={badgeURI}
         initialsText={authorInitials}
         score={score}
         className={subjectName}
@@ -644,6 +677,8 @@ class PostInfo extends React.Component {
         postTime={`${formattedStartDate} ${formattedEndDate ? `-${formattedEndDate}` : ''}`}
         author={postedBy}
         personalScore={currentUserReaction}
+        hasResources={hasAttachments}
+        isPrivate={!isPublic}
       />
     );
   };
@@ -667,7 +702,7 @@ class PostInfo extends React.Component {
           onLeftPress={() => this.setState({ confirmationPopUpVisible: false })}
         />
         <LoadingState.Modal isVisible={isLoading} />
-        <ActionSheetProvider>{this.renderPostInfo()}</ActionSheetProvider>
+        {this.renderPostInfo()}
       </SafeAreaView>
     );
   }
@@ -688,6 +723,7 @@ PostInfo.propTypes = {
   setEditingModal: PropTypes.func.isRequired,
   setInitialFormValues: PropTypes.func.isRequired,
   setModalVisible: PropTypes.func.isRequired,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {

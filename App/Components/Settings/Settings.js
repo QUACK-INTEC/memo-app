@@ -23,6 +23,7 @@ class Settings extends React.Component {
       onSyncPress,
       onNotificationPress,
       imageUri,
+      onChangePasswordPress,
     } = this.props;
 
     return (
@@ -58,6 +59,11 @@ class Settings extends React.Component {
             style={styles.separatorItems}
             hasOnPress={false}
             renderCustomRightChoice={this.renderUserName}
+          />
+          <SettingsItem
+            label="Cambiar Contraseña"
+            style={styles.separatorItems}
+            onPress={onChangePasswordPress}
           />
         </View>
         <View style={styles.containerLogOut}>
@@ -95,6 +101,7 @@ Settings.defaultProps = {
 Settings.propTypes = {
   userName: PropTypes.string.isRequired,
   onBackArrowPress: PropTypes.func.isRequired,
+  onChangePasswordPress: PropTypes.func.isRequired,
   onChangeProfilePicture: PropTypes.func.isRequired,
   onLogoutPress: PropTypes.func.isRequired,
   onSyncPress: PropTypes.func.isRequired,

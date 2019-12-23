@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Avatar from '../Common/Avatar';
@@ -64,30 +64,30 @@ class ViewProfile extends React.Component {
       memoPoints,
       rank,
       studentName,
+      renderClasses,
     } = this.props;
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerInfoContainer}>
-          {this.renderHeader()}
-          <Avatar
-            initialsText={avatarInitialsText}
-            src={avatarSrc}
-            uri={avatarUri}
-            style={styles.avatar}
-          />
-          <InLineComponent viewStyle={styles.studentSection}>
-            <Text.Medium text={studentName} style={styles.studentName} />
-            <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
-          </InLineComponent>
-          <InLineComponent viewStyle={styles.memoPointsRow}>
-            <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
-            <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
-          </InLineComponent>
-          <Section title="Mail" viewStyle={styles.sectionViewStyle}>
-            {this.renderEmail()}
-          </Section>
-        </View>
-      </SafeAreaView>
+      <View style={styles.headerInfoContainer}>
+        {this.renderHeader()}
+        <Avatar
+          initialsText={avatarInitialsText}
+          src={avatarSrc}
+          uri={avatarUri}
+          style={styles.avatar}
+        />
+        <InLineComponent viewStyle={styles.studentSection}>
+          <Text.Medium text={studentName} style={styles.studentName} />
+          <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
+        </InLineComponent>
+        <InLineComponent viewStyle={styles.memoPointsRow}>
+          <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
+          <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
+        </InLineComponent>
+        <Section title="Mail" viewStyle={styles.sectionViewStyle}>
+          {this.renderEmail()}
+        </Section>
+        <Section title="Clases comunes">{renderClasses()}</Section>
+      </View>
     );
   }
 }
@@ -104,6 +104,7 @@ ViewProfile.defaultProps = {
   rank: null,
   onEditUser: null,
   onBackArrow: () => null,
+  renderClasses: () => null,
 };
 
 ViewProfile.propTypes = {
@@ -118,11 +119,12 @@ ViewProfile.propTypes = {
   rank: PropTypes.string,
   onEditUser: PropTypes.func,
   onBackArrow: PropTypes.func,
+  renderClasses: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  headerInfoContainer: { marginTop: constants.DEVICE.STATUS_BAR_HEIGHT },
+  headerInfoContainer: {},
   avatar: { alignSelf: 'center', justifyContent: 'center' },
   studentName: {
     ...fonts.SIZE_XL,
@@ -139,13 +141,12 @@ const styles = StyleSheet.create({
   sectionViewStyle: { ...spacers.MB_8 },
   editIconContainer: {
     ...spacers.MR_14,
-    ...spacers.MB_4,
     width: toBaseDesignPx(47),
     justifyContent: 'flex-end',
   },
   header: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    ...spacers.ML_14,
+    marginTop: constants.DEVICE.STATUS_BAR_HEIGHT,
   },
   headerBackIconContainer: {
     ...spacers.MB_4,
@@ -159,8 +160,8 @@ const styles = StyleSheet.create({
     color: colors.GRAY,
   },
   badgeStyle: {
-    width: toBaseDesignPx(12),
-    height: toBaseDesignPx(12),
+    width: toBaseDesignPx(18),
+    height: toBaseDesignPx(18),
     alignSelf: 'center',
     ...spacers.ML_2,
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Avatar from '../Common/Avatar';
@@ -65,34 +65,40 @@ class Profile extends React.Component {
       rank,
       studentName,
       renderClasses,
+      refreshing,
+      onRefresh,
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
-        <View style={[styles.headerInfoContainer]}>
-          {this.renderHeader()}
-          <Avatar
-            initialsText={avatarInitialsText}
-            src={avatarSrc}
-            uri={avatarUri}
-            style={styles.avatar}
-          />
-          <InLineComponent viewStyle={styles.studentSection}>
-            <Text.Medium text={studentName} style={styles.studentName} />
-            <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
-          </InLineComponent>
-          <InLineComponent viewStyle={styles.memoPointsRow}>
-            <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
-            <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
-          </InLineComponent>
-          <ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
+          <View style={[styles.headerInfoContainer]}>
+            {this.renderHeader()}
+            <Avatar
+              initialsText={avatarInitialsText}
+              src={avatarSrc}
+              uri={avatarUri}
+              style={styles.avatar}
+            />
+            <InLineComponent viewStyle={styles.studentSection}>
+              <Text.Medium text={studentName} style={styles.studentName} />
+              <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
+            </InLineComponent>
+            <InLineComponent viewStyle={styles.memoPointsRow}>
+              <Text.SemiBold text="MP:" style={styles.memoPointsLabel} />
+              <Text.SemiBold text={`${memoPoints} ~ ${rank}`} style={styles.memoPointsValue} />
+            </InLineComponent>
+
             <Section title="Clases" viewStyle={styles.sectionViewStyle}>
               {renderClasses()}
             </Section>
             <Section title="Mail" viewStyle={styles.sectionViewStyle}>
               {this.renderEmail()}
             </Section>
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -126,6 +132,8 @@ Profile.propTypes = {
   rank: PropTypes.string,
   onEditUser: PropTypes.func,
   renderClasses: PropTypes.func,
+  refreshing: PropTypes.bool.isRequired,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({

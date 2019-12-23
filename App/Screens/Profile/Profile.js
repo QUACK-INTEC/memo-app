@@ -26,20 +26,40 @@ class Profile extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      badgeUri: null,
+      isRefreshing: false,
     };
   }
 
   componentDidMount() {
+    this.setState({
+      isLoading: true,
+    });
+    return this.fetchProfile();
+  }
+
+  componentDidUpdate() {
+    return this.fetchProfile();
+  }
+
+  handleOnRefresh = () => {
+    return this.setState(
+      {
+        isRefreshing: true,
+      },
+      () => this.fetchProfile().then(() => this.setState({ isRefreshing: false }))
+    );
+  };
+
+  fetchProfile = () => {
     const { logger, setUserInfo } = this.props;
-    Promise.all([this.getMyProfile()])
+    return Promise.all([this.getMyProfile()])
       .then(listValues => {
         this.setState({ isLoading: false });
         const [objUser] = listValues;
         const myUser = Lodash.get(objUser, ['data', 'user'], []);
         setUserInfo(myUser);
         return logger.success({
-          key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_SUCCESS,
+          key: MessagesKey.LOAD_MY_PROFILE_SUCCESS,
           data: listValues,
         });
       })
@@ -47,25 +67,12 @@ class Profile extends Component {
         this.setState({ isLoading: false });
         return setTimeout(() => {
           logger.error({
-            key: MessagesKey.LOAD_EVENTS_AND_MYCLASSES_FAILED,
+            key: MessagesKey.LOAD_MY_PROFILE_FAILED,
             data: objError,
           });
         }, 800);
       });
-
-    const {
-      navigation: { getParam },
-    } = this.props;
-    // MOCK DATA PARA FINES DE PRUEBA
-    const badgeUri = getParam(
-      'badgeUri',
-      'https://cdn0.iconfinder.com/data/icons/usa-politics/67/45-512.png'
-    );
-    this.setState({
-      isLoading: true,
-      badgeUri,
-    });
-  }
+  };
 
   getMyProfile = () => {
     return Api.GetMyProfile();
@@ -122,14 +129,15 @@ class Profile extends Component {
   };
 
   render() {
-    const { isLoading, avatarSrc, badgeUri, badgeSrc } = this.state;
+    const { isLoading, avatarSrc, isRefreshing } = this.state;
     const {
       userFirstName,
       userLastName,
       userAvatarURI,
       userEmail,
       userPoints,
-      userRank,
+      userRankName,
+      badgeUrl,
     } = this.props;
     return (
       <View style={styles.container}>
@@ -141,11 +149,12 @@ class Profile extends Component {
           avatarUri={userAvatarURI}
           avatarSrc={avatarSrc}
           avatarInitialsText={this.getInitials(userFirstName, userLastName)}
-          badgeUri={badgeUri}
-          badgeSrc={badgeSrc}
+          badgeUri={badgeUrl}
           memoPoints={userPoints}
-          rank={userRank}
+          rank={userRankName}
           onEditUser={this.handleGoToSettings}
+          refreshing={isRefreshing}
+          onRefresh={this.handleOnRefresh}
         />
       </View>
     );
@@ -165,7 +174,8 @@ Profile.defaultProps = {
   userEmail: null,
   setUserInfo: () => null,
   userPoints: null,
-  userRank: null,
+  userRankName: '',
+  badgeUrl: '',
   myClasses: [],
   myClassesLookup: {},
 };
@@ -177,7 +187,8 @@ Profile.propTypes = {
   userEmail: PropTypes.string,
   setUserInfo: PropTypes.func,
   userPoints: PropTypes.number,
-  userRank: PropTypes.string,
+  userRankName: PropTypes.string,
+  badgeUrl: PropTypes.string,
   myClasses: PropTypes.arrayOf(PropTypes.string),
   myClassesLookup: PropTypes.shape({}),
 };
@@ -189,7 +200,8 @@ const mapStateToProps = (state, props) => {
     getAvatarUser,
     getEmail,
     getPoints,
-    getRank,
+    getRankName,
+    getBadgeUrl,
   } = userManagerSelectors;
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
   return {
@@ -198,7 +210,8 @@ const mapStateToProps = (state, props) => {
     userAvatarURI: getAvatarUser(state, props),
     userEmail: getEmail(state, props),
     userPoints: getPoints(state, props),
-    userRank: getRank(state, props),
+    userRankName: getRankName(state, props),
+    badgeUrl: getBadgeUrl(state, props),
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
   };

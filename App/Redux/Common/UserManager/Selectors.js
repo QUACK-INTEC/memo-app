@@ -64,6 +64,20 @@ export const getRank = createSelector(
   }
 );
 
+export const getRankName = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'rank', 'name'], '');
+  }
+);
+
+export const getBadgeUrl = createSelector(
+  getMyUserManager,
+  objState => {
+    return Lodash.get(objState, ['user', 'rank', 'badgeUrl'], '');
+  }
+);
+
 export default {
   getEmail,
   getAvatarUser,
@@ -74,4 +88,6 @@ export default {
   getUserToken,
   getPoints,
   getRank,
+  getRankName,
+  getBadgeUrl,
 };

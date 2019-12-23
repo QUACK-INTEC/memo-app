@@ -12,6 +12,7 @@ class SettingsItemImagePicker extends React.Component {
     return (
       <ImagePicker
         style={styles.imagePicker}
+        iconStyle={styles.imagePickerIcon}
         imageUri={imageUri}
         onChangeImage={strImageUri => onChangeProfilePicture(strImageUri)}
       />
@@ -36,6 +37,10 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(90),
     width: toBaseDesignPx(90),
     borderRadius: toBaseDesignPx(45),
+  },
+  imagePickerIcon: {
+    height: toBaseDesignPx(60),
+    width: toBaseDesignPx(60),
   },
 });
 

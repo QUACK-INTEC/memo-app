@@ -1,25 +1,23 @@
 import React from 'react';
 
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Formik } from 'formik';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 
-import { ScrollView } from 'react-native-gesture-handler';
 import ModalForm from '../ModalForm';
 import FormikInput from '../FormikInput';
 import Button from '../Common/Button';
 import Text from '../Common/Text';
 import { toBaseDesignPx, fonts, colors, spacers, constants } from '../../Core/Theme';
-import ToggleButton from '../Common/Toggle';
 
 class EventForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      canAddFile: false,
-      contentInsetBottom: 100,
+      contentInsetBottom: 120,
     };
+    this.descriptionInput = React.createRef();
   }
 
   handleCloseEventForm = () => {
@@ -31,10 +29,9 @@ class EventForm extends React.Component {
     const { setFieldValue } = objForm;
     setFieldValue('hasFile', isOn);
     this.setState(prevState => ({
-      canAddFile: isOn,
       contentInsetBottom: isOn
-        ? prevState.contentInsetBottom + 50
-        : prevState.contentInsetBottom - 50,
+        ? prevState.contentInsetBottom + 120
+        : prevState.contentInsetBottom - 120,
     }));
   };
 
@@ -52,32 +49,42 @@ class EventForm extends React.Component {
   };
 
   renderForm = objForm => {
-    const { canAddFile, contentInsetBottom } = this.state;
-    const { optionsClasses, isEditing } = this.props;
+    const { contentInsetBottom } = this.state;
+    const { optionsClasses, isEditing, isSubmiting } = this.props;
     const { values } = objForm;
-    const { startDate, endDate, hasDate } = values;
+    const { startDate, endDate, hasDate, hasFile, fromClasHub } = values;
     const titleText = isEditing ? 'Editar' : 'Crear';
+    const titleTextSubmiting = isEditing ? 'Guardando cambios...' : 'Creando...';
     const hasADate = hasDate || (endDate && startDate);
-    const contentInset = hasADate ? contentInsetBottom + 120 : contentInsetBottom;
+    const contentInset = hasADate || hasFile ? contentInsetBottom + 120 : contentInsetBottom;
     const dinamicHeightAndroid = constants.isAndroid
-      ? { height: constants.DEVICE.HEIGHT / 2 }
+      ? { height: constants.DEVICE.HEIGHT + contentInsetBottom }
       : null;
     return (
       <>
         <Text.SemiBold text={`${titleText} Publicación`} style={styles.titleForm} />
-        <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
+        {isSubmiting ? (
+          <Text.Light text={titleTextSubmiting} style={styles.titleSubmiting} />
+        ) : null}
+        <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
           <ScrollView
-            bounces={false}
             contentInset={{ bottom: contentInset }}
             style={[{ flex: 1 }, dinamicHeightAndroid]}
+            scrollEnabled={!isSubmiting}
+            scrollsToTop={isSubmiting}
           >
+            {isSubmiting ? (
+              <View style={{ position: 'absolute', right: 0, left: 0 }}>
+                <ActivityIndicator />
+              </View>
+            ) : null}
             <FormikInput
               type="dropdown"
               options={optionsClasses}
               placeholder="Seleccione la clase para este evento..."
               label="Clase"
               name="section"
-              disabled={isEditing}
+              disabled={isEditing || isSubmiting || fromClasHub}
               labelStyle={styles.labelStyle}
               enablesReturnKeyAutomatically
               returnKeyType="next"
@@ -88,15 +95,24 @@ class EventForm extends React.Component {
               labelStyle={styles.labelStyle}
               containerStyle={styles.containerTextInput}
               enablesReturnKeyAutomatically
-              returnKeyType="done"
+              disabled={isSubmiting}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                this.descriptionInput.focus();
+              }}
             />
             <FormikInput
+              inputRef={input => {
+                this.descriptionInput = input;
+              }}
               label="Descripción"
               name="description"
+              disabled={isSubmiting}
               labelStyle={styles.labelStyle}
               containerStyle={styles.containerTextInput}
               returnKeyType="done"
             />
+
             <FormikInput
               type="dropdown"
               options={[
@@ -105,6 +121,7 @@ class EventForm extends React.Component {
               ]}
               labelStyle={styles.labelStyle}
               label="Tipo de evento"
+              disabled={isSubmiting}
               name="type"
               containerStyle={{ width: toBaseDesignPx(164.5), ...spacers.MT_3 }}
               enablesReturnKeyAutomatically
@@ -114,6 +131,7 @@ class EventForm extends React.Component {
                 type="toggle"
                 label="Tiene fecha?"
                 name="hasDate"
+                disabled={isSubmiting}
                 labelStyle={styles.labelToggleInput}
               />
             </View>
@@ -123,6 +141,7 @@ class EventForm extends React.Component {
                   type="datepicker"
                   label="Fecha del evento"
                   name="dateTime"
+                  disabled={isSubmiting}
                   labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
                   containerStyle={{ flex: 1, ...spacers.MR_2 }}
                 />
@@ -132,6 +151,7 @@ class EventForm extends React.Component {
                     label="Hora de inicio"
                     name="startDate"
                     time={startDate}
+                    disabled={isSubmiting}
                     labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
                     containerStyle={{ flex: 1, width: toBaseDesignPx(10), ...spacers.MR_2 }}
                   />
@@ -139,6 +159,7 @@ class EventForm extends React.Component {
                     type="timepicker"
                     label="Hora final"
                     name="endDate"
+                    disabled={isSubmiting}
                     time={endDate}
                     labelStyle={{ ...fonts.SIZE_S, ...spacers.MT_3 }}
                     containerStyle={{ flex: 1, width: toBaseDesignPx(10) }}
@@ -147,37 +168,42 @@ class EventForm extends React.Component {
               </View>
             ) : null}
             <View style={styles.containerToggleInput}>
-              <ToggleButton
+              <FormikInput
+                type="toggle"
                 label="Anexar archivo?"
-                onChange={isOn => this.handleOnToggleAddFile(isOn, objForm)}
+                name="hasFile"
+                disabled={isSubmiting}
                 labelStyle={styles.labelToggleInput}
               />
             </View>
 
-            {canAddFile ? (
+            {hasFile ? (
               <FormikInput
                 type="fileinput"
                 labelStyle={styles.labelStyle}
                 label="Archivos adjuntos"
                 name="attachments"
+                disabled={isSubmiting}
                 containerStyle={{ ...spacers.MT_3 }}
                 enablesReturnKeyAutomatically
               />
             ) : null}
           </ScrollView>
         </KeyboardAwareScrollView>
+
         <View style={styles.containerBottom}>
           <Button
             label={isEditing ? 'Guardar' : 'Crear'}
             containerStyle={styles.submitButton}
             onPress={objForm.handleSubmit}
-            disabled={!objForm.isValid}
+            disabled={isSubmiting || !objForm.isValid}
           />
           <Button
             label="Cancelar"
             secondary
             containerStyle={styles.cancelButton}
             onPress={this.handleCloseEventForm}
+            disabled={isSubmiting}
           />
         </View>
       </>
@@ -201,10 +227,15 @@ class EventForm extends React.Component {
 
 const styles = StyleSheet.create({
   titleForm: {
-    ...fonts.SIZE_XL,
+    ...fonts.SIZE_M,
     textAlign: 'center',
     ...spacers.MT_4,
     ...spacers.MB_4,
+    color: colors.GRAY,
+  },
+  titleSubmiting: {
+    ...fonts.SIZE_XL,
+    textAlign: 'center',
     color: colors.GRAY,
   },
   labelStyle: { ...fonts.SIZE_S },
@@ -239,6 +270,7 @@ EventForm.propTypes = {
   onCloseModal: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   isEditing: PropTypes.bool.isRequired,
+  isSubmiting: PropTypes.bool.isRequired,
 };
 
 export default EventForm;

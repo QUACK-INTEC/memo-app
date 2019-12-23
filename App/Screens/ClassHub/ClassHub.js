@@ -29,6 +29,7 @@ class ClassHub extends React.Component {
       isLoadingPosts: false,
       isFetchingPost: false,
       sectionInfo: {},
+      subjectId: '',
     };
   }
 
@@ -49,6 +50,7 @@ class ClassHub extends React.Component {
     const classRoom = Lodash.get(objClass, ['classRoom'], '');
     const code = Lodash.get(objClass, ['code'], '');
     const subjectName = Lodash.get(objClass, ['subjectName'], '');
+    const subjectId = Lodash.get(objClass, ['subject', 'id'], '');
     this.setState({
       professorName,
       classRoom,
@@ -57,6 +59,7 @@ class ClassHub extends React.Component {
       idSection,
       isLoadingPosts: true,
       sectionInfo: objClass,
+      subjectId,
     });
     this.focusListener = addListener('didFocus', () => {
       return this.fetchPosts();
@@ -156,22 +159,22 @@ class ClassHub extends React.Component {
     const {
       navigation: { navigate },
     } = this.props;
-    const { participants } = this.state;
-    navigate('Participants', { participants });
+    const { participants, subjectName } = this.state;
+    navigate('Participants', { participants, subjectName });
   };
 
   handleOnPressGoToResources = () => {
     const {
       navigation: { navigate },
     } = this.props;
-    const { subjectName, idSection } = this.state;
-    navigate('SubjectsByTeacher', { subjectName, idSection });
+    const { subjectName, subjectId } = this.state;
+    navigate('SubjectsByTeacher', { subjectName, subjectId });
   };
 
   handleAddPublication = () => {
     const { idSection } = this.state;
     const { setModalVisible, setInitialFormValues } = this.props;
-    setInitialFormValues({ section: idSection });
+    setInitialFormValues({ section: idSection, fromClasHub: true });
     setModalVisible(true);
   };
 

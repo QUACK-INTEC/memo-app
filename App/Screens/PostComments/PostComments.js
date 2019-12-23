@@ -1,7 +1,6 @@
 import React from 'react';
 import { FlatList, Keyboard, View, StyleSheet } from 'react-native';
 import Lodash from 'lodash';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
@@ -15,6 +14,8 @@ import PostComment from '../../Components/PostComment';
 import PopUp from '../../Components/Common/PopUp';
 import { spacers, colors } from '../../Core/Theme';
 import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
+
+import { GAMIFICATION_MSG } from '../../Utils';
 
 class PostComments extends React.Component {
   constructor(props) {
@@ -79,8 +80,9 @@ class PostComments extends React.Component {
   };
 
   handleUpVote = (commentId, isUpVote, commentObj) => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postComments } = this.state;
+    const current = Lodash.get(toastRef, ['current'], null);
     this.setState({ isLoading: true });
     if (isUpVote) {
       return Api.UpvoteComment(commentId)
@@ -88,6 +90,7 @@ class PostComments extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(1));
             const modifiedCommentObj = { ...commentObj };
             modifiedCommentObj.score =
               commentObj.currentUserReaction !== 0 ? commentObj.score + 2 : commentObj.score + 1;
@@ -98,6 +101,7 @@ class PostComments extends React.Component {
               }
               return objComment;
             });
+
             this.setState({
               isLoading: false,
               postComments: modifiedPostComments,
@@ -168,8 +172,10 @@ class PostComments extends React.Component {
   };
 
   handleDownVote = (commentId, isDownVote, commentObj) => {
-    const { logger } = this.props;
+    const { logger, toastRef } = this.props;
     const { postComments } = this.state;
+    const current = Lodash.get(toastRef, ['current'], null);
+
     this.setState({ isLoading: true });
     if (isDownVote) {
       return Api.DownvoteComment(commentId)
@@ -177,6 +183,7 @@ class PostComments extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
+            current.setToastVisible(GAMIFICATION_MSG(1));
             const modifiedCommentObj = { ...commentObj };
             modifiedCommentObj.score =
               commentObj.currentUserReaction !== 0 ? commentObj.score - 2 : commentObj.score - 1;
@@ -305,14 +312,25 @@ class PostComments extends React.Component {
   };
 
   handlePostComment = body => {
-    const { userFirstName, userLastName, logger, userId, userEmail, userAvatarURI } = this.props;
+    const {
+      userFirstName,
+      userLastName,
+      logger,
+      userId,
+      userEmail,
+      userAvatarURI,
+      toastRef,
+      userBadgeUri,
+    } = this.props;
     const { postId } = this.state;
+    const current = Lodash.get(toastRef, ['current'], null);
     this.setLoading(true);
     Api.AddComment(postId, { body })
       .then(objResponse => {
         this.setState({ isLoading: false });
         const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
         if (isSuccess) {
+          current.setToastVisible(GAMIFICATION_MSG(10));
           this.setState({
             isLoading: false,
           });
@@ -322,14 +340,15 @@ class PostComments extends React.Component {
             email: `${userEmail}`,
             firstName: `${userFirstName}`,
             lastName: `${userLastName}`,
-            avatarURL: `${userAvatarURI}`,
+            avatarURL: Lodash.isNull(userAvatarURI) ? null : `${userAvatarURI}`,
             points: 0,
+            BadgeUri: userBadgeUri,
           };
           objCommentResponse.author = author;
           this.setState(prevState => ({
             postComments: [...prevState.postComments, objCommentResponse],
           }));
-          logger.success({
+          return logger.success({
             key: MessagesKey.CREATE_COMMENT_SUCCESS,
             data: objResponse,
           });
@@ -432,7 +451,7 @@ class PostComments extends React.Component {
           onLeftPress={() => this.setState({ confirmationPopUpVisible: false })}
         />
         <LoadingState.Modal isVisible={isLoading} />
-        <ActionSheetProvider>{this.renderPostCommentsComponent()}</ActionSheetProvider>
+        {this.renderPostCommentsComponent()}
       </View>
     );
   }
@@ -462,6 +481,7 @@ PostComments.defaultProps = {
   userLastName: null,
   userEmail: null,
   userAvatarURI: null,
+  userBadgeUri: null,
 };
 
 PostComments.propTypes = {
@@ -470,16 +490,26 @@ PostComments.propTypes = {
   userLastName: PropTypes.string,
   userEmail: PropTypes.string,
   userAvatarURI: PropTypes.string,
+  userBadgeUri: PropTypes.string,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {
-  const { getFirstName, getLastName, getAvatarUser, getEmail, getUserId } = userManagerSelectors;
+  const {
+    getFirstName,
+    getLastName,
+    getAvatarUser,
+    getEmail,
+    getUserId,
+    getBadgeUrl,
+  } = userManagerSelectors;
   return {
     userFirstName: getFirstName(state, props),
     userLastName: getLastName(state, props),
     userAvatarURI: getAvatarUser(state, props),
     userEmail: getEmail(state, props),
     userId: getUserId(state, props),
+    userBadgeUri: getBadgeUrl(state, props),
   };
 };
 

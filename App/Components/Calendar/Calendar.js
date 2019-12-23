@@ -37,9 +37,24 @@ class Calendar extends React.Component {
 
   renderClassInfoIndicator = () => {
     return (
+      <View>
+        <InLineComponent>
+          <View style={styles.infoSubjectCalendar} />
+          <Text.Light text="Clases" style={styles.infoText} />
+        </InLineComponent>
+        <InLineComponent>
+          <View style={styles.infoTransparentCalendar} />
+          <Text.Light text="Eventos" style={styles.transparentInfo} />
+        </InLineComponent>
+      </View>
+    );
+  };
+
+  renderEventPrivateInfoIndicator = () => {
+    return (
       <InLineComponent>
-        <View style={styles.infoSubjectCalendar} />
-        <Text.Light text="Clases" style={styles.infoText} />
+        <View style={styles.infoPrivateEventCalendar} />
+        <Text.Light text="Privado" style={styles.infoText} />
       </InLineComponent>
     );
   };
@@ -53,11 +68,26 @@ class Calendar extends React.Component {
     );
   };
 
+  renderEventInfoIndicators = () => {
+    return (
+      <View>
+        {this.renderEventInfoIndicator()}
+        {this.renderEventPrivateInfoIndicator()}
+      </View>
+      // <InLineComponent
+      //   leftChild={this.renderEventPrivateInfoIndicator}
+      //   rightChild={this.renderEventInfoIndicator}
+      // >
+      //   <View style={{ ...spacers.MA_14 }} />
+      // </InLineComponent>
+    );
+  };
+
   renderInfoCalendar = () => {
     return (
       <InLineComponent
         leftChild={this.renderClassInfoIndicator}
-        rightChild={this.renderEventInfoIndicator}
+        rightChild={this.renderEventInfoIndicators}
       >
         <View style={{ ...spacers.MA_14 }} />
       </InLineComponent>
@@ -66,7 +96,6 @@ class Calendar extends React.Component {
 
   renderEvent = ({ item }) => {
     const { onEventPress, onEventDownVote, onEventUpVote, showingPrivate } = this.props;
-
     return (
       <Event
         subjectName={item.subject}
@@ -78,6 +107,8 @@ class Calendar extends React.Component {
         onRightSwipe={() => onEventUpVote(item)}
         avatarUri={item.avatarURL}
         isPrivate={showingPrivate}
+        badgeUri={item.badgeUri}
+        initialsText={item.initials}
       />
     );
   };
@@ -248,6 +279,21 @@ const styles = StyleSheet.create({
     },
     shadowRadius: toBaseDesignPx(6),
     shadowOpacity: toBaseDesignPx(0.11),
+  },
+  transparentInfo: { color: colors.TRANSPARENT },
+  infoTransparentCalendar: {
+    height: toBaseDesignPx(7),
+    width: toBaseDesignPx(7),
+    borderRadius: toBaseDesignPx(3.5),
+    backgroundColor: colors.TRANSPARENT,
+    ...spacers.MR_1,
+  },
+  infoPrivateEventCalendar: {
+    height: toBaseDesignPx(7),
+    width: toBaseDesignPx(7),
+    borderRadius: toBaseDesignPx(3.5),
+    backgroundColor: colors.ORANGE_LIGHT,
+    ...spacers.MR_1,
   },
 });
 

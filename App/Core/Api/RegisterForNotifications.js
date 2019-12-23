@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Api from './Api';
@@ -22,11 +23,11 @@ export default async function registerForPushNotificationsAsync() {
 
   // Get the token that uniquely identifies this device
   const token = await Notifications.getExpoPushTokenAsync();
-  console.log({ token });
+
   // POST the token to your backend server from where you can retrieve it to send push notifications.
-  Api.RegisterForNotifications(token)
+  return Api.RegisterForNotifications(token)
     .then(objResponse => {
-      console.log(objResponse);
+      return objResponse;
     })
-    .catch(objError => console.log({ objError }));
+    .catch(objError => objError);
 }

@@ -22,3 +22,23 @@ export const createFormDataPhoto = photo => {
 
   return data;
 };
+
+export const createFormDataFile = file => {
+  const data = new FormData();
+  file.forEach(element => {
+    const newElement = {};
+    newElement.name = element.name;
+    newElement.type = element.type;
+    newElement.uri =
+      Platform.OS === 'android' ? element.fileURL : element.fileURL.replace('file://', '');
+    data.append('files', newElement);
+  });
+
+  return data;
+};
+
+export const GAMIFICATION_MSG = pnt => {
+  if (pnt > 1) return `Acabas de obtener ${pnt} MemoPoints`;
+  if (pnt < 0) return `Acabas de perder ${pnt} MemoPoints`;
+  return `Acabas de obtener ${pnt} MemoPoint`;
+};

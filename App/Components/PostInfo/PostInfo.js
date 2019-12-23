@@ -226,6 +226,7 @@ class PostInfo extends React.Component {
     const { onUpVote } = this.props;
     const { isUpVote } = this.state;
     const isReaction = !isUpVote;
+
     onUpVote(isReaction).then(success => {
       if (success) {
         if (isReaction) {
@@ -263,15 +264,37 @@ class PostInfo extends React.Component {
     );
   };
 
+  renderResourceSection = () => {
+    const { hasResources, goToResources } = this.props;
+    console.log(hasResources);
+
+    if (hasResources) {
+      return (
+        <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
+          <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
+        </Section>
+      );
+    }
+
+    return null;
+  };
+
+  renderCommentsSection = () => {
+    const { isPrivate, goToComments } = this.props;
+
+    if (!isPrivate) {
+      return (
+        <Section title="Comentarios" viewStyle={styles.sectionViewStyle}>
+          <Link text="Ver Comentarios" style={styles.linkStyle} onPress={goToComments} />
+        </Section>
+      );
+    }
+
+    return null;
+  };
+
   render() {
-    const {
-      postTitle,
-      postDescription,
-      className,
-      goToComments,
-      goToResources,
-      renderSubTasks,
-    } = this.props;
+    const { postTitle, postDescription, className, renderSubTasks } = this.props;
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -287,12 +310,8 @@ class PostInfo extends React.Component {
             <Section title="Descripción" viewStyle={styles.sectionViewStyle}>
               <Text.SemiBold text={postDescription} style={styles.infoStyle} />
             </Section>
-            <Section title="Comentarios" viewStyle={styles.sectionViewStyle}>
-              <Link text="Ver Comentarios" style={styles.linkStyle} onPress={goToComments} />
-            </Section>
-            <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
-              <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
-            </Section>
+            {this.renderCommentsSection()}
+            {this.renderResourceSection()}
             {renderSubTasks()}
           </ScrollView>
           {this.renderUpVoteSection()}
@@ -401,6 +420,8 @@ PostInfo.defaultProps = {
   postTime: null,
   postDescription: null,
   personalScore: null,
+  hasResources: false,
+  isPrivate: false,
 };
 
 PostInfo.propTypes = {
@@ -427,6 +448,8 @@ PostInfo.propTypes = {
   className: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   personalScore: PropTypes.number,
+  hasResources: PropTypes.bool,
+  isPrivate: PropTypes.bool,
 };
 
 const ConnectedPostInfo = connectActionSheet(PostInfo);

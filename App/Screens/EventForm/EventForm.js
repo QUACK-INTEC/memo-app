@@ -12,19 +12,21 @@ import { Classes } from '../../Models';
 import Api from '../../Core/Api';
 import PopUp from '../../Components/Common/PopUp';
 
+import { GAMIFICATION_MSG } from '../../Utils';
+
 class EventForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       confirmationPopupVisible: false,
       confirmationPopupMessage: null,
+      isSubmiting: false,
     };
   }
 
   getValidation = objValues => {
     const errors = {};
     const section = Lodash.get(objValues, ['section'], null);
-    const description = Lodash.get(objValues, ['description'], null);
     const title = Lodash.get(objValues, ['title'], null);
     const endDate = Lodash.get(objValues, ['endDate'], null);
     const startDate = Lodash.get(objValues, ['startDate'], null);
@@ -34,10 +36,6 @@ class EventForm extends React.Component {
 
     if (!title) {
       errors.title = 'Campo obligatorio';
-    }
-
-    if (!description) {
-      errors.description = 'Campo obligatorio';
     }
 
     if (!section) {
@@ -64,16 +62,16 @@ class EventForm extends React.Component {
     const { initialsValue } = this.props;
     const startDate = Lodash.get(initialsValue, ['startDate'], null);
     const endDate = Lodash.get(initialsValue, ['endDate'], null);
-
+    const attachments = Lodash.get(initialsValue, ['attachments'], []);
     return {
       section: null,
       description: null,
       endDate: null,
-      dateTime: new Date(),
+      dateTime: new Date().setHours(7),
       startDate: null,
       title: null,
       type: 'public',
-      hasFile: false,
+      hasFile: attachments.length > 0,
       hasDate: startDate && endDate,
       attachments: [],
       ...initialsValue,
@@ -103,7 +101,7 @@ class EventForm extends React.Component {
       section: null,
       description: null,
       endDate: null,
-      dateTime: new Date(),
+      dateTime: new Date().setHours(7),
       startDate: null,
       title: null,
       attachments: [],
@@ -115,19 +113,9 @@ class EventForm extends React.Component {
     setModalVisible(false);
   };
 
-  changeTimezone = date => {
-    const invdate = new Date(
-      date.toLocaleString('en-US', {
-        timeZone: 'America/Santo_Domingo',
-      })
-    );
-    const diff = date.getTime() - invdate.getTime();
-
-    return new Date(date.getTime() + diff);
-  };
-
   handleOnSubmitForm = objValues => {
     const { isEditing } = this.props;
+    const { logger, MessagesKey } = this.props;
 
     const {
       section,
@@ -139,11 +127,16 @@ class EventForm extends React.Component {
       type,
       postId,
       hasDate,
+      attachments,
     } = objValues;
-    const momentDateSelected = Moment(dateTime);
+
+    const momentDateSelected =
+      dateTime instanceof Date
+        ? Moment(new Date(dateTime.getTime() + dateTime.getTimezoneOffset() * 60 * 1000))
+        : Moment(dateTime);
     const momentStartTime = Moment(startTime);
     const momentEndTime = Moment(endTime);
-
+    this.setState({ isSubmiting: true });
     const startDate = new Date(
       Date.UTC(
         momentDateSelected.year(),
@@ -166,6 +159,18 @@ class EventForm extends React.Component {
       )
     ).getTime();
 
+    const listUpload = Lodash.filter(attachments, objFile => {
+      if (Lodash.isNull(objFile.id)) {
+        return objFile;
+      }
+
+      if (isEditing && !Lodash.isNull(objFile.id)) {
+        return objFile;
+      }
+
+      return null;
+    });
+
     const objPayload = {
       title,
       description,
@@ -175,14 +180,44 @@ class EventForm extends React.Component {
       type: endTime && startTime ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
+
+    if (!Lodash.isEmpty(listUpload)) {
+      return Api.UploadFile(listUpload)
+        .then(objResponse => {
+          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(
+            file => file.id
+          );
+
+          objPayload.attachments = newAttachments;
+
+          return isEditing
+            ? this.handleEditPost(postId, objPayload)
+            : this.handleCreatePost(objPayload);
+        })
+        .catch(objError => {
+          this.setState({ isSubmiting: false });
+
+          return setTimeout(() => {
+            logger.error({
+              key: MessagesKey.CREATE_POST_FAILED,
+              data: objError,
+            });
+          }, 800);
+        });
+    }
     return isEditing ? this.handleEditPost(postId, objPayload) : this.handleCreatePost(objPayload);
   };
 
   handleCreatePost = objPayload => {
-    const { setModalVisible, logger, MessagesKey } = this.props;
+    const { logger, MessagesKey, toastRef } = this.props;
+
+    const current = Lodash.get(toastRef, ['current'], null);
     return Api.CreatePost(objPayload)
       .then(objResponse => {
-        setModalVisible(false);
+        current.setToastVisible(GAMIFICATION_MSG(50));
+        this.handleOnCloseModal();
+        this.setState({ isSubmiting: false });
+
         setTimeout(() => {
           this.setState({
             confirmationPopupMessage: 'Publicación creada exitosamente',
@@ -195,6 +230,9 @@ class EventForm extends React.Component {
         });
       })
       .catch(objError => {
+        this.handleOnCloseModal();
+        this.setState({ isSubmiting: false });
+
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.CREATE_POST_FAILED,
@@ -205,16 +243,20 @@ class EventForm extends React.Component {
   };
 
   handleEditPost = (idPost, objPayload) => {
-    const { logger, MessagesKey, setModalVisible } = this.props;
+    const { logger, MessagesKey } = this.props;
     return Api.EditPost(idPost, objPayload)
       .then(objResponse => {
-        setModalVisible(false);
+        this.handleOnCloseModal();
+        this.setState({ isSubmiting: false });
         return logger.success({
           key: MessagesKey.EDIT_POST_SUCCESS,
           data: objResponse,
         });
       })
       .catch(objError => {
+        this.setState({ isSubmiting: false });
+
+        this.handleOnCloseModal();
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.EDIT_POST_SUCCESS,
@@ -225,7 +267,7 @@ class EventForm extends React.Component {
   };
 
   renderEventForm = () => {
-    const { confirmationPopupVisible, confirmationPopupMessage } = this.state;
+    const { confirmationPopupVisible, confirmationPopupMessage, isSubmiting } = this.state;
     const { isModalVisible, isEditing } = this.props;
 
     if (confirmationPopupVisible) {
@@ -249,6 +291,7 @@ class EventForm extends React.Component {
           onCloseModal={this.handleOnCloseModal}
           isVisible={isModalVisible}
           onSubmit={this.handleOnSubmitForm}
+          isSubmiting={isSubmiting}
           initialValues={this.getInitialsValue()}
           validation={this.getValidation}
           isEditing={isEditing}
@@ -271,6 +314,7 @@ EventForm.propTypes = {
   myClassesLookup: PropTypes.shape({}).isRequired,
   isEditing: PropTypes.bool.isRequired,
   setEditingModal: PropTypes.func.isRequired,
+  toastRef: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = (state, props) => {

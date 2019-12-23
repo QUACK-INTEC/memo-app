@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import Lodash from 'lodash';
 import LoadingState from '../../Components/LoadingState';
 
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import ViewProfileComponent from '../../Components/ViewProfile';
 import ClassInfoCard from '../../Components/ClassInfoCard';
-import ClassesComponent from '../../Components/Classes';
 import Api from '../../Core/Api';
 
 import { Classes } from '../../Models';
@@ -39,14 +38,15 @@ class ViewProfile extends React.Component {
     this.getUserProfile(userId)
       .then(objClassResponse => {
         const userProfile = Lodash.get(objClassResponse, ['data', 'user'], {});
-        const studentName =
-          Lodash.get(userProfile, 'firstName', '') + Lodash.get(userProfile, 'lastName', '');
+        const firstName = Lodash.get(userProfile, 'firstName', '');
+        const lastName = Lodash.get(userProfile, 'lastName', '');
+        const studentName = `${firstName} ${lastName}`;
         const studentMail = Lodash.get(userProfile, 'email', '');
-        const avatarUri = Lodash.get(userProfile, 'avatarUri', {});
-        const avatarInitialsText = Lodash.get(userProfile, 'avatarInitialsText', {});
-        const badgeUri = Lodash.get(userProfile, 'badgeUri', {});
-        const memoPoints = Lodash.get(userProfile, 'points', 0);
-        const rank = Lodash.get(userProfile, 'rank', '');
+        const avatarUri = Lodash.get(userProfile, 'avatarURL', null);
+        const avatarInitialsText = `${firstName[0]}${lastName[0]}`;
+        const memoPoints = Lodash.get(userProfile, ['points'], 0);
+        const badgeUri = Lodash.get(userProfile, ['rank', 'badgeUrl'], '');
+        const rank = Lodash.get(userProfile, ['rank', 'name'], '');
         const commonClasses = Lodash.get(objClassResponse, ['data', 'commonClasses'], []);
         this.setState({
           isLoading: false,
@@ -105,6 +105,7 @@ class ViewProfile extends React.Component {
         numColumns={2}
         renderItem={this.renderSubject}
         keyExtractor={item => item.id}
+        scrollEnabled={false}
       />
     );
   };
@@ -131,7 +132,7 @@ class ViewProfile extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ViewProfileComponent
           studentName={studentName}
           studentMail={studentMail}
@@ -142,9 +143,9 @@ class ViewProfile extends React.Component {
           memoPoints={memoPoints}
           rank={rank}
           onBackArrow={this.handleBackArrow}
+          renderClasses={this.renderClasses}
         />
-        <ClassesComponent renderClasses={this.renderClasses} />
-      </View>
+      </SafeAreaView>
     );
   }
 }

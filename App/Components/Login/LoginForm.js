@@ -27,6 +27,11 @@ const validation = objValues => {
 };
 
 class LoginForm extends Component {
+  constructor(props) {
+    super(props);
+    this.passwordInput = React.createRef();
+  }
+
   handleOnSubmit = objValues => {
     const { onSubmit } = this.props;
     onSubmit(objValues);
@@ -64,12 +69,18 @@ class LoginForm extends Component {
             enablesReturnKeyAutomatically
             returnKeyType="next"
             autoCapitalize="none"
+            onSubmitEditing={() => {
+              this.passwordInput.focus();
+            }}
           />
           <FormikInput
+            inputRef={input => {
+              this.passwordInput = input;
+            }}
             label="Contraseña"
             name="password"
             containerStyle={styles.input}
-            returnKeyType="next"
+            returnKeyType="done"
             secureTextEntry
           />
           <View style={styles.buttonsContainer}>

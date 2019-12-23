@@ -18,5 +18,4 @@ jobs:
           expo-version: 3.x
           expo-username: beyondx
           expo-password: beyondthex
-      - run: yarn start
       - run: expo publish

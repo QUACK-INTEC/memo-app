@@ -22,13 +22,9 @@ class TimePicker extends React.Component {
           : Moment(props.time).minutes()
       }`;
       const timeDate = Moment(props.time).toDate();
-      const newDate = new Date(timeDate.getTime() + timeDate.getTimezoneOffset() * 60 * 1000);
-      const offset = timeDate.getTimezoneOffset() / 60;
-      const hours = timeDate.getHours();
-      newDate.setHours(hours + offset);
       return {
         date: strDate,
-        timePicked: newDate,
+        timePicked: timeDate,
       };
     }
     return null;

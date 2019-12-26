@@ -266,12 +266,25 @@ class PostInfo extends React.Component {
 
   renderResourceSection = () => {
     const { hasResources, goToResources } = this.props;
-    console.log(hasResources);
 
     if (hasResources) {
       return (
         <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
           <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
+        </Section>
+      );
+    }
+
+    return null;
+  };
+
+  renderDescriptionSection = () => {
+    const { postDescription } = this.props;
+
+    if (postDescription) {
+      return (
+        <Section title="Descripción" viewStyle={styles.sectionViewStyle}>
+          <Text.SemiBold text={postDescription} style={styles.infoStyle} />
         </Section>
       );
     }
@@ -294,7 +307,7 @@ class PostInfo extends React.Component {
   };
 
   render() {
-    const { postTitle, postDescription, className, renderSubTasks } = this.props;
+    const { postTitle, className, renderSubTasks } = this.props;
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -307,9 +320,7 @@ class PostInfo extends React.Component {
               <Text.SemiBold text={className} style={styles.infoStyle} />
             </Section>
             {this.renderEventTime()}
-            <Section title="Descripción" viewStyle={styles.sectionViewStyle}>
-              <Text.SemiBold text={postDescription} style={styles.infoStyle} />
-            </Section>
+            {this.renderDescriptionSection()}
             {this.renderCommentsSection()}
             {this.renderResourceSection()}
             {renderSubTasks()}

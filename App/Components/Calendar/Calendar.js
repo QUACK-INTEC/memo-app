@@ -15,7 +15,7 @@ import Pill from '../FileInput/FilePill';
 
 class Calendar extends React.Component {
   leftText = () => {
-    return <Text.Medium text="Publico" style={styles.textGlobal} />;
+    return <Text.Medium text="Público" style={styles.textGlobal} />;
   };
 
   rightText = () => {
@@ -35,61 +35,23 @@ class Calendar extends React.Component {
     );
   };
 
-  renderClassInfoIndicator = () => {
+  renderInfoIndicators = () => {
+    const { showingPrivate } = this.props;
     return (
-      <View>
+      <InLineComponent>
         <InLineComponent>
           <View style={styles.infoSubjectCalendar} />
-          <Text.Light text="Clases" style={styles.infoText} />
+          <Text.Light text="Clases" style={styles.classInfoText} />
         </InLineComponent>
         <InLineComponent>
-          <View style={styles.infoTransparentCalendar} />
-          <Text.Light text="Eventos" style={styles.transparentInfo} />
+          <View
+            style={[
+              styles.infoEventCalendar,
+              { backgroundColor: showingPrivate ? colors.ORANGE_LIGHT : colors.PURPLE_LIGHT },
+            ]}
+          />
+          <Text.Light text="Eventos" style={styles.infoText} />
         </InLineComponent>
-      </View>
-    );
-  };
-
-  renderEventPrivateInfoIndicator = () => {
-    return (
-      <InLineComponent>
-        <View style={styles.infoPrivateEventCalendar} />
-        <Text.Light text="Privado" style={styles.infoText} />
-      </InLineComponent>
-    );
-  };
-
-  renderEventInfoIndicator = () => {
-    return (
-      <InLineComponent>
-        <View style={styles.infoEventCalendar} />
-        <Text.Light text="Eventos" style={styles.infoText} />
-      </InLineComponent>
-    );
-  };
-
-  renderEventInfoIndicators = () => {
-    return (
-      <View>
-        {this.renderEventInfoIndicator()}
-        {this.renderEventPrivateInfoIndicator()}
-      </View>
-      // <InLineComponent
-      //   leftChild={this.renderEventPrivateInfoIndicator}
-      //   rightChild={this.renderEventInfoIndicator}
-      // >
-      //   <View style={{ ...spacers.MA_14 }} />
-      // </InLineComponent>
-    );
-  };
-
-  renderInfoCalendar = () => {
-    return (
-      <InLineComponent
-        leftChild={this.renderClassInfoIndicator}
-        rightChild={this.renderEventInfoIndicators}
-      >
-        <View style={{ ...spacers.MA_14 }} />
       </InLineComponent>
     );
   };
@@ -210,7 +172,7 @@ class Calendar extends React.Component {
             }}
           >
             {hasFilter ? <Pill documentText={filterLabel} onPress={onQuitFilter} /> : null}
-            <View style={{ ...spacers.ML_10 }}>{this.renderInfoCalendar()}</View>
+            <View style={{ ...spacers.ML_10 }}>{this.renderInfoIndicators()}</View>
           </View>
           {isLoading ? (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
@@ -246,6 +208,7 @@ const styles = StyleSheet.create({
     ...spacers.MR_1,
   },
   infoText: { color: colors.GRAY },
+  classInfoText: { color: colors.GRAY, ...spacers.MR_8 },
   infoEventCalendar: {
     height: toBaseDesignPx(7),
     width: toBaseDesignPx(7),

@@ -266,7 +266,6 @@ class PostInfo extends React.Component {
 
   renderResourceSection = () => {
     const { hasResources, goToResources } = this.props;
-    console.log(hasResources);
 
     if (hasResources) {
       return (

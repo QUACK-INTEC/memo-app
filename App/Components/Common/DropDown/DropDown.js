@@ -11,6 +11,7 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 // Common
 import Text from '../Text';
 import InLineComponent from '../InLineComponent';
+import Icon, { ICON_TYPE, ICON_SIZE } from '../Icon';
 
 class DropDownComponent extends React.Component {
   constructor(props) {
@@ -46,6 +47,20 @@ class DropDownComponent extends React.Component {
     );
   };
 
+  renderIcon = () => {
+    return (
+      <View style={styles.headerBackIconContainer}>
+        <Icon
+          name="chevron-down"
+          type={ICON_TYPE.FONT_AWESOME}
+          size={ICON_SIZE.XTINY}
+          color={colors.GRAY_LIGHT}
+          isButton={false}
+        />
+      </View>
+    );
+  };
+
   renderLabel = () => {
     const { label, labelStyle, hasError } = this.props;
     const errorLabelStyle = hasError ? styles.errorLabelStyle : null;
@@ -58,7 +73,6 @@ class DropDownComponent extends React.Component {
               text={label}
               style={[this.getLabelStyle(), errorLabelStyle, labelStyle]}
             />
-            <Text.SemiBold text="   ▼" style={[styles.triangle]} />
           </View>
           {this.renderErrorLabel()}
         </InLineComponent>
@@ -115,9 +129,14 @@ class DropDownComponent extends React.Component {
           style={{
             inputIOS: [this.getDropDownStyle(), style],
             inputAndroid: [this.getDropDownStyle(), style],
+            iconContainer: {
+              top: 5,
+              right: 15,
+            },
           }}
           value={valueFromState}
           useNativeAndroidPickerStyle={false}
+          Icon={() => this.renderIcon()}
           {...rest}
         />
       </View>
@@ -144,12 +163,14 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     ...spacers.MT_9,
     ...spacers.MB_14,
+    ...spacers.PR_5,
   },
   dropDownDisabled: {
     ...fonts.SEMI_BOLD,
     color: colors.DISABLED,
     ...spacers.MT_9,
     ...spacers.MB_14,
+    ...spacers.PR_5,
   },
   errorLabelStyle: {
     color: colors.ERROR,

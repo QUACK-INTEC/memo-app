@@ -10,6 +10,14 @@ import ChangePasswordForm from '../../Components/ChangePassword';
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
 class ChangePassword extends Component {
+  static navigationOptions = ({ navigation }) => {
+    const { getParam } = navigation;
+    const canNavigate = getParam('canNavigate', false);
+    return {
+      gesturesEnabled: canNavigate,
+    };
+  };
+
   constructor(props) {
     super(props);
     this.state = {

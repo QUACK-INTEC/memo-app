@@ -1,3 +1,4 @@
 import ClassInfoCard from './ClassInfoCard';
+import ClassInfoCardLoadingState from './ClassInfoCardLoadingState';
 
-export default ClassInfoCard;
+export { ClassInfoCard as default, ClassInfoCardLoadingState };

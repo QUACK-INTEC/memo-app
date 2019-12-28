@@ -5,7 +5,7 @@
     "prettier/react"
   ],
   "rules": {
-    "react/prop-types": ["error", { "ignore": ["imageUri","onPress","children","style","predefinedStyle", "logger", "focused", "navigation","logout", "value","loggedIn","userToken","showActionSheetWithOptions", "MessagesKey", "initialsValue", "isModalVisible", "prevIsModalVisible", "initialsValue","toastRef", "myClasses",
+    "react/prop-types": ["error", { "ignore": ["renderItem","isLoading","imageUri","onPress","children","style","predefinedStyle", "logger", "focused", "navigation","logout", "value","loggedIn","userToken","showActionSheetWithOptions", "MessagesKey", "initialsValue", "isModalVisible", "prevIsModalVisible", "initialsValue","toastRef", "myClasses",
       "myClassesLookup"] }],
     "no-fallthrough": "off",
     "jsx-a11y/anchor-is-valid": "off",

@@ -8,6 +8,7 @@ import { colors, toBaseDesignPx, spacers } from '../../../Core/Theme';
 
 // Common
 import Text from '../Text';
+import InfoCardLoadingState from './InfoCardLoadingState';
 
 class InfoCard extends React.Component {
   handleOnPress = () => {
@@ -21,7 +22,12 @@ class InfoCard extends React.Component {
   };
 
   render() {
-    const { children, title, style, titleStyle, disabled } = this.props;
+    const { children, title, style, titleStyle, disabled, isLoading } = this.props;
+
+    if (isLoading) {
+      return <InfoCardLoadingState />;
+    }
+
     return (
       <TouchableOpacity
         activeOpacity={disabled ? 1 : 0.2}

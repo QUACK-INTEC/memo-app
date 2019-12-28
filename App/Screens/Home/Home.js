@@ -11,7 +11,7 @@ import HomeComponent from '../../Components/Home';
 import { colors, fonts, spacers } from '../../Core/Theme';
 import Api, { MemoApi, RegisterForNotifications } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
-import ClassInfoCard from '../../Components/ClassInfoCard';
+import ClassInfoCard, { ClassInfoCardLoadingState } from '../../Components/ClassInfoCard';
 import {
   actions as classesActions,
   selectors as myClassesSelectors,
@@ -22,7 +22,7 @@ import {
   actions as userActions,
 } from '../../Redux/Common/UserManager';
 import { selectors as EventFormSelectors } from '../EventForm/Redux';
-
+import LoadingList from '../../Components/LoadingList';
 import { Classes, Events } from '../../Models';
 
 class Home extends React.Component {
@@ -252,11 +252,24 @@ class Home extends React.Component {
     );
   };
 
+  renderSubjectsLoadingState = item => {
+    return <ClassInfoCardLoadingState key={item} />;
+  };
+
   renderSubjects = () => {
     const { myClasses, myClassesLookup } = this.props;
+    const { isLoading } = this.state;
     const myClassesFormatted = Classes.getClassesData(myClasses, myClassesLookup);
 
-    if (Lodash.isNull(myClasses) || Lodash.isEmpty(myClassesLookup)) return null;
+    if (isLoading) {
+      return (
+        <LoadingList
+          columnWrapperStyle={styles.classesContainer}
+          renderItem={this.renderSubjectsLoadingState}
+          numColumns={2}
+        />
+      );
+    }
 
     return (
       <FlatList
@@ -274,8 +287,9 @@ class Home extends React.Component {
     const { isLoading, isRefreshing } = this.state;
     return (
       <>
-        <LoadingState.Modal isVisible={isLoading} />
+        <LoadingState.withoutLottie isVisible={isLoading} />
         <HomeComponent
+          isLoading={isLoading}
           actualMonth={Moment().format('MMMM YYYY')}
           renderSubjects={this.renderSubjects}
           events={this.getEventsList()}

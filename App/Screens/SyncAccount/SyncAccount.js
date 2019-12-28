@@ -46,6 +46,7 @@ class SyncAccount extends Component {
           ['data', 'universities'],
           []
         );
+        console.log({ objSupportedResponse });
         this.setLoading(false);
         const universitiesFormatted = listSupportedUniversities.map(objUniversity => {
           return {
@@ -181,9 +182,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    null,
-    mapDispatchToProps
-  )(SyncAccount)
-);
+export default WithLogger(connect(null, mapDispatchToProps)(SyncAccount));

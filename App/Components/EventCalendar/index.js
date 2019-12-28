@@ -1,3 +1,4 @@
 import EventCalendar from './EventCalendar';
+import EventCalendarLoadingState from './EventCalendarLoadingState';
 
-export default EventCalendar;
+export { EventCalendar as default, EventCalendarLoadingState };

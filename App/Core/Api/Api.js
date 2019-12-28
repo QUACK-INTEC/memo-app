@@ -150,6 +150,10 @@ const RegisterForNotifications = pushToken => {
   return MemoApi.post(`notifications/register`, { pushToken });
 };
 
+const UnRegisterForNotifications = () => {
+  return MemoApi.post(`/notifications/unregister`);
+};
+
 const SendRecoveryEmail = objUserEmailParam => {
   return MemoApi.post(`auth/forgot`, objUserEmailParam);
 };
@@ -198,6 +202,7 @@ const Api = {
   ChangePassword,
   ValidateRecoveryCode,
   UploadFile,
+  UnRegisterForNotifications,
 };
 
 export default Api;

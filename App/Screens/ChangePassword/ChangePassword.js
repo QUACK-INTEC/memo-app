@@ -138,9 +138,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    null,
-    mapDispatchToProps
-  )(ChangePassword)
-);
+export default WithLogger(connect(null, mapDispatchToProps)(ChangePassword));

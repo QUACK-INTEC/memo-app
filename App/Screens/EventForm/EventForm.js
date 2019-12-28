@@ -43,6 +43,9 @@ class EventForm extends React.Component {
     }
 
     if (hasDate) {
+      if (startDate >= endDate) {
+        errors.dateTime = 'La fecha debe ser menor a la fecha final';
+      }
       if (!endDate || !startDate) {
         errors.startDate = 'Necesita una fecha';
         errors.endDate = 'Necesita una fecha';
@@ -53,9 +56,6 @@ class EventForm extends React.Component {
       if (attachments && attachments.length <= 0) {
         errors.attachments = 'Necesita almenos un documento';
       }
-    }
-    if (startDate >= endDate) {
-      errors.dateTime = 'La fecha debe ser menor a la fecha final';
     }
 
     return errors;
@@ -180,7 +180,7 @@ class EventForm extends React.Component {
       startDate: hasDate ? startDate : null,
       endDate: hasDate ? endDate : null,
       section,
-      type: endTime && startTime ? 'Event' : 'Resource',
+      type: hasDate ? 'Event' : 'Resource',
       isPublic: type === 'public',
     };
 

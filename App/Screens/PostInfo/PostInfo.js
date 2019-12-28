@@ -275,8 +275,8 @@ class PostInfo extends React.Component {
       section: postSectionId,
       type: isPublic ? 'public' : 'private',
       postId,
-      endDate: endDate ? Moment(endDate).utc() : null,
-      startDate: startDate ? Moment(startDate).utc() : null,
+      endDate: endDate ? this.convertDate(endDate) : null,
+      startDate: startDate ? this.convertDate(startDate) : null,
       dateTime: startDate
         ? Moment(startDate)
             .utc()
@@ -287,6 +287,17 @@ class PostInfo extends React.Component {
     setInitialFormValues(objFormValues);
     setEditingModal(true);
     setModalVisible(true);
+  };
+
+  convertDate = date => {
+    const momentDate = Moment(date)
+      .utc()
+      .toDate();
+    const newDate = new Date(momentDate.getTime() + momentDate.getTimezoneOffset() * 60 * 1000);
+    const offset = momentDate.getTimezoneOffset() / 60;
+    const hours = momentDate.getHours();
+    newDate.setHours(hours + offset);
+    return newDate;
   };
 
   deletePost = () => {

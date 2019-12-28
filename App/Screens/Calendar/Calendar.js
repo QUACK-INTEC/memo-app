@@ -290,9 +290,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    null
-  )(Calendar)
-);
+export default WithLogger(connect(mapStateToProps, null)(Calendar));

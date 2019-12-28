@@ -18,7 +18,7 @@ class Home extends React.Component {
     const { actualMonth } = this.props;
     return (
       <View>
-        <Text.Bold text={`${Moment().format('DD dddd,')}`} style={styles.textToday} />
+        <Text.Bold text={`Hoy, ${Moment().format('dddd DD')}`} style={styles.textToday} />
         <Text.Medium text={actualMonth} style={styles.textMonthActual} />
       </View>
     );
@@ -34,16 +34,10 @@ class Home extends React.Component {
           </InLineComponent>
 
           <InLineComponent>
-            <View style={styles.infoTransparentCalendar} />
-            <Text.Light text="Eventos" style={styles.transparentInfo} />
-          </InLineComponent>
-        </View>
-
-        <View>
-          <InLineComponent>
             <View style={styles.infoEventCalendar} />
-            <Text.Light text="Eventos" style={styles.infoText} />
+            <Text.Light text="Públicos" style={styles.infoText} />
           </InLineComponent>
+
           <InLineComponent>
             <View style={styles.privateInfoSubjectCalendar} />
             <Text.Light text="Privado" style={styles.infoPrivateText} />
@@ -203,7 +197,7 @@ const styles = StyleSheet.create({
     width: toBaseDesignPx(7),
     borderRadius: toBaseDesignPx(3.5),
     backgroundColor: colors.ORANGE_LIGHT,
-    ...spacers.MR_2,
+    ...spacers.MR_1,
   },
   infoTransparentCalendar: {
     height: toBaseDesignPx(7),
@@ -226,7 +220,7 @@ const styles = StyleSheet.create({
   classesContainer: { ...spacers.MT_10 },
   classesTitle: { ...fonts.SIZE_XXL, color: colors.GRAY },
   infoText: { color: colors.GRAY },
-  infoPrivateText: { color: colors.GRAY, ...spacers.MR_1 },
+  infoPrivateText: { color: colors.GRAY },
   transparentInfo: { color: colors.TRANSPARENT },
 });
 

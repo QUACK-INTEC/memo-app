@@ -14,7 +14,9 @@ const SOURCE_ANIMATION_EMPTY_BOX = require('../../Core/Assets/Animations/emptyBo
 
 class LoadingState extends React.Component {
   componentDidMount() {
-    this.animation.play();
+    if (this.animation) {
+      this.animation.play();
+    }
   }
 
   getSize = () => {
@@ -60,21 +62,30 @@ class LoadingState extends React.Component {
   render() {
     const loaderStyle = this.getSize();
     const animationSrc = this.getAnimationSource();
+    const { withoutLottie } = this.props;
+
+    if (withoutLottie) {
+      return null;
+    }
+
     return <LottieView ref={this.setRefAnimation} style={loaderStyle} source={animationSrc} />;
   }
 }
 
 const LoadingStateModal = props => {
-  const { isVisible } = props;
+  const { isVisible, withoutLottie } = props;
+  const styleWithoutLottie = withoutLottie ? { backgroundColor: colors.TRANSPARENT } : null;
+
   return (
     <Modal
       isVisible={isVisible}
       animationIn="zoomInDown"
       animationOut="zoomOutUp"
       style={styles.modal}
+      backdropColor={withoutLottie ? colors.TRANSPARENT : 'black'}
     >
-      <View style={styles.modalContainerLoader}>
-        <LoadingState />
+      <View style={[styles.modalContainerLoader, styleWithoutLottie]}>
+        <LoadingState withoutLottie={withoutLottie} />
       </View>
     </Modal>
   );
@@ -87,6 +98,7 @@ const BaseLoadingState = {
   Modal: objProps => <LoadingStateModal {...objProps} />,
   NoEvents: objProps => <LoadingState {...objProps} noEventToday size={LOADER_SIZE.MEDIUM} />,
   Empty: objProps => <LoadingState {...objProps} isEmpty size={LOADER_SIZE.MEDIUM} />,
+  withoutLottie: objProps => <LoadingStateModal withoutLottie {...objProps} />,
 };
 
 const styles = StyleSheet.create({
@@ -113,20 +125,24 @@ LoadingState.defaultProps = {
   size: null,
   noEventToday: false,
   isEmpty: false,
+  withoutLottie: false,
 };
 
 LoadingState.propTypes = {
   size: PropTypes.string,
   noEventToday: PropTypes.bool,
   isEmpty: PropTypes.bool,
+  withoutLottie: PropTypes.bool,
 };
 
 LoadingStateModal.defaultProps = {
   isVisible: false,
+  withoutLottie: false,
 };
 
 LoadingStateModal.propTypes = {
   isVisible: PropTypes.bool,
+  withoutLottie: PropTypes.bool,
 };
 
 export default BaseLoadingState;

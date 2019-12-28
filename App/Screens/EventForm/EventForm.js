@@ -54,6 +54,9 @@ class EventForm extends React.Component {
         errors.attachments = 'Necesita almenos un documento';
       }
     }
+    if (startDate >= endDate) {
+      errors.dateTime = 'La fecha debe ser menor a la fecha final';
+    }
 
     return errors;
   };
@@ -341,7 +344,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EventForm);
+export default connect(mapStateToProps, mapDispatchToProps)(EventForm);

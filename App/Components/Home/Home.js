@@ -42,7 +42,7 @@ class Home extends React.Component {
 
           <InLineComponent>
             <View style={styles.privateInfoSubjectCalendar} />
-            <Text.Light text="Privado" style={styles.infoPrivateText} />
+            <Text.Light text="Privados" style={styles.infoPrivateText} />
           </InLineComponent>
         </View>
       </InLineComponent>

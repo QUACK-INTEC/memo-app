@@ -3,7 +3,7 @@ import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient
 
 import { Rect } from 'react-native-svg';
 
-import { toBaseDesignPx } from '../../../Core/Theme';
+import { toBaseDesignPx, constants } from '../../../Core/Theme';
 
 class SectionLoadingState extends React.Component {
   renderSectionLoadingState = () => {
@@ -22,6 +22,9 @@ class SectionLoadingState extends React.Component {
   };
 
   render() {
+    if (constants.isAndroid) {
+      return null;
+    }
     return this.renderSectionLoadingState();
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { View, ViewPropTypes, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
@@ -24,6 +25,13 @@ class DropDownComponent extends React.Component {
   componentDidMount() {
     const { value } = this.props;
     this.setState({ value });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.options !== this.props.options || prevState.value !== this.state.value) {
+      return true;
+    }
+    return false;
   }
 
   handleOptionChange = value => {

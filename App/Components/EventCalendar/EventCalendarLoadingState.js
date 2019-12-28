@@ -3,7 +3,7 @@ import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient
 
 import { Rect } from 'react-native-svg';
 
-import { toBaseDesignPx } from '../../Core/Theme';
+import { toBaseDesignPx, constants } from '../../Core/Theme';
 
 class EventCalendarLoadingState extends React.Component {
   renderEventCalendarLoadingState = () => {
@@ -22,6 +22,10 @@ class EventCalendarLoadingState extends React.Component {
   };
 
   render() {
+    if (constants.isAndroid) {
+      return null;
+    }
+
     return this.renderEventCalendarLoadingState();
   }
 }

@@ -46,7 +46,6 @@ class SyncAccount extends Component {
           ['data', 'universities'],
           []
         );
-        console.log({ objSupportedResponse });
         this.setLoading(false);
         const universitiesFormatted = listSupportedUniversities.map(objUniversity => {
           return {

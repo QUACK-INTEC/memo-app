@@ -58,6 +58,8 @@ class LoginForm extends Component {
   };
 
   renderForm = objForm => {
+    const { isLoading } = this.props;
+
     return (
       <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }} scrollEnabled={false}>
         <SafeAreaView style={styles.container}>
@@ -72,6 +74,7 @@ class LoginForm extends Component {
             onSubmitEditing={() => {
               this.passwordInput.focus();
             }}
+            disabled={isLoading}
           />
           <FormikInput
             inputRef={input => {
@@ -82,6 +85,7 @@ class LoginForm extends Component {
             containerStyle={styles.input}
             returnKeyType="done"
             secureTextEntry
+            disabled={isLoading}
           />
           <View style={styles.buttonsContainer}>
             <Button

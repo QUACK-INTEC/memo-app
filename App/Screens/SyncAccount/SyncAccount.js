@@ -147,6 +147,7 @@ class SyncAccount extends Component {
           universities={universities}
           canNavigate={canNavigate}
           onBackArrow={this.handleBackArrow}
+          isLoading={isLoading}
         />
       </SafeAreaView>
     );

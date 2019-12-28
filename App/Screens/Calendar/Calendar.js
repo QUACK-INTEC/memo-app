@@ -1,6 +1,6 @@
 import React from 'react';
 import Lodash from 'lodash';
-import Moment from 'moment';
+import Moment from 'moment/min/moment-with-locales';
 import { connect } from 'react-redux';
 
 import CalendarComponent from '../../Components/Calendar';

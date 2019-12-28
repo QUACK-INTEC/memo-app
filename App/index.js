@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Moment from 'moment/min/moment-with-locales';
+import 'moment/locale/es';
 import { Provider } from 'react-redux';
 import * as Font from 'expo-font';
 

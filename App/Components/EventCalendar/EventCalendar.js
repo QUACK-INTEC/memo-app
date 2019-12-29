@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     ...fonts.SIZE_XS,
     color: colors.GRAY,
     ...spacers.MR_1,
+    maxWidth: toBaseDesignPx(280),
   },
   badgeStyle: {
     width: toBaseDesignPx(11.5),

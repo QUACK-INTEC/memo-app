@@ -31,13 +31,13 @@ class SubjectPostRecent extends React.Component {
         <Text.Medium
           text={postTitle}
           numberOfLines={1}
-          ellipzeMode="tail"
+          ellipSizeMode="tail"
           style={styles.postTitleText}
         />
         <Text.Light
           text={`Subido por: ${postUser}`}
           numberOfLines={1}
-          ellipzeMode="tail"
+          ellipSizeMode="tail"
           style={styles.userPostText}
         />
       </View>

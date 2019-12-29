@@ -46,7 +46,7 @@ class Link extends React.Component {
     return (
       <TouchableOpacity onPress={this.handleOnPress}>
         <InLineComponent leftChild={this.renderLeftIcon} rightChild={this.renderRightIcon}>
-          <Text.Black style={[styles.textStyle, textStyle]} text={text} />
+          <Text.Black {...this.props} style={[styles.textStyle, textStyle]} text={text} />
         </InLineComponent>
       </TouchableOpacity>
     );

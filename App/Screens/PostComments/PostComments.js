@@ -61,7 +61,7 @@ class PostComments extends React.Component {
       navigation: { navigate },
     } = this.props;
     const { authorId } = this.state;
-    return navigate('UserProfile', { authorId });
+    return navigate('ViewProfile', { userId: authorId });
   };
 
   handleBackArrow = () => {
@@ -513,9 +513,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    null
-  )(PostComments)
-);
+export default WithLogger(connect(mapStateToProps, null)(PostComments));

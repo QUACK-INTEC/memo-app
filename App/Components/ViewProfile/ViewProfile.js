@@ -155,6 +155,8 @@ const styles = StyleSheet.create({
   studentSection: {
     ...spacers.MT_3,
     alignSelf: 'center',
+    ...spacers.ML_3,
+    ...spacers.MR_3,
   },
   studentMail: {
     color: colors.GRAY,

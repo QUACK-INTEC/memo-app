@@ -107,7 +107,12 @@ class PostComment extends React.Component {
             <Text.SemiBold text={comment} style={[styles.commentStyle]} />
             <InLineComponent>
               <TouchableOpacity onPress={onAuthorPress}>
-                <Text.Medium text={author} style={styles.authorStyle} />
+                <Text.Medium
+                  text={author}
+                  style={styles.authorStyle}
+                  numberOfLines={1}
+                  ellipSizeMode="tail"
+                />
               </TouchableOpacity>
               <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
               <View style={styles.divBar} />
@@ -139,6 +144,7 @@ const styles = StyleSheet.create({
     ...fonts.SIZE_XXS,
     color: colors.GRAY_LIGHT,
     ...spacers.MR_1,
+    maxWidth: toBaseDesignPx(180),
   },
   badgeStyle: {
     width: toBaseDesignPx(8),

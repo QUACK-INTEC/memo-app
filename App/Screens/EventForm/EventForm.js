@@ -43,7 +43,7 @@ class EventForm extends React.Component {
     }
 
     if (hasDate) {
-      if (startDate >= endDate) {
+      if (startDate > endDate) {
         errors.dateTime = 'La fecha debe ser menor a la fecha final';
       }
       if (!endDate || !startDate) {

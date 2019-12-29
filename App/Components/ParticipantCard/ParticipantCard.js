@@ -42,7 +42,12 @@ class ParticipantCard extends React.Component {
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
           />
-          <Text.Medium text={participantName} style={styles.participantStyle} />
+          <Text.Medium
+            text={participantName}
+            style={styles.participantStyle}
+            numberOfLines={1}
+            ellipSizeMode="tail"
+          />
           <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
         </InLineComponent>
       </TouchableOpacity>
@@ -62,6 +67,7 @@ const styles = StyleSheet.create({
     ...fonts.SIZE_XS,
     color: colors.GRAY_LIGHT,
     ...spacers.MR_1,
+    maxWidth: toBaseDesignPx(240),
   },
   badgeStyle: {
     width: toBaseDesignPx(12),

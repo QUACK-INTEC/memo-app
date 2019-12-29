@@ -162,7 +162,7 @@ class Calendar extends React.Component {
     return (
       <View style={styles.container}>
         {this.renderDatePicker()}
-        <View style={{ ...spacers.ML_4, ...spacers.MR_4, flex: 1 }}>
+        <View style={{ ...spacers.ML_3, ...spacers.MR_3, flex: 1 }}>
           <View
             style={{
               justifyContent: 'flex-end',

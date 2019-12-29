@@ -38,7 +38,7 @@ class InfoCard extends React.Component {
           text={title}
           style={[styles.titleStyle, titleStyle]}
           numberOfLines={2}
-          ellipzeModde="tail"
+          ellipSizeMode="tail"
         />
         {children}
       </TouchableOpacity>

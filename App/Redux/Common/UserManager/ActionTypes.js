@@ -2,3 +2,4 @@ export const SET_USER_TOKEN = 'SET_USER_TOKEN';
 export const SET_USER_INFO = 'SET_USER_INFO';
 export const SET_USER_UNIVERSITY_SYNC = 'SET_USER_UNIVERSITY_SYNC';
 export const LOG_OUT = 'LOG_OUT';
+export const SET_SYNC_REQUIRED = 'SET_SYNC_REQUIRED';

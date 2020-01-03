@@ -43,6 +43,7 @@ class Home extends React.Component {
     await RegisterForNotifications();
 
     this.fetchEventsAndClasses();
+    this.isSyncRequired();
   }
 
   componentDidUpdate(prevProps) {
@@ -65,6 +66,28 @@ class Home extends React.Component {
   getPrivatesEventsForToday = () => {
     const today = Moment().format('YYYYMMDD');
     return Api.GetEvents(today, null, false);
+  };
+
+  isSyncRequired = () => {
+    const { logger, userToken, setSyncRequired } = this.props;
+
+    MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+    return Api.CheckSync()
+      .then(objResponse => {
+        const required = Lodash.get(objResponse, ['data', 'syncRequired'], false);
+        setSyncRequired(required);
+        if (required) {
+          this.goToSync();
+        }
+      })
+      .catch(objError => {
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SIGN_IN_FAILED,
+            data: objError,
+          });
+        }, 1050);
+      });
   };
 
   fetchEventsAndClasses = () => {
@@ -115,6 +138,13 @@ class Home extends React.Component {
     } = this.props;
 
     return push('ClassHub', { id: idSection });
+  };
+
+  goToSync = () => {
+    const {
+      navigation: { push },
+    } = this.props;
+    return push('Sync', { canNavigate: false, nextScreen: 'Home', showMSG: true });
   };
 
   handleOnEventPress = objEvent => {
@@ -324,12 +354,14 @@ Home.defaultProps = {
   myClasses: [],
   setMyClasses: () => null,
   myClassesLookup: {},
+  setSyncRequired: () => null,
 };
 
 Home.propTypes = {
   myClasses: PropTypes.arrayOf(PropTypes.string),
   setMyClasses: PropTypes.func,
   myClassesLookup: PropTypes.shape({}),
+  setSyncRequired: PropTypes.func,
 };
 
 const mapStateToProps = (state, props) => {
@@ -350,6 +382,7 @@ const mapDispatchToProps = dispatch => {
     {
       setMyClasses: classesActions.setClasses,
       setUserToken: userActions.setUserToken,
+      setSyncRequired: userActions.setSyncRequired,
     },
     dispatch
   );

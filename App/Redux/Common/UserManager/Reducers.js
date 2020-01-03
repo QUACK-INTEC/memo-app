@@ -48,7 +48,7 @@ const onSetSyncRequired = (state, action) => {
   const required = Lodash.get(action, ['payload'], '');
   return {
     ...state,
-    isSyncRequired: required,
+    syncRequired: required,
   };
 };
 

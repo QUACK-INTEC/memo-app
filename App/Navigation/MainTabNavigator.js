@@ -49,6 +49,12 @@ const HomeStack = createStackNavigator(
     PostComments: PostCommentsScreen,
     PostResources: PostResourcesScreen,
     ViewResource: ViewResourceScreen,
+    Sync: {
+      screen: SyncScreen,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
+    },
   },
   config
 );

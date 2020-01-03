@@ -17,8 +17,6 @@ import {
 
 import WithLogger, { MessagesKey } from '../HOCs/WithLogger';
 
-const SYNC_MSG = 'Sincronización de materias requerida!';
-
 class AppToken extends Component {
   constructor() {
     super();
@@ -37,7 +35,6 @@ class AppToken extends Component {
         .then(objResponse => {
           const token = Lodash.get(objResponse, ['data', 'token'], null);
           setUserToken(token);
-          this.isSyncRequired();
           this.setState({ tokenReady: true });
         })
         .catch(objError => {
@@ -52,29 +49,6 @@ class AppToken extends Component {
         });
     }
     return this.setState({ tokenReady: true });
-  };
-
-  isSyncRequired = () => {
-    const { logger, userToken, setSyncRequired, toastRef } = this.props;
-    const current = Lodash.get(toastRef, ['current'], null);
-
-    MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
-    return Api.CheckSync()
-      .then(objResponse => {
-        const required = Lodash.get(objResponse, ['data', 'syncRequired'], false);
-        setSyncRequired(required);
-        if (required) {
-          current.setToastVisible(SYNC_MSG);
-        }
-      })
-      .catch(objError => {
-        return setTimeout(() => {
-          logger.error({
-            key: MessagesKey.SIGN_IN_FAILED,
-            data: objError,
-          });
-        }, 1050);
-      });
   };
 
   render() {
@@ -103,7 +77,6 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setUserToken: userActions.setUserToken,
-      setSyncRequired: userActions.setSyncRequired,
     },
     dispatch
   );
@@ -113,12 +86,10 @@ const AppTokenWithProps = WithLogger(connect(mapStateToProps, mapDispatchToProps
 
 AppToken.defaultProps = {
   setUserToken: () => null,
-  setSyncRequired: () => null,
 };
 
 AppToken.propTypes = {
   setUserToken: PropTypes.func,
-  setSyncRequired: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

@@ -406,7 +406,6 @@ class PostComments extends React.Component {
     if (Lodash.isEmpty(postCommentsFormatted)) {
       return (
         <View style={styles.noCommentsContainer}>
-          <LoadingState.Empty />
           <Text.Medium
             text="Aún no se han registrado comentarios en esta publicación. Dejanos saber tu opinión!"
             style={styles.noCommentsText}

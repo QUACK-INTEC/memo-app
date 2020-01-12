@@ -18,6 +18,8 @@ import { selectors as userManagerSelectors } from '../../Redux/Common/UserManage
 import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
 import { GAMIFICATION_MSG } from '../../Utils';
 
+// TODO: No conseguir el subject name por props, llamar al API y conseguir la materia desde la llamada del API
+
 class PostInfo extends React.Component {
   constructor(props) {
     super(props);

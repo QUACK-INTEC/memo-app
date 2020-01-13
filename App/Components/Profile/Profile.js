@@ -27,8 +27,8 @@ class Profile extends React.Component {
     return (
       <View style={styles.editIconContainer}>
         <Icon
-          name="edit"
-          type={ICON_TYPE.MEMO_ICONS}
+          name="cog"
+          type={ICON_TYPE.FONT_AWESOME}
           size={ICON_SIZE.TINY}
           onPress={onEditUser}
           color={colors.GRAY}

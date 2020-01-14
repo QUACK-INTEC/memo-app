@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 
 import LoadingState from '../../Components/LoadingState';
 import HomeComponent from '../../Components/Home';
+
+import EnforcedToast from '../../Components/Common/EnforcedToast';
 import { colors, fonts, spacers } from '../../Core/Theme';
 import Api, { MemoApi, RegisterForNotifications } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
@@ -25,12 +27,15 @@ import { selectors as EventFormSelectors } from '../EventForm/Redux';
 import LoadingList from '../../Components/LoadingList';
 import { Classes, Events } from '../../Models';
 
+const SYNC_MSG = 'Sincronización de materias requerida!';
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
       isRefreshing: false,
+      syncRequired: false,
     };
   }
 
@@ -77,7 +82,8 @@ class Home extends React.Component {
         const required = Lodash.get(objResponse, ['data', 'syncRequired'], false);
         setSyncRequired(required);
         if (required) {
-          this.goToSync();
+          // this.goToSync();
+          this.setState({ syncRequired: true });
         }
       })
       .catch(objError => {
@@ -144,6 +150,7 @@ class Home extends React.Component {
     const {
       navigation: { push },
     } = this.props;
+    this.setState({ syncRequired: false });
     return push('Sync', { canNavigate: false, nextScreen: 'Home', showMSG: true });
   };
 
@@ -314,9 +321,10 @@ class Home extends React.Component {
   };
 
   render() {
-    const { isLoading, isRefreshing } = this.state;
+    const { isLoading, isRefreshing, syncRequired } = this.state;
     return (
       <>
+        <EnforcedToast isVisible={syncRequired} title={SYNC_MSG} onPress={() => this.goToSync()} />
         <LoadingState.withoutLottie isVisible={isLoading} />
         <HomeComponent
           isLoading={isLoading}

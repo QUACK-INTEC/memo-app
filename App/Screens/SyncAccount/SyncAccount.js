@@ -11,8 +11,6 @@ import LoadingState from '../../Components/LoadingState';
 import Api from '../../Core/Api';
 import { actions as userActions } from '../../Redux/Common/UserManager';
 
-const SYNC_MSG = 'Sincronización de materias requerida!';
-
 class SyncAccount extends Component {
   static navigationOptions = ({ navigation }) => {
     const { getParam } = navigation;
@@ -29,7 +27,6 @@ class SyncAccount extends Component {
       universities: [],
       canNavigate: false,
       nextScreen: 'Home',
-      msgShowned: false,
     };
   }
 
@@ -38,7 +35,6 @@ class SyncAccount extends Component {
       navigation: { getParam },
       logger,
     } = this.props;
-
     this.setLoading(true);
     const canNavigate = getParam('canNavigate', false);
     const nextScreen = getParam('nextScreen', 'Home');
@@ -70,24 +66,6 @@ class SyncAccount extends Component {
           data: objError,
         });
       });
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.toastRef.current !== null && prevState.msgShowned === false) {
-      const {
-        navigation: { getParam },
-        toastRef,
-      } = nextProps;
-      const showMSG = getParam('showMSG', false);
-
-      const current = Lodash.get(toastRef, ['current'], null);
-      if (showMSG) {
-        current.setToastVisible(SYNC_MSG);
-        return { msgShowned: true };
-      }
-    }
-    // Return null to indicate no change to state.
-    return null;
   }
 
   handleBackArrow = () => {
@@ -138,14 +116,11 @@ class SyncAccount extends Component {
     const {
       setUserSync,
       setUserToken,
-      setSyncRequired,
       navigation: { getParam, navigate },
     } = this.props;
     const { nextScreen } = this.state;
-
     this.setLoading(false);
 
-    setSyncRequired(false);
     const userToken = getParam('userToken', null);
 
     if (objUserSyncData) {
@@ -162,6 +137,7 @@ class SyncAccount extends Component {
   render() {
     const { isLoading, universities, canNavigate } = this.state;
     const { initialsValue } = this.props;
+
     return (
       <SafeAreaView style={styles.container}>
         <LoadingState.Modal isVisible={isLoading} />
@@ -188,14 +164,12 @@ SyncAccount.defaultProps = {
   initialsValue: null,
   setUserSync: () => null,
   setUserToken: () => null,
-  setSyncRequired: () => null,
 };
 
 SyncAccount.propTypes = {
   initialsValue: PropTypes.shape({}),
   setUserSync: PropTypes.func,
   setUserToken: PropTypes.func,
-  setSyncRequired: PropTypes.func,
 };
 
 const mapDispatchToProps = dispatch => {
@@ -203,7 +177,6 @@ const mapDispatchToProps = dispatch => {
     {
       setUserSync: userActions.setUserSync,
       setUserToken: userActions.setUserToken,
-      setSyncRequired: userActions.setSyncRequired,
     },
     dispatch
   );

@@ -11,6 +11,7 @@ import { fonts, colors, toBaseDesignPx, spacers } from '../../Core/Theme';
 
 // Common
 import Text from '../Common/Text';
+import TextInput from '../Common/TextInput';
 import InLineComponent from '../Common/InLineComponent';
 
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Common/Icon';
@@ -31,6 +32,7 @@ class FileInput extends React.Component {
     super(props);
     this.state = {
       value: [],
+      text: '',
     };
   }
 
@@ -56,7 +58,7 @@ class FileInput extends React.Component {
   };
 
   pickDocument = async () => {
-    const { value } = this.state;
+    const { value, text } = this.state;
 
     const { onChange } = this.props;
     const newData = value;
@@ -66,20 +68,24 @@ class FileInput extends React.Component {
     const nameseparator = name.split('.');
     const [resultName, resultExtension] = nameseparator;
 
-    const index = newData.findIndex(x => x.name === resultName);
+    const index = newData.findIndex(x => x.fileURL === uri);
     if (index < 0) {
       const item = {};
       item.id = null;
       item.name = name;
       item.fileURL = uri;
+      item.title = name;
       item.type = mime.lookup(resultExtension);
       item.extension = resultExtension;
       item.alias = resultName;
+      if (text.trim().length > 0) {
+        item.title = text.trim();
+        item.extension = '';
+        item.alias = text.trim();
+      }
       newData.push(item);
-      this.setState({ value: newData });
+      this.setState({ value: newData, text: '' });
       onChange(newData);
-    } else {
-      // TO-DO documento repetido
     }
   };
 
@@ -88,7 +94,7 @@ class FileInput extends React.Component {
 
     const { onChange } = this.props;
     const newData = value;
-    const index = newData.findIndex(x => x.uri === id);
+    const index = newData.findIndex(x => x.fileURL === id);
     newData.splice(index, 1);
     this.setState({ value: newData });
 
@@ -147,13 +153,36 @@ class FileInput extends React.Component {
 
   render() {
     const { style, disabled, containerStyle, hasError } = this.props;
-    const { value } = this.state;
+    const { value, text } = this.state;
     const errorStyle = hasError ? styles.errorStyle : null;
     if (disabled) return null;
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
         {this.renderLabel()}
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', flex: 1 }}>
+          <TextInput
+            placeholder="Titulo del archivo"
+            value={text}
+            onChangeText={txt => this.setState({ text: txt })}
+            containerStyle={{
+              borderBottomWidth: 0,
+              flex: 1,
+            }}
+          />
+
+          <TouchableOpacity
+            onPress={this.addItem}
+            style={{ margin: 5, marginLeft: 10, alignSelf: 'flex-end' }}
+          >
+            <Icon
+              name="add"
+              type={ICON_TYPE.MEMO_ICONS}
+              size={ICON_SIZE.TINY}
+              color={colors.GRAY}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
           <FlatList
             onScrollToIndexFailed={() => {}}
             ref={ref => {
@@ -164,8 +193,8 @@ class FileInput extends React.Component {
             renderItem={({ item }) => {
               return (
                 <FilePill
-                  id={item.uri}
-                  documentText={item.name}
+                  id={item.fileURL}
+                  documentText={item.alias}
                   documentType={item.extension}
                   onPress={this.handleAlert}
                 />
@@ -176,14 +205,6 @@ class FileInput extends React.Component {
             extraData={this.state}
             showsHorizontalScrollIndicator={false}
           />
-          <TouchableOpacity onPress={this.addItem} style={{ margin: 5, marginLeft: 10 }}>
-            <Icon
-              name="add"
-              type={ICON_TYPE.MEMO_ICONS}
-              size={ICON_SIZE.TINY}
-              color={colors.GRAY}
-            />
-          </TouchableOpacity>
         </View>
       </View>
     );

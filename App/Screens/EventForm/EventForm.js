@@ -61,6 +61,23 @@ class EventForm extends React.Component {
     return errors;
   };
 
+  formatAttachmentData = data => {
+    const newData = data.map(x => {
+      const name = x.name.split('.');
+      const [alias, extension] = name;
+      const item = {};
+      item.id = x.id;
+      item.name = x.name;
+      item.fileURL = x.fileURL;
+      item.title = x.name;
+      item.type = '';
+      item.extension = extension || '';
+      item.alias = alias;
+      return item;
+    });
+    return newData;
+  };
+
   getInitialsValue = () => {
     const { initialsValue } = this.props;
     const startDate = Lodash.get(initialsValue, ['startDate'], null);
@@ -76,8 +93,8 @@ class EventForm extends React.Component {
       type: 'public',
       hasFile: attachments.length > 0,
       hasDate: startDate && endDate,
-      attachments: [],
       ...initialsValue,
+      attachments: this.formatAttachmentData(attachments),
     };
   };
 
@@ -162,18 +179,21 @@ class EventForm extends React.Component {
       )
     ).getTime();
 
-    const listUpload = Lodash.filter(attachments, objFile => {
+    const listUpload = [];
+    attachments.map(objFile => {
       if (Lodash.isNull(objFile.id)) {
-        return objFile;
+        listUpload.push(objFile);
       }
-
-      if (isEditing && !Lodash.isNull(objFile.id)) {
-        return objFile;
-      }
-
       return null;
     });
 
+    const attchKeys = [];
+    attachments.map(att => {
+      if (!Lodash.isNull(att.id)) {
+        attchKeys.push(att.id);
+      }
+      return null;
+    });
     const objPayload = {
       title,
       description,
@@ -182,16 +202,20 @@ class EventForm extends React.Component {
       section,
       type: hasDate ? 'Event' : 'Resource',
       isPublic: type === 'public',
+      attachments: attchKeys,
     };
 
     if (!Lodash.isEmpty(listUpload)) {
       return Api.UploadFile(listUpload)
         .then(objResponse => {
-          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(
-            file => file.id
-          );
+          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(file => {
+            if (!Lodash.isNull(file.id)) {
+              return file.id;
+            }
+            return null;
+          });
 
-          objPayload.attachments = newAttachments;
+          objPayload.attachments = objPayload.attachments.concat(newAttachments);
 
           return isEditing
             ? this.handleEditPost(postId, objPayload)

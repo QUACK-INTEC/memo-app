@@ -15,28 +15,8 @@ import InLineComponent from '../InLineComponent';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Icon';
 
 class DropDownComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
-
-  componentDidMount() {
-    const { value } = this.props;
-    this.setState({ value });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.options !== this.props.options || prevState.value !== this.state.value) {
-      return true;
-    }
-    return false;
-  }
-
   handleOptionChange = value => {
     const { onChange } = this.props;
-    this.setState({ value });
     onChange(value);
   };
 
@@ -120,8 +100,16 @@ class DropDownComponent extends React.Component {
   };
 
   render() {
-    const { style, placeholder, options, disabled, containerStyle, hasError, ...rest } = this.props;
-    const { value: valueFromState } = this.state;
+    const {
+      style,
+      placeholder,
+      options,
+      disabled,
+      containerStyle,
+      hasError,
+      value,
+      ...rest
+    } = this.props;
     const errorStyle = hasError ? styles.errorStyle : null;
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
@@ -142,7 +130,7 @@ class DropDownComponent extends React.Component {
               right: 15,
             },
           }}
-          value={valueFromState}
+          value={value}
           useNativeAndroidPickerStyle={false}
           Icon={() => this.renderIcon()}
           {...rest}

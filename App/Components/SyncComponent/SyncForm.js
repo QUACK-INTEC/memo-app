@@ -143,6 +143,10 @@ class SyncForm extends Component {
 
   render() {
     const { modalVisible } = this.state;
+    const { universities } = this.props;
+    if (universities.length <= 0) {
+      return null;
+    }
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>

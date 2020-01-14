@@ -250,6 +250,7 @@ class Home extends React.Component {
   };
 
   handleOnRefresh = () => {
+    this.isSyncRequired();
     return this.setState(
       {
         isRefreshing: true,

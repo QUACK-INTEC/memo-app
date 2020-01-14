@@ -71,7 +71,18 @@ HomeStack.path = '';
 const CalendarStack = createStackNavigator(
   {
     Calendar: CalendarScreen,
+    Clases: ClassRoomScreen,
+    ClassHub: {
+      screen: ClassHubScreen,
+    },
     PostInfo,
+    Participants: ClassParticipantsScreen,
+    ViewProfile: ViewProfileScreen,
+    SubjectsByTeacher: SubjectsByTeacherScreen,
+    TeacherResources: TeacherResourcesScreen,
+    PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
+    ViewResource: ViewResourceScreen,
   },
   config
 );

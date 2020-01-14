@@ -36,16 +36,16 @@ class Avatar extends React.Component {
 
 const styles = StyleSheet.create({
   avatarStyle: {
-    height: toBaseDesignPx(94),
-    width: toBaseDesignPx(94),
-    borderRadius: toBaseDesignPx(47),
+    height: toBaseDesignPx(110),
+    width: toBaseDesignPx(110),
+    borderRadius: toBaseDesignPx(100),
     backgroundColor: colors.GRAY_LIGHT,
     alignItems: 'center',
     justifyContent: 'center',
   },
   textViewStyle: {
-    width: toBaseDesignPx(94),
-    height: toBaseDesignPx(94),
+    width: toBaseDesignPx(110),
+    height: toBaseDesignPx(110),
     alignItems: 'center',
     justifyContent: 'center',
     ...spacers.MR_0,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: colors.GRAY,
-    fontSize: RFValue(48),
+    fontSize: RFValue(40),
     textAlign: 'center',
     ...spacers.ML_1,
     ...spacers.MT_1,

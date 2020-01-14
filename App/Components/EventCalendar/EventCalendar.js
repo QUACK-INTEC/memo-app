@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
     color: colors.GRAY,
   },
   avatarStyle: {
-    height: toBaseDesignPx(16),
-    width: toBaseDesignPx(16),
-    borderRadius: toBaseDesignPx(8),
+    height: toBaseDesignPx(32),
+    width: toBaseDesignPx(32),
+    borderRadius: toBaseDesignPx(32),
     ...spacers.MR_1,
   },
   authorStyle: {

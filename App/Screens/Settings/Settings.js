@@ -6,7 +6,6 @@ import Constants from 'expo-constants';
 import * as IntentLauncher from 'expo-intent-launcher';
 import { bindActionCreators } from 'redux';
 import Lodash from 'lodash';
-
 import LoadingState from '../../Components/LoadingState';
 import SettingsComponent from '../../Components/Settings';
 import {
@@ -102,7 +101,12 @@ class Settings extends React.Component {
     if (Constants.platform.ios) {
       return Linking.openURL('app-settings:');
     }
-    return IntentLauncher.startActivityAsync(IntentLauncher.ACTION_APP_NOTIFICATION_SETTINGS);
+    const pkg = Constants.manifest.releaseChannel
+      ? Constants.manifest.android.package // When published, considered as using standalone build
+      : 'host.exp.exponent';
+    return IntentLauncher.startActivityAsync(IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS, {
+      data: `package:${pkg}`,
+    });
   };
 
   render() {

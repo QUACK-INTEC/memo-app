@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   avatarStyle: {
     height: toBaseDesignPx(32),
     width: toBaseDesignPx(32),
-    borderRadius: toBaseDesignPx(16),
+    borderRadius: toBaseDesignPx(32),
     ...spacers.MR_8,
     ...spacers.ML_4,
   },
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     height: toBaseDesignPx(8),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XL,
+    ...fonts.SIZE_XS,
   },
   divBar: {
     width: toBaseDesignPx(0),

@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   avatarStyle: {
     height: toBaseDesignPx(32),
     width: toBaseDesignPx(32),
-    borderRadius: toBaseDesignPx(16),
+    borderRadius: toBaseDesignPx(32),
   },
   authorStyle: {
     ...fonts.SIZE_XS,
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     ...spacers.ML_1,
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XL,
+    ...fonts.SIZE_XS,
   },
   upVotesStyle: {
     color: colors.GRAY_LIGHT,

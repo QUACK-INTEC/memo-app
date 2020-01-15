@@ -17,6 +17,10 @@ const TokenRefresh = () => {
   return MemoApi.get(`auth/refresh`);
 };
 
+const CheckSync = () => {
+  return MemoApi.get(`sync/check`);
+};
+
 const Login = objUserLoginParams => {
   return MemoApi.post(`auth/login`, objUserLoginParams);
 };
@@ -169,6 +173,7 @@ const ValidateRecoveryCode = objUserOTPParam => {
 const Api = {
   AuthCheck,
   TokenRefresh,
+  CheckSync,
   Login,
   Register,
   UploadProfilePicture,

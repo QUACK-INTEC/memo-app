@@ -48,7 +48,6 @@ class AppToken extends Component {
           }, 1050);
         });
     }
-
     return this.setState({ tokenReady: true });
   };
 
@@ -83,12 +82,7 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-const AppTokenWithProps = WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AppToken)
-);
+const AppTokenWithProps = WithLogger(connect(mapStateToProps, mapDispatchToProps)(AppToken));
 
 AppToken.defaultProps = {
   setUserToken: () => null,

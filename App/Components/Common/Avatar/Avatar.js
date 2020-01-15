@@ -12,7 +12,7 @@ import Text from '../Text';
 
 class Avatar extends React.Component {
   renderAvatar = () => {
-    const { src, uri, initialsText, style, textStyle } = this.props;
+    const { src, uri, initialsText, style, textStyle, textBorderStyle } = this.props;
 
     if (src || uri) {
       return (
@@ -21,7 +21,10 @@ class Avatar extends React.Component {
     }
 
     return (
-      <View {...this.props} style={[styles.avatarStyle, style]}>
+      <View
+        {...this.props}
+        style={[styles.avatarStyle, styles.textBorderStyle, style, textBorderStyle]}
+      >
         <View style={[style, styles.textViewStyle]}>
           <Text.Medium text={initialsText} style={[styles.textStyle, textStyle]} />
         </View>
@@ -36,12 +39,17 @@ class Avatar extends React.Component {
 
 const styles = StyleSheet.create({
   avatarStyle: {
-    height: toBaseDesignPx(110),
-    width: toBaseDesignPx(110),
-    borderRadius: toBaseDesignPx(100),
+    height: toBaseDesignPx(94),
+    width: toBaseDesignPx(94),
+    borderRadius: toBaseDesignPx(47),
     backgroundColor: colors.GRAY_LIGHT,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textBorderStyle: {
+    height: toBaseDesignPx(110),
+    width: toBaseDesignPx(110),
+    borderRadius: toBaseDesignPx(100),
   },
   textViewStyle: {
     width: toBaseDesignPx(110),
@@ -72,6 +80,7 @@ Avatar.defaultProps = {
   initialsText: null,
   style: null,
   textStyle: null,
+  textBorderStyle: null,
 };
 
 Avatar.propTypes = {
@@ -80,6 +89,7 @@ Avatar.propTypes = {
   initialsText: PropTypes.string,
   style: ViewPropTypes.style,
   textStyle: PropTypes.shape({}),
+  textBorderStyle: PropTypes.shape({}),
 };
 
 export default Avatar;

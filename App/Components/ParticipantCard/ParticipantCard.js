@@ -41,6 +41,7 @@ class ParticipantCard extends React.Component {
             initialsText={initialsText}
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
+            textBorderStyle={styles.textBorderStyle}
           />
           <Text.Medium
             text={participantName}
@@ -59,9 +60,12 @@ const styles = StyleSheet.create({
   avatarStyle: {
     height: toBaseDesignPx(32),
     width: toBaseDesignPx(32),
-    borderRadius: toBaseDesignPx(32),
+    borderRadius: toBaseDesignPx(16),
     ...spacers.MR_8,
     ...spacers.ML_8,
+  },
+  textBorderStyle: {
+    borderRadius: toBaseDesignPx(32),
   },
   participantStyle: {
     ...fonts.SIZE_XS,

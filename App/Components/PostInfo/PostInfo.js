@@ -144,6 +144,7 @@ class PostInfo extends React.Component {
             initialsText={initialsText}
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
+            textBorderStyle={styles.textBorderStyle}
           />
         </View>
       </InLineComponent>
@@ -365,6 +366,9 @@ const styles = StyleSheet.create({
   avatarStyle: {
     height: toBaseDesignPx(32),
     width: toBaseDesignPx(32),
+    borderRadius: toBaseDesignPx(16),
+  },
+  textBorderStyle: {
     borderRadius: toBaseDesignPx(32),
   },
   authorStyle: {

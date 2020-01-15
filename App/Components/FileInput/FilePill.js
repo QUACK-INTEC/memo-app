@@ -10,19 +10,20 @@ import { colors } from '../../Core/Theme';
 
 import Text from '../Common/Text';
 
-const MAXLENGTH = 12;
+const MAXLENGTH = 10;
 
 class FilePill extends React.Component {
-  trimText = () => {
-    const { documentType, documentText } = this.props;
-
-    if (documentType && documentText.length > MAXLENGTH) {
-      return `${documentText.substring(0, MAXLENGTH)}...${documentType}`;
+  trimText = (text, type) => {
+    if (type && text.length > MAXLENGTH) {
+      return `${text.substring(0, MAXLENGTH)}...${type}`;
     }
-    if (documentText.length > MAXLENGTH) {
-      return `${documentText.substring(0, MAXLENGTH)}...`;
+    if (text.length > MAXLENGTH) {
+      return `${text.substring(0, MAXLENGTH)}...`;
     }
-    return `${documentText}`;
+    if (type) {
+      return `${text.substring(0, MAXLENGTH)}.${type}`;
+    }
+    return `${text.substring(0, MAXLENGTH)}`;
   };
 
   handlePress = () => {
@@ -31,10 +32,13 @@ class FilePill extends React.Component {
   };
 
   render() {
-    const text = this.trimText();
+    const { documentText, documentType } = this.props;
+    const text = this.trimText(documentText, documentType);
     return (
       <TouchableOpacity style={styles.container} onPress={this.handlePress}>
-        <Text.SemiBold text={text} style={styles.text} />
+        <View>
+          <Text.SemiBold text={text} style={styles.text} />
+        </View>
         <View style={styles.closeContainer}>
           <Text.SemiBold text="x" style={styles.x} />
         </View>
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    maxWidth: 160,
+    maxWidth: 180,
     opacity: 0.7,
   },
   closeContainer: {

@@ -208,14 +208,16 @@ class EventForm extends React.Component {
     if (!Lodash.isEmpty(listUpload)) {
       return Api.UploadFile(listUpload)
         .then(objResponse => {
-          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(file => {
+          const nA = [];
+          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []);
+          newAttachments.map(file => {
             if (!Lodash.isNull(file.id)) {
-              return file.id;
+              nA.push(file.id);
             }
             return null;
           });
 
-          objPayload.attachments = objPayload.attachments.concat(newAttachments);
+          objPayload.attachments = objPayload.attachments.concat(nA);
 
           return isEditing
             ? this.handleEditPost(postId, objPayload)

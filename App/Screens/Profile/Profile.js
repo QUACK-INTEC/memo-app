@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Lodash from 'lodash';
 import { bindActionCreators } from 'redux';
 
+import { withNavigationFocus } from 'react-navigation';
 import LoadingState from '../../Components/LoadingState';
 import ProfileComponent from '../../Components/Profile';
 import ClassInfoCard from '../../Components/ClassInfoCard';
@@ -18,6 +19,7 @@ import {
   selectors as userManagerSelectors,
 } from '../../Redux/Common/UserManager';
 import { selectors as myClassesSelectors } from '../../Redux/Common/MyClasses';
+import { selectors as EventFormSelectors } from '../EventForm/Redux';
 
 import Api from '../../Core/Api';
 
@@ -37,8 +39,16 @@ class Profile extends Component {
     return this.fetchProfile();
   }
 
-  componentDidUpdate() {
-    return this.fetchProfile();
+  componentDidUpdate(prevProps) {
+    const { isModalVisible, isFocused } = this.props;
+    if (
+      (prevProps.isModalVisible !== isModalVisible && !isModalVisible && isFocused) ||
+      (prevProps.isFocused !== isFocused && isFocused)
+    ) {
+      console.log('fetch');
+      return this.fetchProfile();
+    }
+    return false;
   }
 
   handleOnRefresh = () => {
@@ -204,6 +214,7 @@ const mapStateToProps = (state, props) => {
     getBadgeUrl,
   } = userManagerSelectors;
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
+  const { getIsModalVisible } = EventFormSelectors;
   return {
     userFirstName: getFirstName(state, props),
     userLastName: getLastName(state, props),
@@ -214,6 +225,7 @@ const mapStateToProps = (state, props) => {
     badgeUrl: getBadgeUrl(state, props),
     myClasses: getMyClasses(state, props),
     myClassesLookup: getMyClassesLookup(state, props),
+    isModalVisible: getIsModalVisible(state, props),
   };
 };
 
@@ -226,9 +238,6 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Profile)
+export default withNavigationFocus(
+  WithLogger(connect(mapStateToProps, mapDispatchToProps)(Profile))
 );

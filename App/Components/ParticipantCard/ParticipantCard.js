@@ -41,8 +41,14 @@ class ParticipantCard extends React.Component {
             initialsText={initialsText}
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
+            textBorderStyle={styles.textBorderStyle}
           />
-          <Text.Medium text={participantName} style={styles.participantStyle} />
+          <Text.Medium
+            text={participantName}
+            style={styles.participantStyle}
+            numberOfLines={1}
+            ellipSizeMode="tail"
+          />
           <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
         </InLineComponent>
       </TouchableOpacity>
@@ -58,17 +64,21 @@ const styles = StyleSheet.create({
     ...spacers.MR_8,
     ...spacers.ML_8,
   },
+  textBorderStyle: {
+    borderRadius: toBaseDesignPx(32),
+  },
   participantStyle: {
     ...fonts.SIZE_XS,
     color: colors.GRAY_LIGHT,
     ...spacers.MR_1,
+    maxWidth: toBaseDesignPx(240),
   },
   badgeStyle: {
     width: toBaseDesignPx(12),
     height: toBaseDesignPx(12),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XL,
+    ...fonts.SIZE_XS,
   },
   buttonStyle: {
     borderRadius: toBaseDesignPx(4),

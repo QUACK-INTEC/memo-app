@@ -93,6 +93,8 @@ class PostComments extends React.Component {
                 text={`Evento creado Por: ${author}`}
                 textStyle={styles.authorStyle}
                 onPress={onAuthorPress}
+                numberOfLines={1}
+                ellipSizeMode="tail"
               />
             </View>
           </View>
@@ -188,6 +190,10 @@ const styles = StyleSheet.create({
     ...fonts.SIZE_XXS,
     color: colors.GRAY,
     ...spacers.MB_6,
+    ...spacers.ML_3,
+    ...spacers.MR_3,
+    textAlign: 'center',
+    ...fonts.MEDIUM,
   },
   infoStyle: {
     color: colors.GRAY,

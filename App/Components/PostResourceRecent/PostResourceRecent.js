@@ -15,7 +15,7 @@ class SubjectPostRecent extends React.Component {
         <Text.Medium
           text={postTitle}
           numberOfLines={1}
-          ellipzeMode="tail"
+          ellipSizeMode="tail"
           style={styles.postTitleText}
         />
       </View>

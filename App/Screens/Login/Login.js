@@ -73,16 +73,15 @@ class Login extends Component {
 
   render() {
     const { isLoading } = this.state;
-    const { initialsValue } = this.props;
     return (
       <View style={styles.container}>
         <LoadingState.Modal isVisible={isLoading} />
         <ImageWrapper memoSrc={MEMO_ASSETS.ICON} style={styles.logoContainer} />
         <LoginForm
+          isLoading={isLoading}
           onSubmit={this.handleSubmit}
           onRegister={this.handleRegister}
           onPasswordRecovery={this.handlePasswordRecovery}
-          initialsValue={initialsValue}
         />
       </View>
     );
@@ -122,9 +121,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    null,
-    mapDispatchToProps
-  )(Login)
-);
+export default WithLogger(connect(null, mapDispatchToProps)(Login));

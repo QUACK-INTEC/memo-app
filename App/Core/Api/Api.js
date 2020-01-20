@@ -17,6 +17,10 @@ const TokenRefresh = () => {
   return MemoApi.get(`auth/refresh`);
 };
 
+const CheckSync = () => {
+  return MemoApi.get(`sync/check`);
+};
+
 const Login = objUserLoginParams => {
   return MemoApi.post(`auth/login`, objUserLoginParams);
 };
@@ -150,6 +154,10 @@ const RegisterForNotifications = pushToken => {
   return MemoApi.post(`notifications/register`, { pushToken });
 };
 
+const UnRegisterForNotifications = () => {
+  return MemoApi.post(`/notifications/unregister`);
+};
+
 const SendRecoveryEmail = objUserEmailParam => {
   return MemoApi.post(`auth/forgot`, objUserEmailParam);
 };
@@ -165,6 +173,7 @@ const ValidateRecoveryCode = objUserOTPParam => {
 const Api = {
   AuthCheck,
   TokenRefresh,
+  CheckSync,
   Login,
   Register,
   UploadProfilePicture,
@@ -198,6 +207,7 @@ const Api = {
   ChangePassword,
   ValidateRecoveryCode,
   UploadFile,
+  UnRegisterForNotifications,
 };
 
 export default Api;

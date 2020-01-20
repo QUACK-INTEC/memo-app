@@ -18,6 +18,8 @@ import { selectors as userManagerSelectors } from '../../Redux/Common/UserManage
 import { actions as EventFormActions, selectors as EventFormSelectors } from '../EventForm/Redux';
 import { GAMIFICATION_MSG } from '../../Utils';
 
+// TODO: No conseguir el subject name por props, llamar al API y conseguir la materia desde la llamada del API
+
 class PostInfo extends React.Component {
   constructor(props) {
     super(props);
@@ -88,6 +90,7 @@ class PostInfo extends React.Component {
           const endDate = Lodash.get(objPostInfo, ['endDate'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
           const hasAttachments = !Lodash.isNull(postAttachments) && postAttachments.length > 0;
+          const subject = Lodash.get(objPostInfo, ['section', 'subject', 'name'], '');
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -129,6 +132,7 @@ class PostInfo extends React.Component {
             authorURL,
             badgeURI,
             hasAttachments,
+            subjectName: subject,
           });
 
           return logger.success({
@@ -187,6 +191,7 @@ class PostInfo extends React.Component {
           const section = Lodash.get(objPostInfo, ['section', 'id'], null);
           const isPublic = Lodash.get(objPostInfo, ['isPublic'], null);
           const hasAttachments = !Lodash.isNull(postAttachments) && postAttachments.length > 0;
+          const subject = Lodash.get(objPostInfo, ['section', 'subject', 'name'], '');
 
           const authorName = `${authorFirstName} ${authorLastName}`;
           const authorInitials = `${authorFirstName[0]}${authorLastName[0]}`;
@@ -229,6 +234,7 @@ class PostInfo extends React.Component {
             endDate,
             badgeURI,
             hasAttachments,
+            subjectName: subject,
           });
 
           return logger.success({

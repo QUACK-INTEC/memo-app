@@ -24,6 +24,7 @@ import PostResourcesScreen from '../Screens/PostResources';
 import SettingsScreen from '../Screens/Settings';
 import ViewResourceScreen from '../Screens/ViewResource';
 import SyncScreen from '../Screens/SyncAccount';
+import ChangePasswordScreen from '../Screens/ChangePassword';
 
 // Screens
 import ClassHubScreen from '../Screens/ClassHub';
@@ -48,13 +49,27 @@ const HomeStack = createStackNavigator(
     PostComments: PostCommentsScreen,
     PostResources: PostResourcesScreen,
     ViewResource: ViewResourceScreen,
+    Sync: {
+      screen: SyncScreen,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
+    },
   },
   config
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Inicio" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" />,
+HomeStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+    tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Inicio" />,
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" />,
+  };
 };
 
 HomeStack.path = '';
@@ -62,13 +77,33 @@ HomeStack.path = '';
 const CalendarStack = createStackNavigator(
   {
     Calendar: CalendarScreen,
+    Clases: ClassRoomScreen,
+    ClassHub: {
+      screen: ClassHubScreen,
+    },
+    PostInfo,
+    Participants: ClassParticipantsScreen,
+    ViewProfile: ViewProfileScreen,
+    SubjectsByTeacher: SubjectsByTeacherScreen,
+    TeacherResources: TeacherResourcesScreen,
+    PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
+    ViewResource: ViewResourceScreen,
   },
   config
 );
 
-CalendarStack.navigationOptions = {
-  tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Calendario" />,
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="calendar" />,
+CalendarStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+    tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} name="Calendario" />,
+    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="calendar" />,
+  };
 };
 
 CalendarStack.path = '';
@@ -153,6 +188,9 @@ const ProfileStack = createStackNavigator(
     Profile: ProfileScreen,
     Settings: SettingsScreen,
     Sync: SyncScreen,
+    ChangePassword: {
+      screen: ChangePasswordScreen,
+    },
   },
   config
 );

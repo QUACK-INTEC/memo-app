@@ -8,10 +8,12 @@ import PropTypes from 'prop-types';
 
 import LoadingState from '../../Components/LoadingState';
 import HomeComponent from '../../Components/Home';
+
+import EnforcedToast from '../../Components/Common/EnforcedToast';
 import { colors, fonts, spacers } from '../../Core/Theme';
 import Api, { MemoApi, RegisterForNotifications } from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
-import ClassInfoCard from '../../Components/ClassInfoCard';
+import ClassInfoCard, { ClassInfoCardLoadingState } from '../../Components/ClassInfoCard';
 import {
   actions as classesActions,
   selectors as myClassesSelectors,
@@ -22,8 +24,10 @@ import {
   actions as userActions,
 } from '../../Redux/Common/UserManager';
 import { selectors as EventFormSelectors } from '../EventForm/Redux';
-
+import LoadingList from '../../Components/LoadingList';
 import { Classes, Events } from '../../Models';
+
+const SYNC_MSG = 'Sincronización de materias requerida!';
 
 class Home extends React.Component {
   constructor(props) {
@@ -31,6 +35,7 @@ class Home extends React.Component {
     this.state = {
       isLoading: true,
       isRefreshing: false,
+      syncRequired: false,
     };
   }
 
@@ -43,6 +48,7 @@ class Home extends React.Component {
     await RegisterForNotifications();
 
     this.fetchEventsAndClasses();
+    this.isSyncRequired();
   }
 
   componentDidUpdate(prevProps) {
@@ -65,6 +71,29 @@ class Home extends React.Component {
   getPrivatesEventsForToday = () => {
     const today = Moment().format('YYYYMMDD');
     return Api.GetEvents(today, null, false);
+  };
+
+  isSyncRequired = () => {
+    const { logger, userToken, setSyncRequired } = this.props;
+
+    MemoApi.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+    return Api.CheckSync()
+      .then(objResponse => {
+        const required = Lodash.get(objResponse, ['data', 'syncRequired'], false);
+        setSyncRequired(required);
+        if (required) {
+          // this.goToSync();
+          this.setState({ syncRequired: true });
+        }
+      })
+      .catch(objError => {
+        return setTimeout(() => {
+          logger.error({
+            key: MessagesKey.SIGN_IN_FAILED,
+            data: objError,
+          });
+        }, 1050);
+      });
   };
 
   fetchEventsAndClasses = () => {
@@ -115,6 +144,14 @@ class Home extends React.Component {
     } = this.props;
 
     return push('ClassHub', { id: idSection });
+  };
+
+  goToSync = () => {
+    const {
+      navigation: { push },
+    } = this.props;
+    this.setState({ syncRequired: false });
+    return push('Sync', { canNavigate: false, nextScreen: 'Home', showMSG: true });
   };
 
   handleOnEventPress = objEvent => {
@@ -213,6 +250,7 @@ class Home extends React.Component {
   };
 
   handleOnRefresh = () => {
+    this.isSyncRequired();
     return this.setState(
       {
         isRefreshing: true,
@@ -252,11 +290,24 @@ class Home extends React.Component {
     );
   };
 
+  renderSubjectsLoadingState = item => {
+    return <ClassInfoCardLoadingState key={item} />;
+  };
+
   renderSubjects = () => {
     const { myClasses, myClassesLookup } = this.props;
+    const { isLoading } = this.state;
     const myClassesFormatted = Classes.getClassesData(myClasses, myClassesLookup);
 
-    if (Lodash.isNull(myClasses) || Lodash.isEmpty(myClassesLookup)) return null;
+    if (isLoading) {
+      return (
+        <LoadingList
+          columnWrapperStyle={styles.classesContainer}
+          renderItem={this.renderSubjectsLoadingState}
+          numColumns={2}
+        />
+      );
+    }
 
     return (
       <FlatList
@@ -271,11 +322,13 @@ class Home extends React.Component {
   };
 
   render() {
-    const { isLoading, isRefreshing } = this.state;
+    const { isLoading, isRefreshing, syncRequired } = this.state;
     return (
       <>
-        <LoadingState.Modal isVisible={isLoading} />
+        <EnforcedToast isVisible={syncRequired} title={SYNC_MSG} onPress={() => this.goToSync()} />
+        <LoadingState.withoutLottie isVisible={isLoading} />
         <HomeComponent
+          isLoading={isLoading}
           actualMonth={Moment().format('MMMM YYYY')}
           renderSubjects={this.renderSubjects}
           events={this.getEventsList()}
@@ -310,12 +363,14 @@ Home.defaultProps = {
   myClasses: [],
   setMyClasses: () => null,
   myClassesLookup: {},
+  setSyncRequired: () => null,
 };
 
 Home.propTypes = {
   myClasses: PropTypes.arrayOf(PropTypes.string),
   setMyClasses: PropTypes.func,
   myClassesLookup: PropTypes.shape({}),
+  setSyncRequired: PropTypes.func,
 };
 
 const mapStateToProps = (state, props) => {
@@ -336,6 +391,7 @@ const mapDispatchToProps = dispatch => {
     {
       setMyClasses: classesActions.setClasses,
       setUserToken: userActions.setUserToken,
+      setSyncRequired: userActions.setSyncRequired,
     },
     dispatch
   );

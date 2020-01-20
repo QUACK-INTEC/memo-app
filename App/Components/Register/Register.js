@@ -84,6 +84,7 @@ class Register extends Component {
   };
 
   renderForm = objForm => {
+    const { isLoading } = this.props;
     return (
       <KeyboardAwareScrollView resetScrollToCoords={{ x: 0, y: 0 }}>
         <View style={styles.container}>
@@ -102,6 +103,7 @@ class Register extends Component {
             onSubmitEditing={() => {
               this.lastNameInput.focus();
             }}
+            disabled={isLoading}
           />
           <FormikInput
             inputRef={input => {
@@ -114,6 +116,7 @@ class Register extends Component {
             onSubmitEditing={() => {
               this.emailInput.focus();
             }}
+            disabled={isLoading}
           />
           <FormikInput
             inputRef={input => {
@@ -128,6 +131,7 @@ class Register extends Component {
             onSubmitEditing={() => {
               this.passwordInput.focus();
             }}
+            disabled={isLoading}
           />
           <FormikInput
             inputRef={input => {
@@ -141,6 +145,7 @@ class Register extends Component {
             onSubmitEditing={() => {
               this.passwordVerifyInput.focus();
             }}
+            disabled={isLoading}
           />
           <FormikInput
             inputRef={input => {
@@ -151,6 +156,7 @@ class Register extends Component {
             containerStyle={styles.input}
             returnKeyType="done"
             secureTextEntry
+            disabled={isLoading}
           />
 
           <View style={styles.buttonsContainer}>

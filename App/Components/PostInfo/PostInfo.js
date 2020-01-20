@@ -127,7 +127,12 @@ class PostInfo extends React.Component {
           <View style={styles.centeredChildren}>
             <Text.Medium text="Evento creado Por:" style={styles.authorStyle} />
             <InLineComponent>
-              <Text.Medium text={author} style={styles.authorStyle} />
+              <Text.Medium
+                text={author}
+                style={styles.authorTextStyle}
+                numberOfLines={1}
+                ellipSizeMode="tail"
+              />
               <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
             </InLineComponent>
           </View>
@@ -139,6 +144,7 @@ class PostInfo extends React.Component {
             initialsText={initialsText}
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
+            textBorderStyle={styles.textBorderStyle}
           />
         </View>
       </InLineComponent>
@@ -270,7 +276,7 @@ class PostInfo extends React.Component {
     if (hasResources) {
       return (
         <Section title="Recursos" viewStyle={styles.sectionViewStyle}>
-          <Link text="Ver Recursos" style={styles.linkStyle} onPress={goToResources} />
+          <Link text="Ver Recursos" textStyle={styles.linkStyle} onPress={goToResources} />
         </Section>
       );
     }
@@ -298,7 +304,7 @@ class PostInfo extends React.Component {
     if (!isPrivate) {
       return (
         <Section title="Comentarios" viewStyle={styles.sectionViewStyle}>
-          <Link text="Ver Comentarios" style={styles.linkStyle} onPress={goToComments} />
+          <Link text="Ver Comentarios" onPress={goToComments} textStyle={styles.linkStyle} />
         </Section>
       );
     }
@@ -362,17 +368,28 @@ const styles = StyleSheet.create({
     width: toBaseDesignPx(32),
     borderRadius: toBaseDesignPx(16),
   },
+  textBorderStyle: {
+    borderRadius: toBaseDesignPx(32),
+  },
   authorStyle: {
     ...fonts.SIZE_XS,
     color: colors.GRAY,
     textDecorationLine: 'underline',
   },
+  authorTextStyle: {
+    ...fonts.SIZE_XS,
+    color: colors.GRAY,
+    textDecorationLine: 'underline',
+    textAlign: 'center',
+    maxWidth: toBaseDesignPx(265),
+  },
   badgeStyle: {
     width: toBaseDesignPx(8),
     height: toBaseDesignPx(8),
+    ...spacers.ML_1,
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XL,
+    ...fonts.SIZE_XS,
   },
   upVotesStyle: {
     color: colors.GRAY_LIGHT,
@@ -384,6 +401,7 @@ const styles = StyleSheet.create({
   },
   linkStyle: {
     color: colors.GRAY,
+    ...fonts.SEMI_BOLD,
   },
   arrowButtonsContainer: {
     ...spacers.MB_3,

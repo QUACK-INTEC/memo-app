@@ -1,3 +1,4 @@
 import InfoCard from './InfoCard';
+import InfoCardLoadingState from './InfoCardLoadingState';
 
-export default InfoCard;
+export { InfoCard as default, InfoCardLoadingState };

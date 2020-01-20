@@ -77,7 +77,7 @@ class SyncForm extends Component {
   };
 
   renderForm = objForm => {
-    const { universities } = this.props;
+    const { universities, isLoading } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView behavior="padding">
@@ -91,6 +91,7 @@ class SyncForm extends Component {
               containerStyle={styles.input}
               enablesReturnKeyAutomatically
               returnKeyType="next"
+              disabled={isLoading}
             />
             <FormikInput
               label="Usuario (ID)"
@@ -103,6 +104,7 @@ class SyncForm extends Component {
               onSubmitEditing={() => {
                 this.passwordInput.focus();
               }}
+              disabled={isLoading}
             />
             <FormikInput
               inputRef={input => {
@@ -114,6 +116,7 @@ class SyncForm extends Component {
               returnKeyType="done"
               secureTextEntry
               placeholder="Credenciales Universitarias"
+              disabled={isLoading}
             />
           </View>
           <View style={styles.buttonsContainer}>
@@ -140,6 +143,10 @@ class SyncForm extends Component {
 
   render() {
     const { modalVisible } = this.state;
+    const { universities } = this.props;
+    if (universities.length <= 0) {
+      return null;
+    }
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.headerInfoContainer}>{this.renderHeader()}</View>

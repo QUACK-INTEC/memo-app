@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Text from '../Common/Text';
@@ -10,7 +10,49 @@ import { toBaseDesignPx, spacers, fonts, colors, constants } from '../../Core/Th
 import SubjectPostRecent from '../SubjectPostRecent';
 import LoadingState from '../LoadingState';
 
+const OPACITY_VALUE = 1;
+
 class ClassHub extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classHubHeaderHeight: new Animated.Value(toBaseDesignPx(297)),
+    };
+  }
+
+  handleInterpolateHeaderHub = () => {
+    const { classHubHeaderHeight } = this.state;
+    const headerHub = classHubHeaderHeight.interpolate({
+      inputRange: [
+        toBaseDesignPx(297),
+        toBaseDesignPx(297) * 2,
+        toBaseDesignPx(297) * 3,
+        toBaseDesignPx(297) * 4,
+      ],
+      outputRange: [
+        toBaseDesignPx(297),
+        toBaseDesignPx(297) / 2,
+        toBaseDesignPx(297) / 3,
+        constants.DEVICE.STATUS_BAR_HEIGHT,
+      ],
+      extrapolate: 'clamp',
+      useNativeDriver: true,
+    });
+
+    const headerHubOpacity = classHubHeaderHeight.interpolate({
+      inputRange: [
+        toBaseDesignPx(297),
+        toBaseDesignPx(297) * 2,
+        toBaseDesignPx(297) * 3,
+        toBaseDesignPx(297) * 4,
+      ],
+      outputRange: [OPACITY_VALUE, OPACITY_VALUE / 2, OPACITY_VALUE / 4, 0],
+      extrapolate: 'clamp',
+      useNativeDriver: true,
+    });
+    return { headerHub, headerHubOpacity };
+  };
+
   renderHeaderHub = () => {
     const {
       onBackArrowPress,
@@ -23,8 +65,13 @@ class ClassHub extends React.PureComponent {
       subjectSection,
       subjectRoom,
     } = this.props;
+    const headerHubTransitions = this.handleInterpolateHeaderHub();
+    const { headerHub, headerHubOpacity } = headerHubTransitions;
+
     return (
-      <View style={styles.headerContainer}>
+      <Animated.View
+        style={[styles.headerContainer, { height: headerHub, opacity: headerHubOpacity }]}
+      >
         <View style={styles.headerInfoContainer}>
           <View style={styles.headerBackIconContainer}>
             <Icon
@@ -65,7 +112,7 @@ class ClassHub extends React.PureComponent {
             </View>
           </View>
         </View>
-      </View>
+      </Animated.View>
     );
   };
 
@@ -123,10 +170,12 @@ class ClassHub extends React.PureComponent {
   };
 
   renderRecentPosts = () => {
+    const { classHubHeaderHeight } = this.state;
+
     const { posts, isFetchingPost, onRefreshPosts } = this.props;
 
     return (
-      <FlatList
+      <Animated.FlatList
         refreshing={isFetchingPost}
         onRefresh={onRefreshPosts}
         data={posts}
@@ -136,6 +185,8 @@ class ClassHub extends React.PureComponent {
         keyExtractor={item => item.id}
         ListEmptyComponent={this.renderPostsEmpty}
         ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
+        ListFooterComponent={() => <View style={{ ...spacers.MB_4 }} />}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: classHubHeaderHeight } } }])}
       />
     );
   };

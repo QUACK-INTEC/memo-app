@@ -147,6 +147,7 @@ class SyncAccount extends Component {
           universities={universities}
           canNavigate={canNavigate}
           onBackArrow={this.handleBackArrow}
+          isLoading={isLoading}
         />
       </SafeAreaView>
     );
@@ -181,9 +182,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    null,
-    mapDispatchToProps
-  )(SyncAccount)
-);
+export default WithLogger(connect(null, mapDispatchToProps)(SyncAccount));

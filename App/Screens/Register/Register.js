@@ -132,6 +132,7 @@ class Register extends Component {
           onSubmit={this.handleSubmit}
           initialsValue={initialsValue}
           onBack={this.handleOnPressHasAnAccount}
+          isLoading={isLoading}
         />
       </SafeAreaView>
     );
@@ -157,9 +158,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    null,
-    mapDispatchToProps
-  )(Register)
-);
+export default WithLogger(connect(null, mapDispatchToProps)(Register));

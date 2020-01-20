@@ -32,6 +32,7 @@ export const createFormDataFile = file => {
     newElement.uri =
       Platform.OS === 'android' ? element.fileURL : element.fileURL.replace('file://', '');
     data.append('files', newElement);
+    data.append('names', element.title);
   });
 
   return data;

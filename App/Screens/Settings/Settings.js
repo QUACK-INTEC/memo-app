@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 import * as IntentLauncher from 'expo-intent-launcher';
 import { bindActionCreators } from 'redux';
 import Lodash from 'lodash';
-
+import LoadingState from '../../Components/LoadingState';
 import SettingsComponent from '../../Components/Settings';
 import {
   selectors as userManagerSelectors,
@@ -16,6 +16,13 @@ import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import Api from '../../Core/Api';
 
 class Settings extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: false,
+    };
+  }
+
   goBack = () => {
     const {
       navigation: { pop },
@@ -41,8 +48,12 @@ class Settings extends React.Component {
 
   handleSetProfileImage = strImageUri => {
     const { logger, setUserInfo } = this.props;
+    this.setState({ isLoading: true });
+
     return Api.UploadProfilePicture(strImageUri)
       .then(objResponse => {
+        this.setState({ isLoading: false });
+
         const objUserInfo = Lodash.get(objResponse, ['data', 'data'], null);
         setUserInfo(objUserInfo);
         return logger.success({
@@ -51,6 +62,8 @@ class Settings extends React.Component {
         });
       })
       .catch(objError => {
+        this.setState({ isLoading: false });
+
         return setTimeout(() => {
           logger.error({
             key: MessagesKey.CHANGE_PROFILE_PICTURE_FAILED,
@@ -62,7 +75,18 @@ class Settings extends React.Component {
 
   handleLogout = () => {
     const { logout } = this.props;
-    return logout();
+    this.setState({ isLoading: true });
+    return Api.UnRegisterForNotifications()
+      .then(() => {
+        this.setState({ isLoading: false });
+
+        return logout();
+      })
+      .catch(() => {
+        this.setState({ isLoading: false });
+
+        return logout();
+      });
   };
 
   handleOnSyncPress = () => {
@@ -77,22 +101,31 @@ class Settings extends React.Component {
     if (Constants.platform.ios) {
       return Linking.openURL('app-settings:');
     }
-    return IntentLauncher.startActivityAsync(IntentLauncher.ACTION_APP_NOTIFICATION_SETTINGS);
+    const pkg = Constants.manifest.releaseChannel
+      ? Constants.manifest.android.package // When published, considered as using standalone build
+      : 'host.exp.exponent';
+    return IntentLauncher.startActivityAsync(IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS, {
+      data: `package:${pkg}`,
+    });
   };
 
   render() {
+    const { isLoading } = this.state;
     const { firstName, lastName, userAvatarURI } = this.props;
     return (
-      <SettingsComponent
-        userName={`${firstName} ${lastName}`}
-        onBackArrowPress={this.goBack}
-        onChangeProfilePicture={this.handleOnChangeProfilePicture}
-        onLogoutPress={this.handleLogout}
-        onSyncPress={this.handleOnSyncPress}
-        onNotificationPress={this.handleGoToSettingsDevice}
-        imageUri={userAvatarURI}
-        onChangePasswordPress={this.handleOnChangePassword}
-      />
+      <>
+        <LoadingState.Modal isVisible={isLoading} />
+        <SettingsComponent
+          userName={`${firstName} ${lastName}`}
+          onBackArrowPress={this.goBack}
+          onChangeProfilePicture={this.handleOnChangeProfilePicture}
+          onLogoutPress={this.handleLogout}
+          onSyncPress={this.handleOnSyncPress}
+          onNotificationPress={this.handleGoToSettingsDevice}
+          imageUri={userAvatarURI}
+          onChangePasswordPress={this.handleOnChangePassword}
+        />
+      </>
     );
   }
 }
@@ -123,9 +156,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Settings)
-);
+export default WithLogger(connect(mapStateToProps, mapDispatchToProps)(Settings));

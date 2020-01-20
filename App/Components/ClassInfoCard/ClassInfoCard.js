@@ -17,13 +17,14 @@ class ClassInfoCard extends React.Component {
   };
 
   render() {
-    const { subject, schedule, onPress, disabled, titleStyle } = this.props;
+    const { subject, schedule, onPress, disabled, titleStyle, isLoading } = this.props;
     return (
       <InfoCard
         title={subject}
         onPress={disabled ? null : onPress}
         disabled={disabled}
         titleStyle={titleStyle}
+        isLoading={isLoading}
       >
         <Text.Light text={this.getProfessorLabel()} style={styles.professorStyle} />
         <Text.Light text={schedule} style={styles.scheduleStyle} />

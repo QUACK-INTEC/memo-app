@@ -38,16 +38,6 @@ class Settings extends React.Component {
               onPress={onBackArrowPress}
             />
           </View>
-          <SettingsItem
-            label="Sincronizar cuenta"
-            style={styles.separatorItems}
-            onPress={onSyncPress}
-          />
-          <SettingsItem
-            label="Notificaciones"
-            style={styles.separatorItems}
-            onPress={onNotificationPress}
-          />
           <SettingsItemImagePicker
             onChangeProfilePicture={onChangeProfilePicture}
             label="Cambiar foto de perfil"
@@ -59,6 +49,16 @@ class Settings extends React.Component {
             style={styles.separatorItems}
             hasOnPress={false}
             renderCustomRightChoice={this.renderUserName}
+          />
+          <SettingsItem
+            label="Sincronizar cuenta"
+            style={styles.separatorItems}
+            onPress={onSyncPress}
+          />
+          <SettingsItem
+            label="Notificaciones"
+            style={styles.separatorItems}
+            onPress={onNotificationPress}
           />
           <SettingsItem
             label="Cambiar Contraseña"

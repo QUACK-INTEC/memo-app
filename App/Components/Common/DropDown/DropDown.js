@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { View, ViewPropTypes, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
@@ -14,21 +15,8 @@ import InLineComponent from '../InLineComponent';
 import Icon, { ICON_TYPE, ICON_SIZE } from '../Icon';
 
 class DropDownComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
-
-  componentDidMount() {
-    const { value } = this.props;
-    this.setState({ value });
-  }
-
   handleOptionChange = value => {
     const { onChange } = this.props;
-    this.setState({ value });
     onChange(value);
   };
 
@@ -112,8 +100,16 @@ class DropDownComponent extends React.Component {
   };
 
   render() {
-    const { style, placeholder, options, disabled, containerStyle, hasError, ...rest } = this.props;
-    const { value: valueFromState } = this.state;
+    const {
+      style,
+      placeholder,
+      options,
+      disabled,
+      containerStyle,
+      hasError,
+      value,
+      ...rest
+    } = this.props;
     const errorStyle = hasError ? styles.errorStyle : null;
     return (
       <View style={[styles.mainView, errorStyle, containerStyle]}>
@@ -134,7 +130,7 @@ class DropDownComponent extends React.Component {
               right: 15,
             },
           }}
-          value={valueFromState}
+          value={value}
           useNativeAndroidPickerStyle={false}
           Icon={() => this.renderIcon()}
           {...rest}

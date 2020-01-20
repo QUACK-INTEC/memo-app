@@ -102,12 +102,18 @@ class PostComment extends React.Component {
             initialsText={initialsText}
             style={styles.avatarStyle}
             textStyle={styles.avatarTextStyle}
+            textBorderStyle={styles.textBorderStyle}
           />
           <View style={styles.fullFlex}>
             <Text.SemiBold text={comment} style={[styles.commentStyle]} />
             <InLineComponent>
               <TouchableOpacity onPress={onAuthorPress}>
-                <Text.Medium text={author} style={styles.authorStyle} />
+                <Text.Medium
+                  text={author}
+                  style={styles.authorStyle}
+                  numberOfLines={1}
+                  ellipSizeMode="tail"
+                />
               </TouchableOpacity>
               <ImageWrapper memoSrc={badgeSrc} uri={badgeUri} style={styles.badgeStyle} />
               <View style={styles.divBar} />
@@ -135,17 +141,21 @@ const styles = StyleSheet.create({
     ...spacers.MR_8,
     ...spacers.ML_4,
   },
+  textBorderStyle: {
+    borderRadius: toBaseDesignPx(32),
+  },
   authorStyle: {
     ...fonts.SIZE_XXS,
     color: colors.GRAY_LIGHT,
     ...spacers.MR_1,
+    maxWidth: toBaseDesignPx(180),
   },
   badgeStyle: {
     width: toBaseDesignPx(8),
     height: toBaseDesignPx(8),
   },
   avatarTextStyle: {
-    ...fonts.SIZE_XL,
+    ...fonts.SIZE_XS,
   },
   divBar: {
     width: toBaseDesignPx(0),

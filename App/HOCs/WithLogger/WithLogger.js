@@ -6,6 +6,7 @@ import hoistNonReactStatic from 'hoist-non-react-statics';
 import { Notifications } from 'expo';
 import NotificationPopup from 'react-native-push-notification-popup';
 
+import Lodash from 'lodash';
 import { MEMO_ASSETS } from '../../Components/Common/ImageWrapper';
 import LoggerMessages, { MessagesKey } from '../../Core/LoggerMessages';
 import Logger from '../../Services/Logger';
@@ -31,20 +32,33 @@ const WithLogger = WrappedComponent => {
     }
 
     handleNotification = notification => {
-      if (this.popup) {
+      const { navigation } = this.props;
+      const navigate = Lodash.get(navigation, ['navigate'], null);
+      if (this.popup && navigate) {
+        const strBody = Lodash.get(notification, ['data', 'body'], '');
+        const strTitle = Lodash.get(notification, ['data', 'title'], '');
+
         this.popup.show({
           onPress: () => this.handleOnNotificationPopUpPress(notification),
           appIconSource: MEMO_ASSETS.ICON,
-          appTitle: 'Nueva publicación',
+          appTitle: '',
           timeText: 'Now',
-          title: '[Aqui va el nombre de la materia]',
-          body: 'Se ha creado una nueva publicacion para esta materia!😀',
+          title: strTitle,
+          body: strBody,
           slideOutTime: 4000,
         });
       }
     };
 
     handleOnNotificationPopUpPress = notification => {
+      const strPostId = Lodash.get(notification, ['data', 'postId'], '');
+      const { navigation } = this.props;
+      const navigate = Lodash.get(navigation, ['navigate'], null);
+      if (strPostId) {
+        return navigate('PostInfo', {
+          id: strPostId,
+        });
+      }
       return null;
     };
 

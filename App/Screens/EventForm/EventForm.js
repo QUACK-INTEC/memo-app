@@ -43,6 +43,9 @@ class EventForm extends React.Component {
     }
 
     if (hasDate) {
+      if (startDate > endDate) {
+        errors.dateTime = 'La fecha debe ser menor a la fecha final';
+      }
       if (!endDate || !startDate) {
         errors.startDate = 'Necesita una fecha';
         errors.endDate = 'Necesita una fecha';
@@ -56,6 +59,23 @@ class EventForm extends React.Component {
     }
 
     return errors;
+  };
+
+  formatAttachmentData = data => {
+    const newData = data.map(x => {
+      const name = x.name.split('.');
+      const [alias, extension] = name;
+      const item = {};
+      item.id = x.id;
+      item.name = x.name;
+      item.fileURL = x.fileURL;
+      item.title = x.name;
+      item.type = '';
+      item.extension = extension || '';
+      item.alias = alias;
+      return item;
+    });
+    return newData;
   };
 
   getInitialsValue = () => {
@@ -73,8 +93,8 @@ class EventForm extends React.Component {
       type: 'public',
       hasFile: attachments.length > 0,
       hasDate: startDate && endDate,
-      attachments: [],
       ...initialsValue,
+      attachments: this.formatAttachmentData(attachments),
     };
   };
 
@@ -159,36 +179,45 @@ class EventForm extends React.Component {
       )
     ).getTime();
 
-    const listUpload = Lodash.filter(attachments, objFile => {
+    const listUpload = [];
+    attachments.map(objFile => {
       if (Lodash.isNull(objFile.id)) {
-        return objFile;
+        listUpload.push(objFile);
       }
-
-      if (isEditing && !Lodash.isNull(objFile.id)) {
-        return objFile;
-      }
-
       return null;
     });
 
+    const attchKeys = [];
+    attachments.map(att => {
+      if (!Lodash.isNull(att.id)) {
+        attchKeys.push(att.id);
+      }
+      return null;
+    });
     const objPayload = {
       title,
       description,
       startDate: hasDate ? startDate : null,
       endDate: hasDate ? endDate : null,
       section,
-      type: endTime && startTime ? 'Event' : 'Resource',
+      type: hasDate ? 'Event' : 'Resource',
       isPublic: type === 'public',
+      attachments: attchKeys,
     };
 
     if (!Lodash.isEmpty(listUpload)) {
       return Api.UploadFile(listUpload)
         .then(objResponse => {
-          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []).map(
-            file => file.id
-          );
+          const nA = [];
+          const newAttachments = Lodash.get(objResponse, ['data', 'attachments'], []);
+          newAttachments.map(file => {
+            if (!Lodash.isNull(file.id)) {
+              nA.push(file.id);
+            }
+            return null;
+          });
 
-          objPayload.attachments = newAttachments;
+          objPayload.attachments = objPayload.attachments.concat(nA);
 
           return isEditing
             ? this.handleEditPost(postId, objPayload)
@@ -341,7 +370,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EventForm);
+export default connect(mapStateToProps, mapDispatchToProps)(EventForm);

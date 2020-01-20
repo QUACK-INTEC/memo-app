@@ -11,7 +11,9 @@ import Section from '../Common/Section';
 import LoadingState from '../LoadingState';
 import Link from '../Common/Link';
 import Event from '../SwipeableEventCalendar';
+import { EventCalendarLoadingState } from '../EventCalendar';
 import Subject from '../SubjectCalendar';
+import LoadingList from '../LoadingList';
 
 class Home extends React.Component {
   renderTodayTitle = () => {
@@ -40,7 +42,7 @@ class Home extends React.Component {
 
           <InLineComponent>
             <View style={styles.privateInfoSubjectCalendar} />
-            <Text.Light text="Privado" style={styles.infoPrivateText} />
+            <Text.Light text="Privados" style={styles.infoPrivateText} />
           </InLineComponent>
         </View>
       </InLineComponent>
@@ -64,6 +66,10 @@ class Home extends React.Component {
         initialsText={item.initials}
       />
     );
+  };
+
+  renderEventCalendarLoadingState = item => {
+    return <EventCalendarLoadingState key={item} />;
   };
 
   renderListEvents = () => {
@@ -117,7 +123,16 @@ class Home extends React.Component {
   };
 
   renderEvents = () => {
-    const { events, subjects, onMyCalendarPress } = this.props;
+    const { events, subjects, onMyCalendarPress, isLoading } = this.props;
+
+    if (isLoading) {
+      return (
+        <LoadingList
+          renderItem={this.renderEventCalendarLoadingState}
+          ItemSeparatorComponent={() => <View style={{ ...spacers.MA_2 }} />}
+        />
+      );
+    }
 
     if (Lodash.isEmpty(events) && Lodash.isEmpty(subjects)) {
       return (
@@ -142,7 +157,7 @@ class Home extends React.Component {
   };
 
   render() {
-    const { renderSubjects, refreshing, onRefresh } = this.props;
+    const { renderSubjects, refreshing, onRefresh, isLoading } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <Section>
@@ -156,6 +171,7 @@ class Home extends React.Component {
         </Section>
         <ScrollView
           style={styles.container}
+          scrollEnabled={!isLoading}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
           <Section>{this.renderEvents()}</Section>

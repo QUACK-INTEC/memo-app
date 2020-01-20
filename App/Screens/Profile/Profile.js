@@ -45,7 +45,6 @@ class Profile extends Component {
       (prevProps.isModalVisible !== isModalVisible && !isModalVisible && isFocused) ||
       (prevProps.isFocused !== isFocused && isFocused)
     ) {
-      console.log('fetch');
       return this.fetchProfile();
     }
     return false;

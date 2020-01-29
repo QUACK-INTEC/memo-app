@@ -191,6 +191,18 @@ const ProfileStack = createStackNavigator(
     ChangePassword: {
       screen: ChangePasswordScreen,
     },
+
+    ClassHub: {
+      screen: ClassHubScreen,
+    },
+    PostInfo,
+    Participants: ClassParticipantsScreen,
+    ViewProfile: ViewProfileScreen,
+    SubjectsByTeacher: SubjectsByTeacherScreen,
+    TeacherResources: TeacherResourcesScreen,
+    PostComments: PostCommentsScreen,
+    PostResources: PostResourcesScreen,
+    ViewResource: ViewResourceScreen,
   },
   config
 );

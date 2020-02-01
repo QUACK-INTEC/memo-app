@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/prefer-default-export */
+import * as mime from 'react-native-mime-types';
 import { Platform } from 'react-native';
 
 export const toUpperCaseFirsLetter = str => {
@@ -13,10 +14,9 @@ export const toUpperCaseFirsLetter = str => {
 
 export const createFormDataPhoto = photo => {
   const data = new FormData();
-
   data.append('file', {
     name: 'file',
-    type: 'image/jpg',
+    type: mime.lookup(photo),
     uri: Platform.OS === 'android' ? photo : photo.replace('file://', ''),
   });
 

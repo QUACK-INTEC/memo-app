@@ -56,11 +56,10 @@ class PostComments extends React.Component {
     return this.setState({ isLoading });
   };
 
-  handleAuthorPress = () => {
+  handleAuthorPress = authorId => {
     const {
       navigation: { navigate },
     } = this.props;
-    const { authorId } = this.state;
     return navigate('ViewProfile', { userId: authorId });
   };
 

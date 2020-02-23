@@ -123,6 +123,7 @@ class SyncAccount extends Component {
 
     const userToken = getParam('userToken', null);
 
+    console.log({ objUserSyncData });
     if (objUserSyncData) {
       setUserSync(objUserSyncData);
       if (userToken) {

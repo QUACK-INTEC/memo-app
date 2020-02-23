@@ -138,9 +138,9 @@ class ClassHub extends React.PureComponent {
   };
 
   renderPostsEmpty = () => {
-    const { isFetchingPost, isLoadingPosts } = this.props;
+    const { isLoadingPosts } = this.props;
 
-    if (isLoadingPosts || isFetchingPost) {
+    if (isLoadingPosts) {
       return (
         <View style={styles.centerEmptyContainer}>
           <LoadingState.Small />

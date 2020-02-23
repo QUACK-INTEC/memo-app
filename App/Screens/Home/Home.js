@@ -5,6 +5,7 @@ import Lodash from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import { withNavigationFocus } from 'react-navigation';
 
 import LoadingState from '../../Components/LoadingState';
 import HomeComponent from '../../Components/Home';
@@ -52,8 +53,11 @@ class Home extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isModalVisible } = this.props;
-    if (prevProps.isModalVisible !== isModalVisible) {
+    const { isModalVisible, isFocused } = this.props;
+    if (
+      prevProps.isModalVisible !== isModalVisible ||
+      (prevProps.isFocused !== isFocused && isFocused)
+    ) {
       return this.fetchEventsAndClasses();
     }
     return false;
@@ -397,4 +401,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(connect(mapStateToProps, mapDispatchToProps)(Home));
+export default withNavigationFocus(WithLogger(connect(mapStateToProps, mapDispatchToProps)(Home)));

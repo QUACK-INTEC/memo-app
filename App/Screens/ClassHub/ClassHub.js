@@ -301,9 +301,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default WithLogger(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ClassHub)
-);
+export default WithLogger(connect(mapStateToProps, mapDispatchToProps)(ClassHub));

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Moment from 'moment/min/moment-with-locales';
 import Lodash from 'lodash';
 
-import { colors, spacers, fonts, toBaseDesignPx } from '../../Core/Theme';
+import { colors, spacers, fonts, toBaseDesignPx, constants } from '../../Core/Theme';
 import Text from '../Common/Text';
 import InLineComponent from '../Common/InLineComponent';
 import Section from '../Common/Section';
@@ -126,6 +126,9 @@ class Home extends React.Component {
     const { events, subjects, onMyCalendarPress, isLoading } = this.props;
 
     if (isLoading) {
+      if (constants.isAndroid) {
+        return <LoadingState.Small />;
+      }
       return (
         <LoadingList
           renderItem={this.renderEventCalendarLoadingState}

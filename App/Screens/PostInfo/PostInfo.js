@@ -365,7 +365,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
-            current.setToastVisible(GAMIFICATION_MSG(10));
+            current.setToastVisible(GAMIFICATION_MSG(5));
             this.setState(prevState => ({
               isLoading: false,
               score:
@@ -441,7 +441,7 @@ class PostInfo extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
-            current.setToastVisible(GAMIFICATION_MSG(10));
+            current.setToastVisible(GAMIFICATION_MSG(5));
             this.setState(prevState => ({
               isLoading: false,
               score:

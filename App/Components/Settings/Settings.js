@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 
 import SettingsItem from '../SettingsItem';
@@ -64,6 +64,21 @@ class Settings extends React.Component {
             label="Cambiar Contraseña"
             style={styles.separatorItems}
             onPress={onChangePasswordPress}
+          />
+          <SettingsItem
+            label="FAQ"
+            style={styles.separatorItems}
+            onPress={() => Linking.openURL('https://memosupport.pedroslopez.me/')}
+          />
+          <SettingsItem
+            label="MemoWiki"
+            style={styles.separatorItems}
+            onPress={() => Linking.openURL('https://memowiki.pedroslopez.me')}
+          />
+          <SettingsItem
+            label="SLA"
+            style={styles.separatorItems}
+            onPress={() => Linking.openURL('https://memosupport.pedroslopez.me/sla')}
           />
         </View>
         <View style={styles.containerLogOut}>

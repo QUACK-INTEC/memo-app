@@ -90,7 +90,7 @@ class PostComments extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
-            current.setToastVisible(GAMIFICATION_MSG(1));
+            current.setToastVisible(GAMIFICATION_MSG(5));
             const modifiedCommentObj = { ...commentObj };
             modifiedCommentObj.score =
               commentObj.currentUserReaction !== 0 ? commentObj.score + 2 : commentObj.score + 1;
@@ -183,7 +183,7 @@ class PostComments extends React.Component {
           this.setState({ isLoading: false });
           const isSuccess = Lodash.get(objResponse, ['data', 'success'], false);
           if (isSuccess) {
-            current.setToastVisible(GAMIFICATION_MSG(1));
+            current.setToastVisible(GAMIFICATION_MSG(5));
             const modifiedCommentObj = { ...commentObj };
             modifiedCommentObj.score =
               commentObj.currentUserReaction !== 0 ? commentObj.score - 2 : commentObj.score - 1;

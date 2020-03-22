@@ -28,6 +28,7 @@ const getClassesData = (listData = []) => {
 const getEventsData = (listData = []) => {
   const listEvents = listData.map(objEvent => {
     const objAuthor = Lodash.get(objEvent, ['author'], {});
+    const authorId = Lodash.get(objAuthor, ['id'], '');
     const strFirstName = Lodash.get(objAuthor, ['firstName'], '');
     const strLastName = Lodash.get(objAuthor, ['lastName'], '');
     const strAvatarURL = Lodash.get(objAuthor, ['avatarURL'], null);
@@ -59,6 +60,7 @@ const getEventsData = (listData = []) => {
       time: strTimeEvent,
       badgeUri,
       initials: `${strFirstName[0]}${strLastName[0]}`,
+      authorId,
     };
   });
   const listEventsOrdered = Lodash.orderBy(listEvents, ['startTimeStamp'], ['asc']);

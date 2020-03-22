@@ -50,7 +50,7 @@ class Home extends React.Component {
   };
 
   renderEvent = ({ item }) => {
-    const { onEventPress, onEventDownVote, onEventUpVote } = this.props;
+    const { onEventPress, onEventDownVote, onEventUpVote, userId } = this.props;
     return (
       <Event
         subjectName={item.subject}
@@ -64,6 +64,7 @@ class Home extends React.Component {
         isPrivate={item.isPrivate}
         badgeUri={item.badgeUri}
         initialsText={item.initials}
+        isAuthor={userId === item.authorId}
       />
     );
   };
@@ -244,12 +245,14 @@ const styles = StyleSheet.create({
 });
 
 Home.defaultProps = {
+  userId: null,
   events: null,
   subjects: null,
   onMyCalendarPress: () => null,
 };
 
 Home.propTypes = {
+  userId: PropTypes.string,
   onEventPress: PropTypes.func.isRequired,
   onEventUpVote: PropTypes.func.isRequired,
   onEventDownVote: PropTypes.func.isRequired,

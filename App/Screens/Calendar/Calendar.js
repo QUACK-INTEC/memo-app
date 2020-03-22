@@ -2,12 +2,14 @@ import React from 'react';
 import Lodash from 'lodash';
 import Moment from 'moment/min/moment-with-locales';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import CalendarComponent from '../../Components/Calendar';
 import { Events } from '../../Models';
 import Api from '../../Core/Api';
 import WithLogger, { MessagesKey } from '../../HOCs/WithLogger';
 import { selectors as EventFormSelectors } from '../EventForm/Redux';
+import { selectors as userManagerSelectors } from '../../Redux/Common/UserManager';
 
 class Calendar extends React.Component {
   static getDerivedStateFromProps(props) {
@@ -257,6 +259,7 @@ class Calendar extends React.Component {
   };
 
   render() {
+    const { userId } = this.props;
     const { isLoading, isRefreshing, sectionId, subjectName, showingPrivateEvents } = this.state;
     return (
       <>
@@ -277,16 +280,27 @@ class Calendar extends React.Component {
           hasFilter={!!sectionId}
           onQuitFilter={this.handleOnQuitFilter}
           filterLabel={subjectName}
+          userId={userId}
         />
       </>
     );
   }
 }
 
+Calendar.defaultProps = {
+  userId: null,
+};
+
+Calendar.propTypes = {
+  userId: PropTypes.string,
+};
+
 const mapStateToProps = (state, props) => {
   const { getIsModalVisible } = EventFormSelectors;
+  const { getUserId } = userManagerSelectors;
   return {
     isModalVisible: getIsModalVisible(state, props),
+    userId: getUserId(state, props),
   };
 };
 

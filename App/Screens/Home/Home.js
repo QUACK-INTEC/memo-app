@@ -326,6 +326,7 @@ class Home extends React.Component {
   };
 
   render() {
+    const { userId } = this.props;
     const { isLoading, isRefreshing, syncRequired } = this.state;
     return (
       <>
@@ -336,6 +337,7 @@ class Home extends React.Component {
           actualMonth={Moment().format('MMMM YYYY')}
           renderSubjects={this.renderSubjects}
           events={this.getEventsList()}
+          userId={userId}
           subjects={this.getClassesList()}
           refreshing={isRefreshing}
           onRefresh={this.handleOnRefresh}
@@ -364,6 +366,7 @@ const styles = StyleSheet.create({
 });
 
 Home.defaultProps = {
+  userId: null,
   myClasses: [],
   setMyClasses: () => null,
   myClassesLookup: {},
@@ -371,6 +374,7 @@ Home.defaultProps = {
 };
 
 Home.propTypes = {
+  userId: PropTypes.string,
   myClasses: PropTypes.arrayOf(PropTypes.string),
   setMyClasses: PropTypes.func,
   myClassesLookup: PropTypes.shape({}),
@@ -379,7 +383,7 @@ Home.propTypes = {
 
 const mapStateToProps = (state, props) => {
   const { getMyClasses, getMyClassesLookup } = myClassesSelectors;
-  const { isLogged, getUserToken } = userManagerSelectors;
+  const { isLogged, getUserToken, getUserId } = userManagerSelectors;
   const { getIsModalVisible } = EventFormSelectors;
   return {
     myClasses: getMyClasses(state, props),
@@ -387,6 +391,7 @@ const mapStateToProps = (state, props) => {
     loggedIn: isLogged(state, props),
     userToken: getUserToken(state, props),
     isModalVisible: getIsModalVisible(state, props),
+    userId: getUserId(state, props),
   };
 };
 

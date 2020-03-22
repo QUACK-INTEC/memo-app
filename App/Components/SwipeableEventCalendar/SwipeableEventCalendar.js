@@ -57,6 +57,10 @@ class SwipeableEventCalendar extends React.Component {
   };
 
   render() {
+    const { isAuthor } = this.props;
+    if (isAuthor) {
+      return <EventCalendar {...this.props} />;
+    }
     return (
       <Swipeable
         leftContent={this.leftContent}
@@ -80,12 +84,14 @@ const styles = StyleSheet.create({
 });
 
 SwipeableEventCalendar.defaultProps = {
+  isAuthor: null,
   disabled: null,
   onRightSwipe: () => null,
   onLeftSwipe: () => null,
 };
 
 SwipeableEventCalendar.propTypes = {
+  isAuthor: PropTypes.bool,
   disabled: PropTypes.bool,
   onRightSwipe: PropTypes.func,
   onLeftSwipe: PropTypes.func,

@@ -34,7 +34,7 @@
     "hoist-non-react-statics": "^3.3.0",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "lottie-react-native": "~2.6.1",
     "memoize-one": "^5.1.1",
     "moment": "^2.24.0",
